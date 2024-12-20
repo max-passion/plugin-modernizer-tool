@@ -50,6 +50,10 @@
       <version>3.3.0</version>
     </dependency>
     <dependency>
+      <groupId>org.openrewrite</groupId>
+      <artifactId>rewrite-core</artifactId>
+    </dependency>
+    <dependency>
       <groupId>org.slf4j</groupId>
       <artifactId>jcl-over-slf4j</artifactId>
     </dependency>
@@ -61,12 +65,12 @@
       <groupId>org.slf4j</groupId>
       <artifactId>slf4j-api</artifactId>
     </dependency>
+    <!-- Test dependencies -->
     <dependency>
       <groupId>io.github.sparsick.testcontainers.gitserver</groupId>
       <artifactId>testcontainers-gitserver</artifactId>
       <scope>test</scope>
     </dependency>
-    <!-- Test dependencies -->
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>apache-maven</artifactId>
