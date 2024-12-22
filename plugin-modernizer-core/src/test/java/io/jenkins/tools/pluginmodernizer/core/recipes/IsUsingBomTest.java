@@ -2,20 +2,16 @@ package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import static org.openrewrite.maven.Assertions.pomXml;
 
+import io.jenkins.tools.pluginmodernizer.core.extractor.MetadataCollector;
 import org.junit.jupiter.api.Test;
-import org.openrewrite.test.RecipeSpec;
 import org.openrewrite.test.RewriteTest;
 
 public class IsUsingBomTest implements RewriteTest {
 
-    @Override
-    public void defaults(RecipeSpec spec) {
-        spec.recipe(new IsUsingBom());
-    }
-
     @Test
     void testNotUsingBom() throws Exception {
         rewriteRun(
+                spec -> spec.recipe(new IsUsingBom()),
                 pomXml(
                         """
                  <?xml version="1.0" encoding="UTF-8"?>
@@ -51,6 +47,8 @@ public class IsUsingBomTest implements RewriteTest {
     @Test
     void testWithBom() throws Exception {
         rewriteRun(
+                spec -> spec.recipes(new MetadataCollector(true, false), new IsUsingBom())
+                        .expectedCyclesThatMakeChanges(2),
                 pomXml(
                         """
                  <?xml version="1.0" encoding="UTF-8"?>

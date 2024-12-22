@@ -7,16 +7,17 @@ import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PreconditionError;
 import java.io.Serializable;
 import java.nio.file.Path;
-import java.util.Collections;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import java.util.*;
+import org.openrewrite.marker.Marker;
 
 /**
  * Metadata of a plugin extracted from its POM file or code
  */
-public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serializable {
+public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serializable, Marker {
+
+    private static final long serialVersionUID = 1L;
+
+    private transient UUID id;
 
     /**
      * Name of the plugin
@@ -206,5 +207,16 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
 
     public void setProperties(Map<String, String> properties) {
         this.properties = properties;
+    }
+
+    @Override
+    public UUID getId() {
+        return id;
+    }
+
+    @Override
+    public PluginMetadata withId(UUID id) {
+        this.id = id;
+        return this;
     }
 }

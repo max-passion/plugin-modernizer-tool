@@ -75,6 +75,12 @@ public class CommandLineITCase {
                 }),
                 Arguments.of(new PluginMetadata() {
                     {
+                        setPluginName("empty-no-bom");
+                        setJenkinsVersion("2.452.4");
+                    }
+                }),
+                Arguments.of(new PluginMetadata() {
+                    {
                         setPluginName("replace-by-api-plugins");
                         setJenkinsVersion("2.452.4");
                     }
@@ -262,6 +268,16 @@ public class CommandLineITCase {
                             .resolve(plugin)
                             .resolve(CacheManager.PLUGIN_METADATA_CACHE_KEY),
                     PluginMetadata.class);
+
+            // Metadata should be still present on target folder (it should be copied to be reused by recipes not aware
+            // of the
+            // cache or external storage)
+            assertTrue(Files.exists(cachePath
+                    .resolve("jenkins-plugin-modernizer-cli")
+                    .resolve(plugin)
+                    .resolve("sources")
+                    .resolve("target")
+                    .resolve(CacheManager.PLUGIN_METADATA_CACHE_KEY)));
 
             assertEquals(expectedMetadata.getJenkinsVersion(), metadata.getJenkinsVersion());
         }

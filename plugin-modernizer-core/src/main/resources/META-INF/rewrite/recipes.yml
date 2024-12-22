@@ -5,7 +5,8 @@ displayName: Fetch metadata
 description: Extracts metadata from a Jenkins plugin
 tags: ['extractor']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.core.extractor.MetadataCollector
+  - io.jenkins.tools.pluginmodernizer.core.extractor.MetadataCollector:
+      force: true
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.AddPluginsBom
@@ -355,6 +356,16 @@ recipeList:
   - org.openrewrite.jenkins.AddJellyXmlDeclaration
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SearchMetadata
+displayName: Search for metadata and make it available for other recipes
+description: Search for metadata and make it available for other recipes
+tags: ['condition']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.extractor.MetadataCollector:
+      force: false
+      search: true
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 displayName: Check if the plugin is using the recommended core version
 description: Check if the plugin is using the recommended core version
@@ -380,3 +391,12 @@ tags: ['condition']
 recipeList:
   - org.openrewrite.jenkins.IsJenkinsPlugin:
       version: "[2.489,)" # Adapt when LTS
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.conditions.IsUsingBom
+displayName: Check if a plugin is using a BOM
+description: Check if a plugin is using a BOM
+tags: ['condition']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.SearchMetadata
+  - io.jenkins.tools.pluginmodernizer.core.recipes.IsUsingBom

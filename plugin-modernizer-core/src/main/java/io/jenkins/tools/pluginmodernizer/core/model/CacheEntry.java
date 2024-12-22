@@ -79,6 +79,14 @@ public abstract class CacheEntry<T extends CacheEntry<T>> implements Serializabl
     }
 
     /**
+     * Check if the object exists in the cache
+     * @return True if the object exists
+     */
+    public final boolean exists() {
+        return cacheManager.get(Path.of(path), key, clazz) != null;
+    }
+
+    /**
      * Return a copy of this object refreshed from the cache
      * @return The refreshed object
      */
@@ -108,12 +116,27 @@ public abstract class CacheEntry<T extends CacheEntry<T>> implements Serializabl
     }
 
     private T move(CacheManager newCacheManager, Path newPath, String newKey, boolean copy) {
-        LOG.debug(
-                "Moving object from {} to {}",
-                cacheManager.getLocation().resolve(path).resolve(key),
-                newCacheManager.getLocation().resolve(newPath).resolve(newKey));
+        if (copy) {
+            LOG.debug(
+                    "Copying object from {} to {}",
+                    cacheManager.getLocation().resolve(path).resolve(key),
+                    newCacheManager.getLocation().resolve(newPath).resolve(newKey));
+        } else {
+            LOG.debug(
+                    "Moving object from {} to {}",
+                    cacheManager.getLocation().resolve(path).resolve(key),
+                    newCacheManager.getLocation().resolve(newPath).resolve(newKey));
+        }
+
         // Copy transient fields
         T refreshedObject = refresh();
+        if (refreshedObject == null) {
+            LOG.warn(
+                    "Object does not exist in source cache at {}",
+                    cacheManager.getLocation().resolve(path).resolve(key));
+            LOG.warn(JsonUtils.toJson(this));
+            return null;
+        }
         refreshedObject.setPath(newPath);
         refreshedObject.setKey(newKey);
         refreshedObject.setCacheManager(newCacheManager);
