@@ -14,21 +14,21 @@ import org.slf4j.LoggerFactory;
 /**
  * Determines if this project is using a BOM in it's bom file
  */
-public class IsUsingBom extends Recipe {
+public class IsMissingBom extends Recipe {
 
     /**
      * LOGGER.
      */
-    private static final Logger LOG = LoggerFactory.getLogger(IsUsingBom.class);
+    private static final Logger LOG = LoggerFactory.getLogger(IsMissingBom.class);
 
     @Override
     public String getDisplayName() {
-        return "Is the project a using Jenkins bom?";
+        return "Is the project missing a Jenkins bom";
     }
 
     @Override
     public String getDescription() {
-        return "Checks if the project is a using a Jenkins BOM.";
+        return "Checks if the project is missing a Jenkins BOM.";
     }
 
     @Override
@@ -39,9 +39,9 @@ public class IsUsingBom extends Recipe {
 
                 PluginMetadata pluginMetadata = new PomVisitor().reduce(document, new PluginMetadata());
 
-                if (pluginMetadata.getBomVersion() != null) {
-                    LOG.info("Project is using Jenkins bom at version {}", pluginMetadata.getBomVersion());
-                    return SearchResult.found(document, "Project is using Jenkins bom");
+                if (pluginMetadata.getBomVersion() == null) {
+                    LOG.info("Project is missing Jenkins BOM");
+                    return SearchResult.found(document, "Project is missing Jenkins bom");
                 }
 
                 return document;

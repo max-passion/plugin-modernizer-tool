@@ -1,18 +1,29 @@
 package io.jenkins.tools.pluginmodernizer.core.extractor;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.openrewrite.groovy.Assertions.groovy;
+import static org.openrewrite.java.Assertions.java;
 import static org.openrewrite.maven.Assertions.pomXml;
 
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
-import io.jenkins.tools.pluginmodernizer.core.utils.JsonUtils;
-import java.util.*;
+import io.jenkins.tools.pluginmodernizer.core.recipes.FetchMetadata;
+import java.util.Collections;
+import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 import org.intellij.lang.annotations.Language;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RewriteTest;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-public class MetadataCollectorTest implements RewriteTest {
+public class FetchMetadataTest implements RewriteTest {
+
+    private static final Logger LOG = LoggerFactory.getLogger(FetchMetadataTest.class);
 
     private static final PluginMetadata EXPECTED_POM_METADATA;
 
@@ -161,19 +172,108 @@ public class MetadataCollectorTest implements RewriteTest {
                         </project>
                         """;
 
+    @BeforeEach
+    void cleanupTarget() {
+        new PluginMetadata().delete();
+    }
+
+    @Test
+    void testWithPomOnly() throws Exception {
+        rewriteRun(recipeSpec -> recipeSpec.recipe(new FetchMetadata()), pomXml(POM_XML));
+
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+        Set<JDK> jdkVersion = pluginMetadata.getJdks();
+        assertEquals(0, jdkVersion.size());
+        assertEquals(EXPECTED_POM_METADATA.getParentVersion(), pluginMetadata.getParentVersion());
+        assertEquals(EXPECTED_POM_METADATA.getPluginName(), pluginMetadata.getPluginName());
+        assertEquals(EXPECTED_POM_METADATA.getJenkinsVersion(), pluginMetadata.getJenkinsVersion());
+        assertEquals(EXPECTED_POM_METADATA.getBomVersion(), pluginMetadata.getBomVersion());
+        assertEquals(EXPECTED_POM_METADATA.getProperties(), pluginMetadata.getProperties());
+        assertEquals(EXPECTED_POM_METADATA.getFlags(), pluginMetadata.getFlags());
+
+        // Only pom here
+        assertEquals(List.of(ArchetypeCommonFile.POM), pluginMetadata.getCommonFiles());
+    }
+
+    @Test
+    void testWithPomAndJavaFile() throws Exception {
+        rewriteRun(
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
+                pomXml(POM_XML),
+                java(
+                        """
+                            package com.uppercase.camelcase;
+                            class FooBar {}
+                        """));
+
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+        Set<JDK> jdkVersion = pluginMetadata.getJdks();
+        assertEquals(0, jdkVersion.size());
+        assertEquals(EXPECTED_POM_METADATA.getParentVersion(), pluginMetadata.getParentVersion());
+        assertEquals(EXPECTED_POM_METADATA.getPluginName(), pluginMetadata.getPluginName());
+        assertEquals(EXPECTED_POM_METADATA.getJenkinsVersion(), pluginMetadata.getJenkinsVersion());
+        assertEquals(EXPECTED_POM_METADATA.getBomVersion(), pluginMetadata.getBomVersion());
+        assertEquals(EXPECTED_POM_METADATA.getProperties(), pluginMetadata.getProperties());
+        assertEquals(EXPECTED_POM_METADATA.getFlags(), pluginMetadata.getFlags());
+
+        // Only pom here
+        assertEquals(List.of(ArchetypeCommonFile.POM), pluginMetadata.getCommonFiles());
+    }
+
+    @Test
+    void testWithJenkinsfileOnly() throws Exception {
+        rewriteRun(
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
+                // language=groovy
+                groovy(
+                        """
+                         buildPlugin(
+                         useContainerAgent: true,
+                         configurations: [
+                                [platform: 'linux', jdk: 21],
+                                [platform: 'windows', jdk: 17],
+                         ])
+                         """,
+                        spec -> spec.path("Jenkinsfile")));
+
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
+        // Only Jenkinsfile here
+        assertEquals(List.of(ArchetypeCommonFile.JENKINSFILE), pluginMetadata.getCommonFiles());
+        Set<JDK> jdkVersion = pluginMetadata.getJdks();
+        assertEquals(2, jdkVersion.size());
+    }
+
     @Test
     void testPluginWithJenkinsfileWithoutJdkInfo() throws Exception {
         EXPECTED_POM_METADATA.setJdks(Set.of());
         EXPECTED_POM_METADATA.setJdks(Collections.emptySet());
         rewriteRun(
-                recipeSpec -> recipeSpec.recipe(new MetadataCollector(true, true)),
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
                 // language=groovy
                 groovy(
                         """
                           buildPlugin()
                           """,
                         spec -> spec.path("Jenkinsfile")),
-                pomXml(POM_XML, "<!--~~(" + JsonUtils.toJson(EXPECTED_POM_METADATA) + ")~~>-->" + POM_XML));
+                pomXml(POM_XML));
+
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+        Set<JDK> jdkVersion = pluginMetadata.getJdks();
+        assertEquals(0, jdkVersion.size());
+        assertEquals(EXPECTED_POM_METADATA.getParentVersion(), pluginMetadata.getParentVersion());
+        assertEquals(EXPECTED_POM_METADATA.getPluginName(), pluginMetadata.getPluginName());
+        assertEquals(EXPECTED_POM_METADATA.getJenkinsVersion(), pluginMetadata.getJenkinsVersion());
+        assertEquals(EXPECTED_POM_METADATA.getBomVersion(), pluginMetadata.getBomVersion());
+        assertEquals(EXPECTED_POM_METADATA.getProperties(), pluginMetadata.getProperties());
+        assertEquals(EXPECTED_POM_METADATA.getFlags(), pluginMetadata.getFlags());
+        assertEquals(EXPECTED_POM_METADATA.getCommonFiles(), pluginMetadata.getCommonFiles());
     }
 
     @Test
@@ -183,7 +283,7 @@ public class MetadataCollectorTest implements RewriteTest {
         jdks.add(JDK.JAVA_17);
         EXPECTED_POM_METADATA.setJdks(jdks);
         rewriteRun(
-                recipeSpec -> recipeSpec.recipe(new MetadataCollector(true, true)),
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
                 // language=groovy
                 groovy(
                         """
@@ -195,14 +295,14 @@ public class MetadataCollectorTest implements RewriteTest {
                          ])
                          """,
                         spec -> spec.path("Jenkinsfile")),
-                pomXml(POM_XML, "<!--~~(" + JsonUtils.toJson(EXPECTED_POM_METADATA) + ")~~>-->" + POM_XML));
+                pomXml(POM_XML));
+
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         // Files are present
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
 
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
-
         assertEquals(2, jdkVersion.size());
         assertTrue(jdkVersion.contains(JDK.JAVA_21));
         assertTrue(jdkVersion.contains(JDK.JAVA_17));
@@ -215,7 +315,7 @@ public class MetadataCollectorTest implements RewriteTest {
         jdks.add(JDK.JAVA_17);
         EXPECTED_POM_METADATA.setJdks(jdks);
         rewriteRun(
-                recipeSpec -> recipeSpec.recipe(new MetadataCollector(true, true)),
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
                 // language=groovy
                 groovy(
                         """
@@ -235,7 +335,7 @@ public class MetadataCollectorTest implements RewriteTest {
                             buildPlugin(params)
                             """,
                         spec -> spec.path("Jenkinsfile")),
-                pomXml(POM_XML, "<!--~~(" + JsonUtils.toJson(EXPECTED_POM_METADATA) + ")~~>-->" + POM_XML));
+                pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
@@ -249,7 +349,7 @@ public class MetadataCollectorTest implements RewriteTest {
         jdks.add(JDK.JAVA_17);
         EXPECTED_POM_METADATA.setJdks(jdks);
         rewriteRun(
-                recipeSpec -> recipeSpec.recipe(new MetadataCollector(true, true)),
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
                 // language=groovy
                 groovy(
                         """
@@ -266,7 +366,7 @@ public class MetadataCollectorTest implements RewriteTest {
                                 jacoco: [sourceCodeRetention: 'MODIFIED'])
                             """,
                         spec -> spec.path("Jenkinsfile")),
-                pomXml(POM_XML, "<!--~~(" + JsonUtils.toJson(EXPECTED_POM_METADATA) + ")~~>-->" + POM_XML));
+                pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
         Set<JDK> jdkVersion = pluginMetadata.getJdks();

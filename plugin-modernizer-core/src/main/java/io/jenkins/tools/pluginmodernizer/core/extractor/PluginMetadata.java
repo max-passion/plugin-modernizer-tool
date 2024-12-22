@@ -116,6 +116,13 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
         flags.add(flag);
     }
 
+    public void addFlags(Collection<MetadataFlag> flags) {
+        if (this.flags == null) {
+            this.flags = new HashSet<>();
+        }
+        this.flags.addAll(flags);
+    }
+
     public boolean hasFlag(MetadataFlag flag) {
         return flags != null && flags.contains(flag);
     }
@@ -132,7 +139,22 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
     }
 
     public List<ArchetypeCommonFile> getCommonFiles() {
+        if (commonFiles == null) {
+            commonFiles = new ArrayList<>();
+        }
         return commonFiles;
+    }
+
+    public List<ArchetypeCommonFile> addCommonFile(ArchetypeCommonFile commonFiles) {
+        if (this.commonFiles == null) {
+            this.commonFiles = new ArrayList<>();
+        }
+        this.commonFiles.add(commonFiles);
+        return this.commonFiles;
+    }
+
+    public boolean hasCommonFile(ArchetypeCommonFile commonFile) {
+        return commonFiles != null && commonFiles.contains(commonFile);
     }
 
     public void setCommonFiles(List<ArchetypeCommonFile> commonFiles) {
@@ -140,7 +162,17 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
     }
 
     public Set<JDK> getJdks() {
+        if (jdkVersions == null) {
+            jdkVersions = new HashSet<>();
+        }
         return jdkVersions;
+    }
+
+    public void addJdk(JDK jdk) {
+        if (jdkVersions == null) {
+            jdkVersions = new HashSet<>();
+        }
+        jdkVersions.add(jdk);
     }
 
     public void setJdks(Set<JDK> jdkVersions) {
@@ -174,7 +206,7 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
      * @return True if the file is present
      */
     public boolean hasFile(ArchetypeCommonFile file) {
-        return commonFiles.contains(file);
+        return commonFiles != null && commonFiles.contains(file);
     }
 
     public String getJenkinsVersion() {
