@@ -56,7 +56,7 @@ public class GitHubServerContainer extends GitServerContainer {
      * Create a GitHub server container
      */
     public GitHubServerContainer(WireMockRuntimeInfo wmRuntimeInfo, Path keysPath, String plugin, String branch) {
-        super(GitServerVersions.V2_45.getDockerImageName());
+        super(GitServerVersions.V2_47.getDockerImageName());
         this.plugin = plugin;
         this.wmRuntimeInfo = wmRuntimeInfo;
         this.branch = branch;
