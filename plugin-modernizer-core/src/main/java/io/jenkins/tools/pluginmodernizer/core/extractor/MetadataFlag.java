@@ -106,12 +106,12 @@ public enum MetadataFlag {
     /**
      * Function to check if the flag is applicable for the given XML tag
      */
-    private final Predicate<MetadataXmlTag> isApplicableTag;
+    private final transient Predicate<MetadataXmlTag> isApplicableTag;
 
     /**
      * Function to check if the flag is applicable for the given plugin
      */
-    private final BiPredicate<Plugin, PluginService> isApplicablePlugin;
+    private final transient BiPredicate<Plugin, PluginService> isApplicablePlugin;
 
     /**
      * Constructor
