@@ -2,9 +2,11 @@ package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PomVisitor;
-import org.openrewrite.ExecutionContext;
-import org.openrewrite.Recipe;
-import org.openrewrite.TreeVisitor;
+import io.jenkins.tools.pluginmodernizer.core.visitors.AddBeforePropertyVisitor;
+import io.jenkins.tools.pluginmodernizer.core.visitors.AddPropertyCommentVisitor;
+import org.jspecify.annotations.Nullable;
+import org.openrewrite.*;
+import org.openrewrite.Cursor;
 import org.openrewrite.maven.AddPropertyVisitor;
 import org.openrewrite.maven.MavenIsoVisitor;
 import org.openrewrite.xml.ChangeTagValueVisitor;
@@ -37,40 +39,66 @@ public class MigrateToJenkinsBaseLineProperty extends Recipe {
     private static class MigrateToJenkinsBaseLinePropertyVisitor extends MavenIsoVisitor<ExecutionContext> {
 
         @Override
+        public @Nullable Xml visit(@Nullable Tree tree, ExecutionContext executionContext, Cursor parent) {
+            return super.visit(tree, executionContext, parent);
+        }
+
+        @Override
         public Xml.Document visitDocument(Xml.Document document, ExecutionContext ctx) {
             Xml.Document d = super.visitDocument(document, ctx);
 
+            // Skip if not bom or weekly bom
             PluginMetadata pluginMetadata = new PomVisitor().reduce(document, new PluginMetadata());
-
-            // Keep only major and minor and ignore patch version
-            String jenkinsBaseline = pluginMetadata.getJenkinsVersion();
-            String jenkinsPatch = null;
-            if (pluginMetadata.getJenkinsVersion().matches("\\d+\\.\\d+\\.\\d+")) {
-                jenkinsBaseline = jenkinsBaseline.substring(0, jenkinsBaseline.lastIndexOf('.'));
-                jenkinsPatch = pluginMetadata
-                        .getJenkinsVersion()
-                        .substring(pluginMetadata.getJenkinsVersion().lastIndexOf('.') + 1);
-            }
-            LOG.debug("Jenkins baseline version is {}", jenkinsBaseline);
-            LOG.debug("Jenkins patch version is {}", jenkinsPatch);
-
             if (pluginMetadata.getBomArtifactId() == null || "bom-weekly".equals(pluginMetadata.getBomArtifactId())) {
                 LOG.debug("Project is using Jenkins weekly bom or not bom, skipping");
                 return d;
             }
 
-            performUpdate(document, jenkinsBaseline, jenkinsPatch);
+            performUpdate(document);
             return document;
         }
 
-        private void performUpdate(Xml.Document document, String jenkinsBaseline, String jenkinsPatch) {
+        private void performUpdate(Xml.Document document) {
+
+            Xml.Tag jenkinsVersionTag = document.getRoot()
+                    .getChild("properties")
+                    .flatMap(props -> props.getChild("jenkins.version"))
+                    .orElse(null);
+
+            if (jenkinsVersionTag == null) {
+                return;
+            }
+
+            // Keep only major and minor and ignore patch version
+            String jenkinsVersion = jenkinsVersionTag.getValue().get();
+            String jenkinsBaseline = jenkinsVersionTag.getValue().get();
+            String jenkinsPatch = null;
+
+            // It's a LTS, extract patch
+            if (jenkinsVersion.matches("\\d+\\.\\d+\\.\\d+")
+                    || jenkinsVersion.matches("\\$\\{jenkins.baseline}\\.\\d+")) {
+                jenkinsBaseline = jenkinsBaseline.substring(0, jenkinsBaseline.lastIndexOf('.'));
+                jenkinsPatch = jenkinsVersion.substring(jenkinsVersion.lastIndexOf('.') + 1);
+            }
+            LOG.debug("Jenkins baseline version is {}", jenkinsBaseline);
+            LOG.debug("Jenkins patch version is {}", jenkinsPatch);
+
+            String expectedVersion =
+                    jenkinsPatch != null ? "${jenkins.baseline}." + jenkinsPatch : "${jenkins.baseline}";
 
             // Add or changes properties
-            doAfterVisit(new AddPropertyVisitor("jenkins.baseline", jenkinsBaseline, false));
-            if (jenkinsPatch != null) {
-                doAfterVisit(new AddPropertyVisitor("jenkins.version", "${jenkins.baseline}." + jenkinsPatch, false));
-            } else {
-                doAfterVisit(new AddPropertyVisitor("jenkins.version", "${jenkins.baseline}", false));
+            doAfterVisit(new AddBeforePropertyVisitor("jenkins.version", "jenkins.baseline", jenkinsBaseline));
+            doAfterVisit(new AddPropertyCommentVisitor(
+                    "jenkins.baseline",
+                    " https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ "));
+
+            LOG.debug("Jenkins version is {}", jenkinsVersionTag.getValue().get());
+            LOG.debug("Expected version is {}", expectedVersion);
+
+            // Change the jenkins version
+            if (!expectedVersion.equals(jenkinsVersionTag.getValue().get())) {
+                doAfterVisit(new AddPropertyVisitor("jenkins.version", expectedVersion, false));
+                maybeUpdateModel();
             }
 
             // Change the bom artifact ID
@@ -84,7 +112,11 @@ public class MigrateToJenkinsBaseLineProperty extends Recipe {
                     .flatMap(dep -> dep.getChild("artifactId"))
                     .orElseThrow();
 
-            doAfterVisit(new ChangeTagValueVisitor<>(artifactIdTag, "bom-${jenkins.baseline}.x"));
+            LOG.debug("Artifact ID is {}", artifactIdTag.getValue().get());
+
+            if (!artifactIdTag.getValue().get().equals("bom-${jenkins.baseline}.x")) {
+                doAfterVisit(new ChangeTagValueVisitor<>(artifactIdTag, "bom-${jenkins.baseline}.x"));
+            }
         }
     }
 }
