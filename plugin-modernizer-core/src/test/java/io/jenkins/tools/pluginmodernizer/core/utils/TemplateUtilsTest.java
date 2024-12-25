@@ -133,4 +133,26 @@ public class TemplateUtilsTest {
         // Assert
         assertEquals("Require 2.479.1 and Java 17", result);
     }
+
+    @Test
+    public void testFriendlyPrTitleMigrateToJenkinsBaseLineProperty() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("2.479.1").when(metadata).getJenkinsVersion();
+        doReturn("io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals(
+                "Update pom.xml to match archetype and use `jenkins.baseline` property to keep bom in sync", result);
+    }
 }

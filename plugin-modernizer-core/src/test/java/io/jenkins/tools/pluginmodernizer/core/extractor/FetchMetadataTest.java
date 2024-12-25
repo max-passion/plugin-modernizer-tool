@@ -32,6 +32,7 @@ public class FetchMetadataTest implements RewriteTest {
         EXPECTED_POM_METADATA.setPluginName("GitLab Plugin");
         EXPECTED_POM_METADATA.setParentVersion("4.80");
         EXPECTED_POM_METADATA.setJenkinsVersion("2.426.3");
+        EXPECTED_POM_METADATA.setBomArtifactId("bom-2.414.x");
         EXPECTED_POM_METADATA.setBomVersion("2950.va_633b_f42f759");
         Map<String, String> properties = new LinkedHashMap<>();
         properties.put("revision", "1.8.1");
@@ -270,6 +271,7 @@ public class FetchMetadataTest implements RewriteTest {
         assertEquals(EXPECTED_POM_METADATA.getParentVersion(), pluginMetadata.getParentVersion());
         assertEquals(EXPECTED_POM_METADATA.getPluginName(), pluginMetadata.getPluginName());
         assertEquals(EXPECTED_POM_METADATA.getJenkinsVersion(), pluginMetadata.getJenkinsVersion());
+
         assertEquals(EXPECTED_POM_METADATA.getBomVersion(), pluginMetadata.getBomVersion());
         assertEquals(EXPECTED_POM_METADATA.getProperties(), pluginMetadata.getProperties());
         assertEquals(EXPECTED_POM_METADATA.getFlags(), pluginMetadata.getFlags());

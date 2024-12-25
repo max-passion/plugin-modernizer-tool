@@ -102,6 +102,7 @@ public class JsonUtilsTest {
         // Preps
         PluginMetadata metadata1 = new PluginMetadata();
         metadata1.setPluginName("name1");
+        metadata1.setBomArtifactId("bom-weekly");
         metadata1.setBomVersion("1.234");
         metadata1.setJdks(Set.of(JDK.JAVA_11));
         metadata1.setProperties(Map.of("key1", "value1"));
@@ -117,6 +118,7 @@ public class JsonUtilsTest {
 
         // String and scalar are merged
         assertEquals("name1", merged.getPluginName());
+        assertEquals("bom-weekly", merged.getBomArtifactId());
         assertEquals("1.234", merged.getBomVersion());
         assertEquals("4.88", merged.getParentVersion());
 

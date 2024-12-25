@@ -51,7 +51,10 @@ public class PomVisitor extends MavenIsoVisitor<PluginMetadata> {
                 .peek(dependency -> LOG.debug("Dependency: {}", dependency))
                 .filter(dependency -> "io.jenkins.tools.bom".equals(dependency.getGroupId()))
                 .findFirst()
-                .ifPresent(dependency -> pluginMetadata.setBomVersion(dependency.getVersion()));
+                .ifPresent(dependency -> {
+                    pluginMetadata.setBomArtifactId(dependency.getArtifactId());
+                    pluginMetadata.setBomVersion(dependency.getVersion());
+                });
         pluginMetadata.setProperties(properties);
         pluginMetadata.setJenkinsVersion(
                 resolvedPom.getManagedVersion("org.jenkins-ci.main", "jenkins-core", null, null));
