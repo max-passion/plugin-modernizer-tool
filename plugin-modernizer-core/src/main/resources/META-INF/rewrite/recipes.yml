@@ -16,8 +16,20 @@ preconditions:
   - io.jenkins.tools.pluginmodernizer.core.recipes.IsMissingBom
 recipeList:
   - org.openrewrite.jenkins.AddPluginsBom
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
+displayName: Migrate pom to using jenkins.baseline property if bom is present
+description: Migrate pom to using jenkins.baseline property if bom is present.
+tags: ['chore']
+preconditions:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.IsUsingBom
+  - io.jenkins.tools.pluginmodernizer.core.recipes.IsMissingJenkinsBaselineProperty
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.AddCodeOwner

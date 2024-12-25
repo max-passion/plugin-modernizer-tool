@@ -60,6 +60,11 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
     private String bomVersion;
 
     /**
+     * BOM artifact ID
+     */
+    private String bomArtifactId;
+
+    /**
      * Properties defined in the POM file of the plugin
      */
     private Map<String, String> properties;
@@ -231,6 +236,14 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
 
     public void setBomVersion(String bomVersion) {
         this.bomVersion = bomVersion;
+    }
+
+    public String getBomArtifactId() {
+        return bomArtifactId;
+    }
+
+    public void setBomArtifactId(String bomArtifactId) {
+        this.bomArtifactId = bomArtifactId;
     }
 
     public Map<String, String> getProperties() {
