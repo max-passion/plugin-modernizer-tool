@@ -286,7 +286,8 @@ public class CommandLineITCase {
     @Test
     public void testDryRunReplaceLibrariesWithApiPlugin(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
 
-        Path logFile = setupLogs("testDryRunReplaceLibrariesWithApiPlugin");
+        Path logFile1 = setupLogs("testDryRunReplaceLibrariesWithApiPlugin1");
+        Path logFile2 = setupLogs("testDryRunReplaceLibrariesWithApiPlugin2");
 
         final String plugin = "replace-by-api-plugins";
         final String recipe = "ReplaceLibrariesWithApiPlugin";
@@ -294,7 +295,8 @@ public class CommandLineITCase {
         // Junit attachment with logs file for the plugin build
         System.out.printf(
                 "[[ATTACHMENT|%s]]%n", Plugin.build(plugin).getLogFile().toAbsolutePath());
-        System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+        System.out.printf("[[ATTACHMENT|%s]]%n", logFile1.toAbsolutePath());
+        System.out.printf("[[ATTACHMENT|%s]]%n", logFile2.toAbsolutePath());
 
         try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
 
@@ -302,11 +304,23 @@ public class CommandLineITCase {
 
             Invoker invoker = buildInvoker();
             InvocationRequest request = buildRequest(
-                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile);
+                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile1);
             InvocationResult result = invoker.execute(request);
 
             // Assert output
-            assertAll(() -> assertEquals(0, result.getExitCode()));
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile1).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were commited on (.*)"))));
+
+            // Ensure it still works after running again (with caching)
+            InvocationRequest request2 = buildRequest(
+                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile2);
+            InvocationResult result2 = invoker.execute(request2);
+            assertAll(
+                    () -> assertEquals(0, result2.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile2).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were commited on (.*)"))));
         }
     }
 
