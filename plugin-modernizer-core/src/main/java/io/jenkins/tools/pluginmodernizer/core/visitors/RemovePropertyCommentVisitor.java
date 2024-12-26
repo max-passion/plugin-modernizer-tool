@@ -7,10 +7,21 @@ import org.openrewrite.maven.MavenIsoVisitor;
 import org.openrewrite.xml.tree.Content;
 import org.openrewrite.xml.tree.Xml;
 
+/**
+ * A visitor that remove a comment from a property in a maven pom file.
+ * Only a comment with exact match will be removed inside the properties block.
+ */
 public class RemovePropertyCommentVisitor extends MavenIsoVisitor<ExecutionContext> {
 
-    private String comment;
+    /**
+     * The comment to remove.
+     */
+    private final String comment;
 
+    /**
+     * Constructor of the visitor.
+     * @param comment The comment to remove.
+     */
     public RemovePropertyCommentVisitor(String comment) {
         this.comment = comment;
     }
@@ -20,7 +31,7 @@ public class RemovePropertyCommentVisitor extends MavenIsoVisitor<ExecutionConte
         tag = super.visitTag(tag, executionContext);
         if (tag.getName().equals("properties")) {
 
-            List<Content> contents = new ArrayList<>(tag.getContent());
+            List<Content> contents = new ArrayList<>(tag.getContent() != null ? tag.getContent() : List.of());
 
             // Remove the comment if needed
             boolean containsComment = contents.stream()

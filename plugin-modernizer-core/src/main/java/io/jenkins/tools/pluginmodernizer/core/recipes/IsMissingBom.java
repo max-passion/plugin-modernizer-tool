@@ -1,7 +1,7 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
-import io.jenkins.tools.pluginmodernizer.core.extractor.PomVisitor;
+import io.jenkins.tools.pluginmodernizer.core.extractor.PomResolutionVisitor;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
@@ -37,7 +37,7 @@ public class IsMissingBom extends Recipe {
             @Override
             public Xml.Document visitDocument(Xml.Document document, ExecutionContext ctx) {
 
-                PluginMetadata pluginMetadata = new PomVisitor().reduce(document, new PluginMetadata());
+                PluginMetadata pluginMetadata = new PomResolutionVisitor().reduce(document, new PluginMetadata());
 
                 if (pluginMetadata.getBomVersion() == null) {
                     LOG.info("Project is missing Jenkins BOM");

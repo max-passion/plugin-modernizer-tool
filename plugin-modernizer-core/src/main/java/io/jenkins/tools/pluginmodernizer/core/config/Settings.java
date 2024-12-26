@@ -192,6 +192,10 @@ public class Settings {
         return readProperty("jenkins.parent.version", "versions.properties");
     }
 
+    public static @Nullable String getBomVersion() {
+        return readProperty("bom.version", "versions.properties");
+    }
+
     private static @Nullable URL getUpdateCenterUrl() throws MalformedURLException {
         String url = System.getenv("JENKINS_UC");
         if (url != null) {
