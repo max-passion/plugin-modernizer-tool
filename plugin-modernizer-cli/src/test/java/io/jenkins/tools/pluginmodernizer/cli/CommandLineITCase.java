@@ -25,6 +25,7 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.util.Properties;
 import java.util.stream.Stream;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -119,7 +120,6 @@ public class CommandLineITCase {
                 () -> assertEquals(0, result2.getExitCode()),
                 () -> assertTrue(Files.readAllLines(logFile).stream()
                         .anyMatch(line -> line.matches("plugin modernizer ([a-zA-Z0-9.\\-_]+) (.*)"))));
-
         InvocationResult result3 = invoker.execute(buildRequest("version --short", logFile));
         assertAll(
                 () -> assertEquals(0, result3.getExitCode()),
@@ -312,6 +312,21 @@ public class CommandLineITCase {
                     () -> assertEquals(0, result.getExitCode()),
                     () -> assertTrue(Files.readAllLines(logFile1).stream()
                             .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were commited on (.*)"))));
+
+            // Delete target folder to use data from cache
+            File targetDirectory = cachePath
+                    .resolve("jenkins-plugin-modernizer-cli")
+                    .resolve(plugin)
+                    .resolve("sources")
+                    .resolve("target")
+                    .toFile();
+            FileUtils.deleteDirectory(targetDirectory);
+
+            // Ensure metadata is still present on cache
+            assertTrue(Files.exists(cachePath
+                    .resolve("jenkins-plugin-modernizer-cli")
+                    .resolve(plugin)
+                    .resolve(CacheManager.PLUGIN_METADATA_CACHE_KEY)));
 
             // Ensure it still works after running again (with caching)
             InvocationRequest request2 = buildRequest(
