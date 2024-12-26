@@ -254,6 +254,13 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
         this.properties = properties;
     }
 
+    public void addProperty(String key, String value) {
+        if (properties == null) {
+            properties = new HashMap<>();
+        }
+        properties.put(key, value);
+    }
+
     @Override
     public UUID getId() {
         return id;

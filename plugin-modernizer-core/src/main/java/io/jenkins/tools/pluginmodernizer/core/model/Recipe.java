@@ -19,6 +19,9 @@ public class Recipe {
     @JsonIgnore
     private Object preconditions; // Use Object to avoid mapping complex nested structures.
 
+    @JsonIgnore
+    private Boolean causesAnotherCycle;
+
     public String getName() {
         return name;
     }
@@ -69,5 +72,17 @@ public class Recipe {
 
     public Object getPreconditions() {
         return preconditions;
+    }
+
+    public void setPreconditions(Object preconditions) {
+        this.preconditions = preconditions;
+    }
+
+    public Boolean getCausesAnotherCycle() {
+        return causesAnotherCycle;
+    }
+
+    public void setCausesAnotherCycle(Boolean causesAnotherCycle) {
+        this.causesAnotherCycle = causesAnotherCycle;
     }
 }

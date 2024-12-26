@@ -27,7 +27,6 @@ description: Migrate pom to using jenkins.baseline property if bom is present.
 tags: ['chore']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.core.recipes.IsUsingBom
-  - io.jenkins.tools.pluginmodernizer.core.recipes.IsMissingJenkinsBaselineProperty
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateToJenkinsBaseLineProperty
 ---
@@ -57,6 +56,7 @@ displayName: Upgrade to the next major parent version (5.X) requiring Jenkins 2.
 description: Upgrade to the next major parent version (5.X) requiring Jenkins 2.479 and Java 17.
 tags: ['dependencies']
 recipeList:
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
@@ -281,6 +281,7 @@ displayName: Upgrade to latest recommended core version and ensure the bom is ma
 description: Upgrade to latest recommended core version and ensure the bom is matching the core version.
 tags: ['developer']
 recipeList:
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - org.openrewrite.jenkins.UpgradeVersionProperty:
       key: jenkins.version
@@ -291,13 +292,14 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion
 displayName: Upgrade to latest LTS core version supporting Java 11
-description: Upgrade to latest LTS core version supporting Java 11
+description: Upgrade to latest LTS core version supporting Java 11.
 tags: ['developer']
 recipeList:
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
+  - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - org.openrewrite.jenkins.UpgradeVersionProperty:
       key: jenkins.version
       minimumVersion: 2.462.3
-  - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
 ---
