@@ -61,12 +61,21 @@ recipeList:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
       newVersion: 5.X
-  - org.openrewrite.jenkins.UpgradeVersionProperty:
-      key: jenkins.version
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.479.1
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.kohsuke.stapler.StaplerRequest
       newFullyQualifiedTypeName: org.kohsuke.stapler.StaplerRequest2
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: org.kohsuke.stapler.Stapler getCurrentRequest()
+      newMethodName: getCurrentRequest2
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: org.kohsuke.stapler.Stapler getCurrentResponse()
+      newMethodName: getCurrentResponse2
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: javax.servlet
+      newPackageName: jakarta.servlet
+      recursive: false
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - org.openrewrite.maven.RemoveProperty: # Set by 5.x parent, ensure it's removed
       propertyName: maven.compiler.release
@@ -79,11 +88,7 @@ tags: ['dependencies']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.core.recipes.IsUsingBom
 recipeList:
-  - org.openrewrite.maven.UpgradeDependencyVersion:
-      groupId: io.jenkins.tools.bom
-      artifactId: "bom-*"
-      newVersion: latest.release
-      versionPattern: "\\.v[a-f0-9_]+"
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateBom
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -283,11 +288,11 @@ tags: ['developer']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
-  - org.openrewrite.jenkins.UpgradeVersionProperty:
-      key: jenkins.version
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.452.4
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
+  - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion
@@ -297,11 +302,11 @@ tags: ['developer']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
-  - org.openrewrite.jenkins.UpgradeVersionProperty:
-      key: jenkins.version
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.462.3
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
+  - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToJava17

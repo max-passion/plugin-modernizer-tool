@@ -10,7 +10,7 @@ import org.openrewrite.test.RewriteTest;
 import org.openrewrite.xml.tree.Xml;
 
 /**
- * A visitor that remove a property comment.
+ * Test for {@link RemovePropertyCommentVisitor}
  */
 public class RemovePropertyCommentVisitorTest implements RewriteTest {
 
@@ -60,5 +60,87 @@ public class RemovePropertyCommentVisitorTest implements RewriteTest {
                    </properties>
                  </project>
                   """));
+    }
+
+    @Test
+    void notChangesIfCommentIsNotMatching() {
+        rewriteRun(
+                spec -> spec.recipe(toRecipe(() -> new MavenIsoVisitor<>() {
+                    @Override
+                    public Xml.Document visitDocument(Xml.Document x, ExecutionContext ctx) {
+                        doAfterVisit(new RemovePropertyCommentVisitor(" Comment 1 "));
+                        doAfterVisit(new RemovePropertyCommentVisitor(" Comment 2 "));
+                        return super.visitDocument(x, ctx);
+                    }
+                })),
+                pomXml(
+                        """
+                 <?xml version="1.0" encoding="UTF-8"?>
+                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                   <modelVersion>4.0.0</modelVersion>
+                   <groupId>io.jenkins.plugins</groupId>
+                   <artifactId>empty</artifactId>
+                   <version>1.0.0-SNAPSHOT</version>
+                   <packaging>hpi</packaging>
+                   <name>Empty Plugin</name>
+                   <!-- My properties -->
+                   <properties>
+                        <!-- My other property -->
+                        <my.other.property>value</my.other.property>
+                        <!-- Unrelated comment -->
+                        <jenkins.version>2.440</jenkins.version>
+                   </properties>
+                 </project>
+                 """));
+    }
+
+    @Test
+    void noChangesIfEmptyProperties() {
+        rewriteRun(
+                spec -> spec.recipe(toRecipe(() -> new MavenIsoVisitor<>() {
+                    @Override
+                    public Xml.Document visitDocument(Xml.Document x, ExecutionContext ctx) {
+                        doAfterVisit(new RemovePropertyCommentVisitor(" No property here "));
+                        return super.visitDocument(x, ctx);
+                    }
+                })),
+                pomXml(
+                        """
+                 <?xml version="1.0" encoding="UTF-8"?>
+                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                   <modelVersion>4.0.0</modelVersion>
+                   <groupId>io.jenkins.plugins</groupId>
+                   <artifactId>empty</artifactId>
+                   <version>1.0.0-SNAPSHOT</version>
+                   <packaging>hpi</packaging>
+                   <name>Empty Plugin</name>
+                   <!-- No property here -->
+                   <properties />
+                 </project>
+                 """));
+    }
+
+    @Test
+    void noChangesIfNoProperties() {
+        rewriteRun(
+                spec -> spec.recipe(toRecipe(() -> new MavenIsoVisitor<>() {
+                    @Override
+                    public Xml.Document visitDocument(Xml.Document x, ExecutionContext ctx) {
+                        doAfterVisit(new RemovePropertyCommentVisitor(" No property here "));
+                        return super.visitDocument(x, ctx);
+                    }
+                })),
+                pomXml(
+                        """
+                 <?xml version="1.0" encoding="UTF-8"?>
+                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                   <modelVersion>4.0.0</modelVersion>
+                   <groupId>io.jenkins.plugins</groupId>
+                   <artifactId>empty</artifactId>
+                   <version>1.0.0-SNAPSHOT</version>
+                   <packaging>hpi</packaging>
+                   <name>Empty Plugin</name>
+                 </project>
+                 """));
     }
 }

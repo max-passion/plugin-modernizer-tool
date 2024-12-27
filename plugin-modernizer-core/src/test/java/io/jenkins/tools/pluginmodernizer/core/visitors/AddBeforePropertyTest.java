@@ -10,7 +10,7 @@ import org.openrewrite.test.RewriteTest;
 import org.openrewrite.xml.tree.Xml;
 
 /**
- * A visitor that add a maven property before another property.
+ * Test for {@link AddBeforePropertyVisitor}
  */
 public class AddBeforePropertyTest implements RewriteTest {
 

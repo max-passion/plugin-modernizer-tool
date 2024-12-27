@@ -165,6 +165,27 @@
       <artifactId>logback-classic</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>jakarta.servlet</groupId>
+      <artifactId>jakarta.servlet-api</artifactId>
+      <version>6.1.0</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>javax.servlet</groupId>
+      <artifactId>javax.servlet-api</artifactId>
+      <version>4.0.1</version>
+      <scope>test</scope>
+    </dependency>
+
+    <!-- Recipes test dependencies -->
+    <dependency>
+      <groupId>org.kohsuke.stapler</groupId>
+      <artifactId>stapler</artifactId>
+      <version>1928.v9115fe47607f</version>
+      <scope>test</scope>
+    </dependency>
+
     <!-- Test dependencies -->
     <dependency>
       <groupId>org.openrewrite</groupId>
@@ -177,6 +198,7 @@
       <version>2.1.7</version>
       <scope>test</scope>
     </dependency>
+
   </dependencies>
 
   <build>
@@ -206,6 +228,27 @@
       </resource>
     </resources>
     <plugins>
+
+      <!-- Used to copy openrewrite test dependencies to a separate directory for running java recipes -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <version>3.8.1</version>
+        <executions>
+          <execution>
+            <id>copy-dependencies</id>
+            <goals>
+              <goal>copy-dependencies</goal>
+            </goals>
+            <phase>validate</phase>
+            <configuration>
+              <outputDirectory>${project.build.directory}/openrewrite-classpath</outputDirectory>
+              <!-- Adapt when testing java transformation -->
+              <includeGroupIds>javax.servlet,jakarta.servlet,org.kohsuke.stapler</includeGroupIds>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
       <plugin>
         <groupId>gg.jte</groupId>
         <artifactId>jte-maven-plugin</artifactId>

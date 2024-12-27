@@ -25,6 +25,7 @@ import java.security.PrivateKey;
 import java.security.Security;
 import java.util.Properties;
 import java.util.stream.Stream;
+import org.apache.commons.io.FileUtils;
 import org.apache.maven.shared.invoker.DefaultInvocationRequest;
 import org.apache.maven.shared.invoker.DefaultInvoker;
 import org.apache.maven.shared.invoker.InvocationRequest;
@@ -119,7 +120,6 @@ public class CommandLineITCase {
                 () -> assertEquals(0, result2.getExitCode()),
                 () -> assertTrue(Files.readAllLines(logFile).stream()
                         .anyMatch(line -> line.matches("plugin modernizer ([a-zA-Z0-9.\\-_]+) (.*)"))));
-
         InvocationResult result3 = invoker.execute(buildRequest("version --short", logFile));
         assertAll(
                 () -> assertEquals(0, result3.getExitCode()),
@@ -286,7 +286,8 @@ public class CommandLineITCase {
     @Test
     public void testDryRunReplaceLibrariesWithApiPlugin(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
 
-        Path logFile = setupLogs("testDryRunReplaceLibrariesWithApiPlugin");
+        Path logFile1 = setupLogs("testDryRunReplaceLibrariesWithApiPlugin1");
+        Path logFile2 = setupLogs("testDryRunReplaceLibrariesWithApiPlugin2");
 
         final String plugin = "replace-by-api-plugins";
         final String recipe = "ReplaceLibrariesWithApiPlugin";
@@ -294,7 +295,8 @@ public class CommandLineITCase {
         // Junit attachment with logs file for the plugin build
         System.out.printf(
                 "[[ATTACHMENT|%s]]%n", Plugin.build(plugin).getLogFile().toAbsolutePath());
-        System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+        System.out.printf("[[ATTACHMENT|%s]]%n", logFile1.toAbsolutePath());
+        System.out.printf("[[ATTACHMENT|%s]]%n", logFile2.toAbsolutePath());
 
         try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
 
@@ -302,11 +304,38 @@ public class CommandLineITCase {
 
             Invoker invoker = buildInvoker();
             InvocationRequest request = buildRequest(
-                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile);
+                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile1);
             InvocationResult result = invoker.execute(request);
 
             // Assert output
-            assertAll(() -> assertEquals(0, result.getExitCode()));
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile1).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were commited on (.*)"))));
+
+            // Delete target folder to use data from cache
+            File targetDirectory = cachePath
+                    .resolve("jenkins-plugin-modernizer-cli")
+                    .resolve(plugin)
+                    .resolve("sources")
+                    .resolve("target")
+                    .toFile();
+            FileUtils.deleteDirectory(targetDirectory);
+
+            // Ensure metadata is still present on cache
+            assertTrue(Files.exists(cachePath
+                    .resolve("jenkins-plugin-modernizer-cli")
+                    .resolve(plugin)
+                    .resolve(CacheManager.PLUGIN_METADATA_CACHE_KEY)));
+
+            // Ensure it still works after running again (with caching)
+            InvocationRequest request2 = buildRequest(
+                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile2);
+            InvocationResult result2 = invoker.execute(request2);
+            assertAll(
+                    () -> assertEquals(0, result2.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile2).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were commited on (.*)"))));
         }
     }
 

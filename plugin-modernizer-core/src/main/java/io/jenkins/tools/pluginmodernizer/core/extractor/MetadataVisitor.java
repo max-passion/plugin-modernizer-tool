@@ -66,7 +66,7 @@ public class MetadataVisitor extends TreeVisitor<Tree, ExecutionContext> {
         // Extract metadata from POM
         else if (PathUtils.matchesGlob(sourceFile.getSourcePath(), "**/pom.xml")) {
             LOG.debug("Visiting POM {}", sourceFile.getSourcePath());
-            PluginMetadata pomMetadata = new PomVisitor().reduce(tree, pluginMetadata);
+            PluginMetadata pomMetadata = new PomResolutionVisitor().reduce(tree, pluginMetadata);
             LOG.debug("POM metadata: {}", JsonUtils.toJson(pomMetadata));
             executionContext.putMessage("pomMetadata", pomMetadata); // Is there better than context messaging ?
             return tree;
