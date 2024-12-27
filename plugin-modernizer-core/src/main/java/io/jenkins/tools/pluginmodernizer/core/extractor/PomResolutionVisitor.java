@@ -1,5 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.extractor;
 
+import io.jenkins.tools.pluginmodernizer.core.config.RecipesConsts;
 import java.util.Map;
 import java.util.Optional;
 import org.openrewrite.marker.Markers;
@@ -60,7 +61,7 @@ public class PomResolutionVisitor extends MavenIsoVisitor<PluginMetadata> {
         // Lookup by group ID to set the BOM version if any
         pom.getDependencyManagement().stream()
                 .peek(dependency -> LOG.debug("Dependency: {}", dependency))
-                .filter(dependency -> "io.jenkins.tools.bom".equals(dependency.getGroupId()))
+                .filter(dependency -> RecipesConsts.PLUGINS_BOM_GROUP_ID.equals(dependency.getGroupId()))
                 .findFirst()
                 .ifPresent(dependency -> {
                     pluginMetadata.setBomArtifactId(dependency.getArtifactId());

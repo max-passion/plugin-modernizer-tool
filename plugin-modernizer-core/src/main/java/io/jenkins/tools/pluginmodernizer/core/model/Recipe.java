@@ -1,13 +1,32 @@
 package io.jenkins.tools.pluginmodernizer.core.model;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.util.Objects;
 import java.util.Set;
 
-public class Recipe {
+/**
+ * Our own representation of a recipe.
+ */
+public class Recipe implements Comparable<Recipe> {
 
+    /**
+     * Name of the recipe.
+     */
     private String name;
+
+    /**
+     * Display name of the recipe.
+     */
     private String displayName;
+
+    /**
+     * Description of the recipe.
+     */
     private String description;
+
+    /**
+     * Tags of the recipe.
+     */
     private Set<String> tags;
 
     @JsonIgnore
@@ -84,5 +103,22 @@ public class Recipe {
 
     public void setCausesAnotherCycle(Boolean causesAnotherCycle) {
         this.causesAnotherCycle = causesAnotherCycle;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        Recipe recipe = (Recipe) o;
+        return Objects.equals(getName(), recipe.getName());
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hashCode(getName());
+    }
+
+    @Override
+    public int compareTo(Recipe o) {
+        return this.getName().compareTo(o.getName());
     }
 }

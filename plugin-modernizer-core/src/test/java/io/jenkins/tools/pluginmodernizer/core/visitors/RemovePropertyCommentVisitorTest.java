@@ -25,6 +25,7 @@ public class RemovePropertyCommentVisitorTest implements RewriteTest {
                         return super.visitDocument(x, ctx);
                     }
                 })),
+                // language=xml
                 pomXml(
                         """
                  <?xml version="1.0" encoding="UTF-8"?>
@@ -73,6 +74,7 @@ public class RemovePropertyCommentVisitorTest implements RewriteTest {
                         return super.visitDocument(x, ctx);
                     }
                 })),
+                // language=xml
                 pomXml(
                         """
                  <?xml version="1.0" encoding="UTF-8"?>
@@ -104,6 +106,7 @@ public class RemovePropertyCommentVisitorTest implements RewriteTest {
                         return super.visitDocument(x, ctx);
                     }
                 })),
+                // language=xml
                 pomXml(
                         """
                  <?xml version="1.0" encoding="UTF-8"?>
@@ -130,6 +133,7 @@ public class RemovePropertyCommentVisitorTest implements RewriteTest {
                         return super.visitDocument(x, ctx);
                     }
                 })),
+                // language=xml
                 pomXml(
                         """
                  <?xml version="1.0" encoding="UTF-8"?>

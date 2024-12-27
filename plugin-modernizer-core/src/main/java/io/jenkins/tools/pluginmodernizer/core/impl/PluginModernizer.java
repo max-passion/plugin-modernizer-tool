@@ -50,10 +50,12 @@ public class PluginModernizer {
      * List available recipes
      */
     public void listRecipes() {
-        Settings.AVAILABLE_RECIPES.forEach(recipe -> LOG.info(
-                "{} - {}",
-                recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", ""),
-                recipe.getDescription()));
+        Settings.AVAILABLE_RECIPES.stream()
+                .sorted()
+                .forEach(recipe -> LOG.info(
+                        "{} - {}",
+                        recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", ""),
+                        recipe.getDescription()));
     }
 
     /**
