@@ -23,6 +23,9 @@ import org.openrewrite.test.RewriteTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Tests for {@link FetchMetadata}.
+ */
 public class FetchMetadataTest implements RewriteTest {
 
     private static final Logger LOG = LoggerFactory.getLogger(FetchMetadataTest.class);

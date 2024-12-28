@@ -6,6 +6,12 @@ import org.openrewrite.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+/**
+ * Recipe to fetch metadata from source files and store it in the target directory.
+ * See {@link MetadataVisitor} for more details.
+ * See {@link MetadataFinalizer} for the finalization of the metadata and merging of metadata from different sources.
+ * See {@link PluginMetadata} for the metadata structure.
+ */
 public class FetchMetadata extends Recipe {
 
     /**
