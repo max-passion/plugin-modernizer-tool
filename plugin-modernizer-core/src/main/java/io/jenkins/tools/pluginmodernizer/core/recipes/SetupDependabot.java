@@ -2,8 +2,6 @@ package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
-import java.nio.file.Path;
-import java.nio.file.Paths;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.concurrent.atomic.AtomicBoolean;
@@ -65,11 +63,11 @@ public class SetupDependabot extends ScanningRecipe<AtomicBoolean> {
             @Override
             public Tree visit(Tree tree, ExecutionContext ctx) {
                 SourceFile sourceFile = (SourceFile) tree;
-                if (sourceFile.getSourcePath().equals(Path.of(ArchetypeCommonFile.RENOVATE.getPath()))) {
+                if (sourceFile.getSourcePath().equals(ArchetypeCommonFile.RENOVATE.getPath())) {
                     LOG.info("Project is using Renovate. Doing nothing.");
                     shouldCreate.set(false);
                 }
-                if (sourceFile.getSourcePath().equals(Path.of(ArchetypeCommonFile.DEPENDABOT.getPath()))) {
+                if (sourceFile.getSourcePath().equals(ArchetypeCommonFile.DEPENDABOT.getPath())) {
                     LOG.info("Project is using Dependabot already. Doing nothing.");
                     shouldCreate.set(false);
                 }
@@ -84,8 +82,8 @@ public class SetupDependabot extends ScanningRecipe<AtomicBoolean> {
             return YamlParser.builder()
                     .build()
                     .parse(DEPENDABOT_FILE)
-                    .map(brandNewFile -> (SourceFile)
-                            brandNewFile.withSourcePath(Paths.get(ArchetypeCommonFile.DEPENDABOT.getPath())))
+                    .map(brandNewFile ->
+                            (SourceFile) brandNewFile.withSourcePath(ArchetypeCommonFile.DEPENDABOT.getPath()))
                     .collect(Collectors.toList());
         }
         return Collections.emptyList();
