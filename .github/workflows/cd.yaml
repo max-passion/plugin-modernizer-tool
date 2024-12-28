@@ -64,10 +64,10 @@ jobs:
       - name: Set up Maven
         run: |
           wget --no-verbose https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz
-          echo $CHECKSUM apache-maven-$MAVEN_VERSION-bin.tar.gz | sha512sum --check
-          tar xzf apache-maven-$MAVEN_VERSION-bin.tar.gz
-          rm apache-maven-$MAVEN_VERSION-bin.tar.gz
-          sudo mv apache-maven-$MAVEN_VERSION /opt/maven
+          echo "$CHECKSUM" apache-maven-$MAVEN_VERSION-bin.tar.gz | sha512sum --check
+          tar xzf "apache-maven-$MAVEN_VERSION-bin.tar.gz"
+          rm "apache-maven-$MAVEN_VERSION-bin.tar.gz"
+          sudo mv "apache-maven-$MAVEN_VERSION" /opt/maven
           sudo rm -f /usr/bin/mvn
           sudo ln -s /opt/maven/bin/mvn /usr/bin/mvn
           mvn --version
