@@ -129,6 +129,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: built-jar
+          retention-days: 1
           path: |
             plugin-modernizer-cli/target/jenkins-plugin-modernizer-${{ steps.extract-version.outputs.version }}.jar
             plugin-modernizer-core/target/plugin-modernizer-core-${{ steps.extract-version.outputs.version }}.jar
