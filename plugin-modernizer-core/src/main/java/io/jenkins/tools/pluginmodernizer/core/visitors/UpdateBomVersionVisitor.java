@@ -1,5 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.visitors;
 
+import io.jenkins.tools.pluginmodernizer.core.config.RecipesConsts;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.maven.*;
 import org.openrewrite.maven.table.MavenMetadataFailures;
@@ -66,10 +67,10 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
      * @return The newer bom version
      */
     private String findNewerBomVersion(String artifactId, String currentVersion, ExecutionContext ctx) {
-        VersionComparator latestRelease = new LatestRelease("\\.v[a-f0-9_]+");
+        VersionComparator latestRelease = new LatestRelease(RecipesConsts.VERSION_METADATA_PATTERN);
         try {
             return MavenDependency.findNewerVersion(
-                    "io.jenkins.tools.bom",
+                    RecipesConsts.PLUGINS_BOM_GROUP_ID,
                     artifactId,
                     currentVersion,
                     getResolutionResult(),

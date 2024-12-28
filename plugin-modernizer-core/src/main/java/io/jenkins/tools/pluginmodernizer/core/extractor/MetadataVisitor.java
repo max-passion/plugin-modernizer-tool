@@ -1,8 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.extractor;
 
 import io.jenkins.tools.pluginmodernizer.core.utils.JsonUtils;
-import org.jspecify.annotations.NonNull;
-import org.jspecify.annotations.Nullable;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.PathUtils;
 import org.openrewrite.SourceFile;
@@ -23,14 +21,12 @@ public class MetadataVisitor extends TreeVisitor<Tree, ExecutionContext> {
 
     final PluginMetadata pluginMetadata;
 
+    /**
+     * Constructor.
+     * @param pluginMetadata the plugin metadata
+     */
     public MetadataVisitor(PluginMetadata pluginMetadata) {
         this.pluginMetadata = pluginMetadata;
-    }
-
-    @Override
-    public @Nullable Tree postVisit(@NonNull Tree tree, ExecutionContext executionContext) {
-        LOG.debug("Finalizing metadata");
-        return super.postVisit(tree, executionContext);
     }
 
     @Override
@@ -38,25 +34,13 @@ public class MetadataVisitor extends TreeVisitor<Tree, ExecutionContext> {
 
         SourceFile sourceFile = (SourceFile) tree;
 
-        ArchetypeCommonFile commonFile =
-                ArchetypeCommonFile.fromFile(sourceFile.getSourcePath().toString());
-
-        // Store common files into metadata
-        if (commonFile != null) {
-            if (pluginMetadata.hasCommonFile(commonFile)) {
-                LOG.debug("File {} is already a common file", sourceFile.getSourcePath());
-            } else {
-                LOG.debug("File {} is a common file", sourceFile.getSourcePath());
-                pluginMetadata.addCommonFile(commonFile);
-            }
-        } else {
-            LOG.debug("File {} is not a common file", sourceFile.getSourcePath());
-        }
+        // Common metadata
+        PluginMetadata commonMetadata = new ArchetypeCommonFileVisitor().reduce(tree, pluginMetadata);
 
         // Extract metadata from Jenkinsfile
         if (PathUtils.matchesGlob(sourceFile.getSourcePath(), "**/Jenkinsfile")) {
             LOG.debug("Visiting Jenkinsfile {}", sourceFile.getSourcePath());
-            PluginMetadata jenkinsFileMetadata = new JenkinsfileVisitor().reduce(tree, pluginMetadata);
+            PluginMetadata jenkinsFileMetadata = new JenkinsfileVisitor().reduce(tree, commonMetadata);
             LOG.debug("Jenkinsfile metadata: {}", JsonUtils.toJson(jenkinsFileMetadata));
             executionContext.putMessage(
                     "jenkinsFileMetadata", jenkinsFileMetadata); // Is there better than context messaging ?
@@ -66,10 +50,15 @@ public class MetadataVisitor extends TreeVisitor<Tree, ExecutionContext> {
         // Extract metadata from POM
         else if (PathUtils.matchesGlob(sourceFile.getSourcePath(), "**/pom.xml")) {
             LOG.debug("Visiting POM {}", sourceFile.getSourcePath());
-            PluginMetadata pomMetadata = new PomResolutionVisitor().reduce(tree, pluginMetadata);
+            PluginMetadata pomMetadata = new PomResolutionVisitor().reduce(tree, commonMetadata);
             LOG.debug("POM metadata: {}", JsonUtils.toJson(pomMetadata));
             executionContext.putMessage("pomMetadata", pomMetadata); // Is there better than context messaging ?
             return tree;
+        }
+
+        // Just add the common
+        else {
+            executionContext.putMessage("commonMetadata", commonMetadata); // Is there better than context messaging ?
         }
 
         return tree;

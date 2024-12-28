@@ -1,5 +1,7 @@
 package io.jenkins.tools.pluginmodernizer.core.extractor;
 
+import java.nio.file.Path;
+
 /**
  * An archetype repository file with location
  * Used to create metadata and store information about file presence or changes
@@ -108,7 +110,7 @@ public enum ArchetypeCommonFile {
      */
     public static ArchetypeCommonFile fromFile(String file) {
         for (ArchetypeCommonFile f : ArchetypeCommonFile.values()) {
-            if (f.getPath().equals(file)) {
+            if (Path.of(f.getPath()).equals(Path.of(file))) {
                 return f;
             }
         }

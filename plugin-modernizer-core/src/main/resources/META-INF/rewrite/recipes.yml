@@ -309,63 +309,29 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: io.jenkins.tools.pluginmodernizer.UpgradeToJava17
-displayName: Migrate from Java 11 to Java 17
-description: Migrate from Java 11 to Java 17
+name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion
+displayName: Upgrade to latest LTS core version supporting Java 8
+description: Upgrade to latest LTS core version supporting Java 8.
 tags: ['developer']
 recipeList:
-  - org.openrewrite.java.migrate.UpgradeToJava17
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
+  - org.openrewrite.maven.UpgradeParentVersion:
+      groupId: org.jenkins-ci.plugins
+      artifactId: plugin
+      newVersion: 4.51 # See https://www.jenkins.io/blog/2022/12/14/require-java-11/
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
+      minimumVersion: 2.346.3
+  - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
+  - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
+  - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
 ---
 type: specs.openrewrite.org/v1beta/recipe
-name: io.jenkins.tools.pluginmodernizer.MigrateJUnitTestCase
-displayName: Convert JUnit 4 TestCase to JUnit Jupiter
-description: Convert JUnit 4 TestCase to JUnit Jupiter
-tags: ['tests']
-recipeList:
-  - org.openrewrite.java.testing.junit5.MigrateJUnitTestCase
----
-type: specs.openrewrite.org/v1beta/recipe
-name: io.jenkins.tools.pluginmodernizer.DeleteUpdateCliWorkflows
-displayName: Remove updatecli workflows
-description: Remove updatecli workflows
+name: io.jenkins.tools.pluginmodernizer.SetupDependabot
+displayName: Setup dependabot
+description: Setup dependabot for the Jenkins plugin if it doesn't exist.
 tags: ['chore']
 recipeList:
-  - org.openrewrite.DeleteSourceFiles:
-      filePattern: .github/workflows/updatecli.yml
-  - org.openrewrite.DeleteSourceFiles:
-      filePattern: updatecli/values.yml
-  - org.openrewrite.DeleteSourceFiles:
-      filePattern: updatecli/**/*.yml
----
-type: specs.openrewrite.org/v1beta/recipe
-name: io.jenkins.tools.pluginmodernizer.AddOrModernizeJenkinsFile
-displayName: Add Jenkinsfile
-description: Updates Jenkinsfile to build with recommended Java versions, platforms, and settings, or creates the file if absent. Also upgrades to a newer parent version, as the new version of the Jenkinsfille uses JDK17 and JDK21.
-tags: ['chore']
-recipeList:
-  - org.openrewrite.jenkins.ModernizeJenkinsfile
-  - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
----
-type: specs.openrewrite.org/v1beta/recipe
-name: io.jenkins.tools.pluginmodernizer.AddDependencyCheck
-displayName: Add dependency check
-description: Adds a dependabot GitHub action to the plugin repository
-tags: ['chore']
-recipeList:
-  - org.openrewrite.text.CreateTextFile:
-      fileContents: |
-        version: 2
-        updates:
-        - package-ecosystem: maven
-          directory: /
-          schedule:
-            interval: monthly
-        - package-ecosystem: github-actions
-          directory: /
-          schedule:
-            interval: monthly
-      relativeFileName: .github/dependabot.yml
-      overwriteExisting: false
+  - io.jenkins.tools.pluginmodernizer.core.recipes.SetupDependabot
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.FixJellyIssues

@@ -4,6 +4,8 @@ import static org.junit.jupiter.api.Assertions.*;
 import static org.openrewrite.groovy.Assertions.groovy;
 import static org.openrewrite.java.Assertions.java;
 import static org.openrewrite.maven.Assertions.pomXml;
+import static org.openrewrite.test.SourceSpecs.text;
+import static org.openrewrite.yaml.Assertions.yaml;
 
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
 import io.jenkins.tools.pluginmodernizer.core.recipes.FetchMetadata;
@@ -199,6 +201,24 @@ public class FetchMetadataTest implements RewriteTest {
     }
 
     @Test
+    void testWithOneCommonFile() throws Exception {
+        rewriteRun(
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
+                // language=yaml
+                yaml("""
+                ---
+                name: Empty
+                """, sourceSpecs -> {
+                    sourceSpecs.path(".github/dependabot.yml");
+                }));
+
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
+        // Only dependabot.yml here
+        assertEquals(List.of(ArchetypeCommonFile.DEPENDABOT), pluginMetadata.getCommonFiles());
+    }
+
+    @Test
     void testWithPomAndJavaFile() throws Exception {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
@@ -223,6 +243,76 @@ public class FetchMetadataTest implements RewriteTest {
 
         // Only pom here
         assertEquals(List.of(ArchetypeCommonFile.POM), pluginMetadata.getCommonFiles());
+    }
+
+    @Test
+    void testWithManyCommonFiles() throws Exception {
+        rewriteRun(
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
+                pomXml(POM_XML),
+                // language=groovy
+                groovy(
+                        """
+                         buildPlugin(
+                         useContainerAgent: true,
+                         configurations: [
+                                [platform: 'linux', jdk: 21],
+                                [platform: 'windows', jdk: 17],
+                         ])
+                         """,
+                        spec -> spec.path("Jenkinsfile")),
+                // language=java
+                java(
+                        """
+                            package com.uppercase.camelcase;
+                            class FooBar {}
+                        """),
+                // language=yaml
+                yaml("""
+                ---
+                name: Empty
+                """, sourceSpecs -> {
+                    sourceSpecs.path(".github/dependabot.yml");
+                }),
+                // language=text
+                text("The readme", sourceSpecs -> {
+                    sourceSpecs.path("README.md");
+                }),
+                text("The contributing", sourceSpecs -> {
+                    sourceSpecs.path("CONTRIBUTING.md");
+                }),
+                text("The maven config", sourceSpecs -> {
+                    sourceSpecs.path(".mvn/maven.config");
+                }),
+                text("The license", sourceSpecs -> {
+                    sourceSpecs.path("LICENSE.md");
+                }),
+                text("index jelly", sourceSpecs -> {
+                    sourceSpecs.path("src/main/resources/index.jelly");
+                }));
+
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
+
+        // Check common files
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM), "POM file is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.DEPENDABOT), "Dependabot is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.README), "README is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.CONTRIBUTING), "CONTRIBUTING is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.MAVEN_CONFIG), "Maven config is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.LICENSE), "License is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.INDEX_JELLY), "Index jelly is missing");
+
+        // Check rest
+        Set<JDK> jdkVersion = pluginMetadata.getJdks();
+        assertEquals(2, jdkVersion.size());
+        assertEquals(EXPECTED_POM_METADATA.getParentVersion(), pluginMetadata.getParentVersion());
+        assertEquals(EXPECTED_POM_METADATA.getPluginName(), pluginMetadata.getPluginName());
+        assertEquals(EXPECTED_POM_METADATA.getJenkinsVersion(), pluginMetadata.getJenkinsVersion());
+        assertEquals(EXPECTED_POM_METADATA.getBomVersion(), pluginMetadata.getBomVersion());
+        assertEquals(EXPECTED_POM_METADATA.getProperties(), pluginMetadata.getProperties());
+        assertEquals(EXPECTED_POM_METADATA.getFlags(), pluginMetadata.getFlags());
     }
 
     @Test
