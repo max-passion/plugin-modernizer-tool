@@ -10,7 +10,6 @@ ARG VERSION
 # Set the VERSION environment variable
 ENV VERSION=${VERSION}
 
-
 # Add the current directory to the /plugin-modernizer directory in the container
 ADD . /plugin-modernizer
 RUN mkdir -p /plugin-modernizer
