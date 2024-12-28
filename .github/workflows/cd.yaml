@@ -42,6 +42,8 @@ jobs:
           RELEASE_DRAFT_BODY: ${{ steps.draft.outputs.body }}
 
   release:
+    outputs:
+      version: ${{ steps.extract-version.outputs.version }}
     runs-on: ubuntu-latest
     needs: [validate]
     if: needs.validate.outputs.should_release == 'true'
@@ -127,6 +129,20 @@ jobs:
     runs-on: ubuntu-latest
     needs: [release]
     steps:
+      - name: Free Disk Space (Ubuntu)
+        uses: jlumbroso/free-disk-space@main
+        with:
+          # this might remove tools that are actually needed,
+          # when set to "true" but frees about 6 GB
+          tool-cache: true
+          # all of these default to true, but feel free to set to
+          # "false" if necessary for your workflow
+          android: true
+          dotnet: true
+          haskell: true
+          large-packages: true
+          swap-storage: true
+          
       - name: Check out
         uses: actions/checkout@v4
         with:
@@ -150,6 +166,9 @@ jobs:
         uses: docker/metadata-action@v4
         with:
           images: ghcr.io/${{ github.repository }}
+          tags: |
+            type=semver,pattern={{version}},value=${{ needs.release.outputs.version }}
+            type=raw,value=latest
 
       - name: Build and push Docker image
         id: push
