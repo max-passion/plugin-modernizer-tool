@@ -5,19 +5,18 @@ import io.jenkins.tools.pluginmodernizer.core.model.CacheEntry;
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PreconditionError;
+import java.io.Serial;
 import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.*;
-import org.openrewrite.marker.Marker;
 
 /**
  * Metadata of a plugin extracted from its POM file or code
  */
-public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serializable, Marker {
+public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serializable {
 
+    @Serial
     private static final long serialVersionUID = 1L;
-
-    private transient UUID id;
 
     /**
      * Name of the plugin
@@ -189,7 +188,7 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
      * @param path The path
      * @return The file or null
      */
-    public ArchetypeCommonFile getFile(String path) {
+    public ArchetypeCommonFile getFile(Path path) {
         return commonFiles.stream()
                 .filter(f -> f.getPath().equals(path))
                 .findFirst()
@@ -201,7 +200,7 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
      * @param path The path
      * @return True if the file is present
      */
-    public boolean hasFile(String path) {
+    public boolean hasFile(Path path) {
         return commonFiles.stream().anyMatch(f -> f.getPath().equals(path));
     }
 
@@ -259,16 +258,5 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
             properties = new HashMap<>();
         }
         properties.put(key, value);
-    }
-
-    @Override
-    public UUID getId() {
-        return id;
-    }
-
-    @Override
-    public PluginMetadata withId(UUID id) {
-        this.id = id;
-        return this;
     }
 }

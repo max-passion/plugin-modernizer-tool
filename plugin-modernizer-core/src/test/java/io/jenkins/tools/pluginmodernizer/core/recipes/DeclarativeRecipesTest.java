@@ -128,7 +128,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         * @my-custom-team
                     """,
                         sourceSpecs -> {
-                            sourceSpecs.path(Path.of(ArchetypeCommonFile.CODEOWNERS.getPath()));
+                            sourceSpecs.path(ArchetypeCommonFile.CODEOWNERS.getPath());
                         }));
     }
 

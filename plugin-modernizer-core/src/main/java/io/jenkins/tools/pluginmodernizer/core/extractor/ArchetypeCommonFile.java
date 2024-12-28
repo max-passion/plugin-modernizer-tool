@@ -110,7 +110,7 @@ public enum ArchetypeCommonFile {
      */
     public static ArchetypeCommonFile fromFile(String file) {
         for (ArchetypeCommonFile f : ArchetypeCommonFile.values()) {
-            if (Path.of(f.getPath()).equals(Path.of(file))) {
+            if (f.getPath().equals(Path.of(file))) {
                 return f;
             }
         }
@@ -121,7 +121,7 @@ public enum ArchetypeCommonFile {
      * Get the path
      * @return the path
      */
-    public String getPath() {
-        return path;
+    public Path getPath() {
+        return Path.of(path);
     }
 }
