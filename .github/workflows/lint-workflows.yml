@@ -8,6 +8,8 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
+        env:
+          fetch-depth: 0
 
       - name: Lint GitHub Actions workflows
         uses: super-linter/super-linter@v7.2.1
