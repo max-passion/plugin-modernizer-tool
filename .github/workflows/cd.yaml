@@ -64,7 +64,7 @@ jobs:
       - name: Set up Maven
         run: |
           wget --no-verbose "https://dlcdn.apache.org/maven/maven-3/$MAVEN_VERSION/binaries/apache-maven-$MAVEN_VERSION-bin.tar.gz"
-          echo "$CHECKSUM" apache-maven-$MAVEN_VERSION-bin.tar.gz | sha512sum --check
+          echo "$CHECKSUM" "apache-maven-$MAVEN_VERSION-bin.tar.gz" | sha512sum --check
           tar xzf "apache-maven-$MAVEN_VERSION-bin.tar.gz"
           rm "apache-maven-$MAVEN_VERSION-bin.tar.gz"
           sudo mv "apache-maven-$MAVEN_VERSION" /opt/maven
@@ -86,7 +86,7 @@ jobs:
       - name: Extract version
         id: extract-version
         run: |
-          VERSION=$(mvn -q -Dset.changelist -Dignore.dirt -DforceStdout org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version)
+          VERSION="$(mvn -q -Dset.changelist -Dignore.dirt -DforceStdout org.apache.maven.plugins:maven-help-plugin:evaluate -Dexpression=project.version)"
           echo "VERSION=$VERSION"
           echo "version=$VERSION" >> $GITHUB_OUTPUT
 
