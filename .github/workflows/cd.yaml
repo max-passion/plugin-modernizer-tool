@@ -162,6 +162,7 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: built-jar
+          path: .  # Explicitly set to root to match Dockerfile COPY paths
 
       - name: Set up QEMU
         uses: docker/setup-qemu-action@v3
