@@ -1,36 +1,6 @@
 # Define the VERSION argument with a default value
 ARG VERSION=999999-SNAPSHOT
 
-# First stage: Build the project using Maven and Eclipse Temurin JDK 21
-FROM maven:3.9.9-eclipse-temurin-21-jammy AS builder
-
-# Re-define the VERSION argument for the builder stage
-ARG VERSION
-
-# Set the VERSION environment variable
-ENV VERSION=${VERSION}
-
-# Add the current directory to the /plugin-modernizer directory in the container
-ADD . /plugin-modernizer
-RUN mkdir -p /plugin-modernizer
-WORKDIR /plugin-modernizer
-
-# Define a build argument for the Maven cache location
-ARG MAVEN_CACHE=.m2
-ADD ${MAVEN_CACHE} /root/.m2
-
-# Print the Maven local repository path
-RUN echo "Maven local repository path: $(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)"
-
-# List the Maven cache directory itself
-RUN ls -ld $(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)
-
-# Ensure the Maven cache directory is writable
-RUN chmod -R 777 $(mvn help:evaluate -Dexpression=settings.localRepository -q -DforceStdout)
-
-RUN cd /plugin-modernizer && \
-    mvn clean install -DskipTests
-
 # Second stage: Create the final image using Maven and Eclipse Temurin JDK 21
 FROM maven:3.9.9-eclipse-temurin-21-jammy AS result-image
 
@@ -65,9 +35,9 @@ ARG VERSION
 # Set the VERSION environment variable
 ENV VERSION=${VERSION}
 
-# Copy the built JAR files from the builder stage to the final image
-COPY --from=builder /plugin-modernizer/plugin-modernizer-cli/target/jenkins-plugin-modernizer-${VERSION}.jar /jenkins-plugin-modernizer.jar
-COPY --from=builder /plugin-modernizer/plugin-modernizer-core/target/plugin-modernizer-core-${VERSION}.jar /jenkins-plugin-modernizer-core.jar
+# Copy the built JAR files from the downloaded artifacts to the final image
+COPY plugin-modernizer-cli/target/jenkins-plugin-modernizer-${VERSION}.jar /jenkins-plugin-modernizer.jar
+COPY plugin-modernizer-core/target/plugin-modernizer-core-${VERSION}.jar /jenkins-plugin-modernizer-core.jar
 
 # Install the core dependency using the Maven install plugin
 RUN mvn org.apache.maven.plugins:maven-install-plugin:${MVN_INSTALL_PLUGIN_VERSION}:install-file \
