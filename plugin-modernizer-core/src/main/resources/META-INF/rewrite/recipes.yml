@@ -2,7 +2,7 @@
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.FetchMetadata
 displayName: Fetch metadata
-description: Extracts metadata from a Jenkins plugin
+description: Extracts metadata from a Jenkins plugin.
 tags: ['extractor']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.FetchMetadata
@@ -33,15 +33,15 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.AddCodeOwner
 displayName: Add CODEOWNERS file
-description: Adds a CODEOWNERS file to a Jenkins plugin
+description: Adds a CODEOWNERS file to a Jenkins plugin.
 tags: ['chore']
 recipeList:
   - org.openrewrite.jenkins.github.AddTeamToCodeowners
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
-displayName: Upgrade parent version
-description: Upgrade the parent version to latest available
+displayName: Upgrade parent version to latest available in the 4.x line
+description: Upgrade the parent version to latest available in the 4.x line.
 tags: ['dependencies']
 recipeList:
   - org.openrewrite.maven.UpgradeParentVersion:
@@ -83,7 +83,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
 displayName: Upgrade BOM version
-description: Upgrade the bom version to latest available. Doesn't change the artifact id
+description: Upgrade the bom version to latest available for the current BOM.
 tags: ['dependencies']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.core.recipes.IsUsingBom
@@ -94,7 +94,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 displayName: Remove dependency version override
-description: Remove dependencies version override if managed from parent or bom
+description: Remove dependencies version override if managed from parent or bom.
 tags: ['dependencies']
 recipeList:
   - org.openrewrite.maven.RemoveRedundantDependencyVersions:
@@ -104,7 +104,7 @@ type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
 displayName: Remove extra maven properties
 tags: ['chore']
-description: Remove extra maven properties from the pom
+description: Remove extra maven properties from the pom.
 recipeList:
   - org.openrewrite.maven.RemoveProperty:
       propertyName: configuration-as-code.version
@@ -115,7 +115,7 @@ type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.ReplaceLibrariesWithApiPlugin
 displayName: Use API plugin instead of direct dependency
 tags: ['developer']
-description: Use API plugins instead of direct dependency
+description: Use API plugins instead of direct dependency.
 recipeList:
   - io.jenkins.tools.pluginmodernizer.UseJsonApiPlugin
   - io.jenkins.tools.pluginmodernizer.UseJsonPathApiPlugin
@@ -218,7 +218,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UseCompressApiPlugin
 displayName: Use Compress API plugin instead of direct dependency
-description: Use Compress API plugin instead of direct dependency
+description: Use Compress API plugin instead of direct dependency.
 tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithCommonsCompressRemoved
@@ -230,6 +230,8 @@ recipeList:
       replaces:
         - groupId: org.apache.commons
           artifactId: commons-compress
+        - groupId: org.apache.commons
+          artifactId: commons-lang3
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UseCommonsLangApiPlugin
