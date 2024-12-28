@@ -15,6 +15,8 @@ import java.nio.file.Path;
 import java.util.List;
 import org.junit.jupiter.api.Disabled;
 import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.condition.EnabledOnOs;
+import org.junit.jupiter.api.condition.OS;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RewriteTest;
 import org.slf4j.Logger;
@@ -54,6 +56,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX) // https://github.com/openrewrite/rewrite-jenkins/pull/83
     void addCodeOwner() {
         rewriteRun(
                 spec -> spec.recipeFromResource(
@@ -76,6 +79,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX) // https://github.com/openrewrite/rewrite-jenkins/pull/83
     void shouldNotAddCodeOwnerIfAdded() {
         rewriteRun(
                 spec -> spec.recipeFromResource(
@@ -98,6 +102,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
+    @EnabledOnOs(OS.LINUX) // https://github.com/openrewrite/rewrite-jenkins/pull/83
     void shouldAddCodeOwnerIfNeeded() {
         rewriteRun(
                 spec -> spec.recipeFromResource(
