@@ -8,6 +8,90 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.FetchMetadata
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
+displayName: Setup the Jenkinsfile
+description: Add a missing Jenkinsfile to the Jenkins plugin.
+tags: ['chore']
+recipeList:
+  - org.openrewrite.text.CreateTextFile:
+      relativeFileName: Jenkinsfile
+      overwriteExisting: false
+      fileContents: |
+        /*
+         See the documentation for more options:
+         https://github.com/jenkins-infra/pipeline-library/
+        */
+        buildPlugin(
+          forkCount: '1C', // Run a JVM per core in tests
+          useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
+          configurations: [
+            [platform: 'linux', jdk: 21],
+            [platform: 'windows', jdk: 17],
+        ])
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SetupGitIgnore
+displayName: Setup the .gitignore
+description: Add a missing .gitignore to the Jenkins plugin.
+tags: ['chore']
+recipeList:
+    # Keep in sync with https://github.com/jenkinsci/archetypes/blob/master/common-files/gitignore
+  - org.openrewrite.text.CreateTextFile:
+      relativeFileName: .gitignore
+      overwriteExisting: false
+      fileContents: |
+        target
+        
+        # mvn hpi:run
+        work
+
+        # IntelliJ IDEA project files
+        *.iml
+        *.iws
+        *.ipr
+        .idea
+        
+        # Eclipse project files
+        .settings
+        .classpath
+        .project
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SetupSecurityScan
+displayName: Setup the .github/workflows/jenkins-security-scan.yml
+description: Add a missing .github/workflows/jenkins-security-scan.yml to the Jenkins plugin.
+tags: ['chore']
+recipeList:
+  # Keep in sync with https://github.com/jenkinsci/archetypes/blob/master/common-files/.github/workflows/jenkins-security-scan.yml
+  - org.openrewrite.yaml.CreateYamlFile:
+      relativeFileName: .github/workflows/jenkins-security-scan.yml
+      overwriteExisting: false
+      fileContents: |
+        # More information about the Jenkins security scan can be found at the developer docs: https://www.jenkins.io/redirect/jenkins-security-scan/
+        ---
+        name: Jenkins Security Scan
+        on:
+          push:
+            branches:
+              - "master"
+              - "main"
+          pull_request:
+            types: [opened, synchronize, reopened]
+          workflow_dispatch:
+        
+        permissions:
+          security-events: write
+          contents: read
+          actions: read
+        
+        jobs:
+          security-scan:
+            uses: jenkins-infra/jenkins-security-scan/.github/workflows/jenkins-security-scan.yaml@v2
+            with:
+              java-cache: 'maven'  # Optionally enable use of a build dependency cache. Specify 'maven' or 'gradle' as appropriate.
+              # java-version: 21  # Optionally specify what version of Java to set up for the build, or remove to use a recent default.
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.AddPluginsBom
 displayName: Add plugins BOM
 description: Add the Jenkins BOM to the dependenciesManagement section of the pom.xml.
@@ -56,7 +140,6 @@ displayName: Upgrade to the next major parent version (5.X) requiring Jenkins 2.
 description: Upgrade to the next major parent version (5.X) requiring Jenkins 2.479 and Java 17.
 tags: ['dependencies']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
@@ -79,6 +162,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - org.openrewrite.maven.RemoveProperty: # Set by 5.x parent, ensure it's removed
       propertyName: maven.compiler.release
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
@@ -288,13 +372,13 @@ displayName: Upgrade to latest recommended core version and ensure the bom is ma
 description: Upgrade to latest recommended core version and ensure the bom is matching the core version.
 tags: ['developer']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.452.4
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion
@@ -302,13 +386,13 @@ displayName: Upgrade to latest LTS core version supporting Java 11
 description: Upgrade to latest LTS core version supporting Java 11.
 tags: ['developer']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.462.3
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion
@@ -316,7 +400,6 @@ displayName: Upgrade to latest LTS core version supporting Java 8
 description: Upgrade to latest LTS core version supporting Java 8.
 tags: ['developer']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
@@ -326,6 +409,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.SetupDependabot
@@ -334,6 +418,14 @@ description: Setup dependabot for the Jenkins plugin if it doesn't exist.
 tags: ['chore']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.SetupDependabot
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.RemoveReleaseDrafter
+displayName: Remove Release Drafter if CD is enabled
+description: Remove Release Drafter if CD is enabled. See https://www.jenkins.io/doc/developer/publishing/releasing-cd/#configure-release-drafter.
+tags: ['chore']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.RemoveReleaseDrafter
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.FixJellyIssues
