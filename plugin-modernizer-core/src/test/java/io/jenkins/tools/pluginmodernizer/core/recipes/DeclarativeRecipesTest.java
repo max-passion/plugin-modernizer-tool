@@ -1,5 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
+import static org.openrewrite.groovy.Assertions.groovy;
 import static org.openrewrite.java.Assertions.java;
 import static org.openrewrite.java.Assertions.mavenProject;
 import static org.openrewrite.java.Assertions.srcMainResources;
@@ -1841,6 +1842,142 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     """,
                         sourceSpecs -> {
                             sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
+                        }));
+    }
+
+    /**
+     * Note this test need to be adapted to fix the Jenkinsfile to use latest archetype
+     */
+    @Test
+    void shouldNotAddJenkinsfileIfAlreadyPresent() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupJenkinsfile"),
+                groovy("buildPlugin()", sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
+    }
+
+    @Test
+    void shouldAddJenkinsfile() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupJenkinsfile"),
+                text(""), // Need one minimum file to trigger the recipe
+                // language=groovy
+                groovy(
+                        null,
+                        """
+                    /*
+                     See the documentation for more options:
+                     https://github.com/jenkins-infra/pipeline-library/
+                    */
+                    buildPlugin(
+                      forkCount: '1C', // Run a JVM per core in tests
+                      useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
+                      configurations: [
+                        [platform: 'linux', jdk: 21],
+                        [platform: 'windows', jdk: 17],
+                    ])
+                    """,
+                        sourceSpecs -> {
+                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                        }));
+    }
+
+    /**
+     * Note this test need to be adapted to fix the .gitignore to ensure entries are merged
+     */
+    @Test
+    void shouldNotAddGitIgnoreIfAlreadyPresent() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupGitIgnore"),
+                text("target", sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath());
+                }));
+    }
+
+    @Test
+    void shouldAddGitIgnore() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupGitIgnore"),
+                text(""), // Need one minimum file to trigger the recipe
+                text(
+                        null,
+                        """
+                     target
+                    \s
+                     # mvn hpi:run
+                     work
+
+                     # IntelliJ IDEA project files
+                     *.iml
+                     *.iws
+                     *.ipr
+                     .idea
+                    \s
+                     # Eclipse project files
+                     .settings
+                     .classpath
+                     .project
+                    """,
+                        sourceSpecs -> {
+                            sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath());
+                        }));
+    }
+
+    /**
+     * Note1: this test need to be adapted to fix the security to ensure entries are merged
+     * Note2: OpenRewrite provide a way to merge YAML files
+     */
+    @Test
+    void shouldNotAddSecurityScanIfAlreadyPresent() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupSecurityScan"),
+                yaml("{}", sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_SECURITY.getPath());
+                }));
+    }
+
+    @Test
+    void shouldAddSecurityScan() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupSecurityScan"),
+                text(""), // Need one minimum file to trigger the recipe
+                // language=yaml
+                yaml(
+                        null,
+                        """
+                    # More information about the Jenkins security scan can be found at the developer docs: https://www.jenkins.io/redirect/jenkins-security-scan/
+                    ---
+                    name: Jenkins Security Scan
+                    on:
+                      push:
+                        branches:
+                          - "master"
+                          - "main"
+                      pull_request:
+                        types: [opened, synchronize, reopened]
+                      workflow_dispatch:
+
+                    permissions:
+                      security-events: write
+                      contents: read
+                      actions: read
+
+                    jobs:
+                      security-scan:
+                        uses: jenkins-infra/jenkins-security-scan/.github/workflows/jenkins-security-scan.yaml@v2
+                        with:
+                          java-cache: 'maven'  # Optionally enable use of a build dependency cache. Specify 'maven' or 'gradle' as appropriate.
+                          # java-version: 21  # Optionally specify what version of Java to set up for the build, or remove to use a recent default.
+                    """,
+                        sourceSpecs -> {
+                            sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_SECURITY.getPath());
                         }));
     }
 
