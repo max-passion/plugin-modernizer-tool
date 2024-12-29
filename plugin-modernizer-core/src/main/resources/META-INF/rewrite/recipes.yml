@@ -8,6 +8,90 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.FetchMetadata
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
+displayName: Setup the Jenkinsfile
+description: Add a missing Jenkinsfile to the Jenkins plugin.
+tags: ['chore']
+recipeList:
+  - org.openrewrite.text.CreateTextFile:
+      relativeFileName: Jenkinsfile
+      overwriteExisting: false
+      fileContents: |
+        /*
+         See the documentation for more options:
+         https://github.com/jenkins-infra/pipeline-library/
+        */
+        buildPlugin(
+          forkCount: '1C', // Run a JVM per core in tests
+          useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
+          configurations: [
+            [platform: 'linux', jdk: 21],
+            [platform: 'windows', jdk: 17],
+        ])
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SetupGitIgnore
+displayName: Setup the .gitignore
+description: Add a missing .gitignore to the Jenkins plugin.
+tags: ['chore']
+recipeList:
+    # Keep in sync with https://github.com/jenkinsci/archetypes/blob/master/common-files/gitignore
+  - org.openrewrite.text.CreateTextFile:
+      relativeFileName: .gitignore
+      overwriteExisting: false
+      fileContents: |
+        target
+        
+        # mvn hpi:run
+        work
+
+        # IntelliJ IDEA project files
+        *.iml
+        *.iws
+        *.ipr
+        .idea
+        
+        # Eclipse project files
+        .settings
+        .classpath
+        .project
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SetupSecurityScan
+displayName: Setup the .github/workflows/jenkins-security-scan.yml
+description: Add a missing .github/workflows/jenkins-security-scan.yml to the Jenkins plugin.
+tags: ['chore']
+recipeList:
+  # Keep in sync with https://github.com/jenkinsci/archetypes/blob/master/common-files/.github/workflows/jenkins-security-scan.yml
+  - org.openrewrite.yaml.CreateYamlFile:
+      relativeFileName: .github/workflows/jenkins-security-scan.yml
+      overwriteExisting: false
+      fileContents: |
+        # More information about the Jenkins security scan can be found at the developer docs: https://www.jenkins.io/redirect/jenkins-security-scan/
+        ---
+        name: Jenkins Security Scan
+        on:
+          push:
+            branches:
+              - "master"
+              - "main"
+          pull_request:
+            types: [opened, synchronize, reopened]
+          workflow_dispatch:
+        
+        permissions:
+          security-events: write
+          contents: read
+          actions: read
+        
+        jobs:
+          security-scan:
+            uses: jenkins-infra/jenkins-security-scan/.github/workflows/jenkins-security-scan.yaml@v2
+            with:
+              java-cache: 'maven'  # Optionally enable use of a build dependency cache. Specify 'maven' or 'gradle' as appropriate.
+              # java-version: 21  # Optionally specify what version of Java to set up for the build, or remove to use a recent default.
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.AddPluginsBom
 displayName: Add plugins BOM
 description: Add the Jenkins BOM to the dependenciesManagement section of the pom.xml.
