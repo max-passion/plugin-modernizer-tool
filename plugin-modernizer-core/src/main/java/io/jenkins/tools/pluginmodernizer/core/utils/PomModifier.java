@@ -15,6 +15,8 @@ import javax.xml.transform.Transformer;
 import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
+import javax.xml.xpath.XPath;
+import javax.xml.xpath.XPathFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.w3c.dom.Document;
@@ -67,6 +69,34 @@ public class PomModifier {
         } catch (Exception e) {
             LOG.error("Error initializing PomModifier: " + e.getMessage(), e);
             throw new RuntimeException("Failed to initialize PomModifier", e); // Re-throw as a runtime exception
+        }
+    }
+
+    /**
+     * Return the packaging type of the POM file.
+     * @return the packaging type or null if not found
+     */
+    public String getPackaging() {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        try {
+            return xPath.compile("/project/packaging").evaluate(document);
+        } catch (Exception e) {
+            LOG.warn("Error getting packaging: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
+     * Return the groupId of the POM file.
+     * @return the groupId or null if not found
+     */
+    public String getArtifactId() {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        try {
+            return xPath.compile("/project/artifactId").evaluate(document);
+        } catch (Exception e) {
+            LOG.warn("Error getting artifactId: {}", e.getMessage());
+            return null;
         }
     }
 

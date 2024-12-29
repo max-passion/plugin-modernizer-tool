@@ -1,5 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.utils;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
@@ -26,7 +27,12 @@ public class PluginService {
      * @param plugin Plugin
      * @return Repository name
      */
+    @SuppressFBWarnings("NP_NULL_ON_SOME_PATH_FROM_RETURN_VALUE")
     public String extractRepoName(Plugin plugin) {
+        // Let's consider the repo is the name of the folder
+        if (plugin.isLocal() && plugin.getLocalRepository() != null) {
+            return plugin.getLocalRepository().getFileName().toString();
+        }
         UpdateCenterData updateCenterData = getUpdateCenterData();
         UpdateCenterData.UpdateCenterPlugin updateCenterPlugin =
                 updateCenterData.getPlugins().get(plugin.getName());
@@ -102,6 +108,9 @@ public class PluginService {
      * @return Version
      */
     public String extractVersion(Plugin plugin) {
+        if (plugin.isLocal()) {
+            return null;
+        }
         UpdateCenterData updateCenterData = getUpdateCenterData();
         UpdateCenterData.UpdateCenterPlugin updateCenterPlugin =
                 updateCenterData.getPlugins().get(plugin.getName());
@@ -189,6 +198,9 @@ public class PluginService {
      * @return Score
      */
     public Double extractScore(Plugin plugin) {
+        if (plugin.isLocal()) {
+            return null;
+        }
         HealthScoreData healthScoreData = getHealthScoreData();
         HealthScoreData.HealthScorePlugin healthScorePlugin =
                 healthScoreData.getPlugins().get(plugin.getName());
