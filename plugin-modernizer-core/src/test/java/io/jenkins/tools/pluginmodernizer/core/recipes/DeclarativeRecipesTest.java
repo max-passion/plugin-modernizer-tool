@@ -134,7 +134,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
-    void upgradeParentBom() {
+    void upgradeParentpom() {
         rewriteRun(
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.UpgradeParentVersion"),
@@ -472,6 +472,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins.version>2.440.3</jenkins.version>
                           </properties>
+                          <dependencies>
+                            <dependency>
+                              <groupId>io.jenkins.plugins</groupId>
+                              <artifactId>asm-api</artifactId>
+                              <version>9.6-3.v2e1fa_b_338cd7</version>
+                            </dependency>
+                          </dependencies>
                           <repositories>
                             <repository>
                               <id>repo.jenkins-ci.org</id>
@@ -502,8 +509,27 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
                           <properties>
-                            <jenkins.version>2.452.4</jenkins.version>
+                            <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+                            <jenkins.baseline>2.452</jenkins.baseline>
+                            <jenkins.version>${jenkins.baseline}.4</jenkins.version>
                           </properties>
+                          <dependencyManagement>
+                            <dependencies>
+                              <dependency>
+                                <groupId>io.jenkins.tools.bom</groupId>
+                                <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                                <version>3850.vb_c5319efa_e29</version>
+                                <type>pom</type>
+                                <scope>import</scope>
+                              </dependency>
+                            </dependencies>
+                          </dependencyManagement>
+                          <dependencies>
+                            <dependency>
+                              <groupId>io.jenkins.plugins</groupId>
+                              <artifactId>asm-api</artifactId>
+                            </dependency>
+                          </dependencies>
                           <repositories>
                             <repository>
                               <id>repo.jenkins-ci.org</id>

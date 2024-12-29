@@ -140,7 +140,6 @@ displayName: Upgrade to the next major parent version (5.X) requiring Jenkins 2.
 description: Upgrade to the next major parent version (5.X) requiring Jenkins 2.479 and Java 17.
 tags: ['dependencies']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
@@ -163,6 +162,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - org.openrewrite.maven.RemoveProperty: # Set by 5.x parent, ensure it's removed
       propertyName: maven.compiler.release
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
@@ -372,13 +372,13 @@ displayName: Upgrade to latest recommended core version and ensure the bom is ma
 description: Upgrade to latest recommended core version and ensure the bom is matching the core version.
 tags: ['developer']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.452.4
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion
@@ -386,13 +386,13 @@ displayName: Upgrade to latest LTS core version supporting Java 11
 description: Upgrade to latest LTS core version supporting Java 11.
 tags: ['developer']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.462.3
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion
@@ -400,7 +400,6 @@ displayName: Upgrade to latest LTS core version supporting Java 8
 description: Upgrade to latest LTS core version supporting Java 8.
 tags: ['developer']
 recipeList:
-  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
@@ -410,6 +409,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
+  - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.SetupDependabot
