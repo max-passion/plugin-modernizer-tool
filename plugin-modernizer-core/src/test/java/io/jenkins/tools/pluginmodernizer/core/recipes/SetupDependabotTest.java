@@ -7,6 +7,9 @@ import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import org.junit.jupiter.api.Test;
 import org.openrewrite.test.RewriteTest;
 
+/**
+ * Test for {@link SetupDependabot}.
+ */
 public class SetupDependabotTest implements RewriteTest {
 
     @Test

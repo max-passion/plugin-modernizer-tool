@@ -155,4 +155,44 @@ public class TemplateUtilsTest {
         assertEquals(
                 "Update pom.xml to match archetype and use `jenkins.baseline` property to keep bom in sync", result);
     }
+
+    @Test
+    public void testFriendlyPrTitleSetupDependabot() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("io.jenkins.tools.pluginmodernizer.SetupDependabot")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("Automate dependency updates with Dependabot", result);
+    }
+
+    @Test
+    public void testFriendlyPrTitleRemoveReleaseDrafter() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("io.jenkins.tools.pluginmodernizer.RemoveReleaseDrafter")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("Remove release drafter due to enabled cd", result);
+    }
 }
