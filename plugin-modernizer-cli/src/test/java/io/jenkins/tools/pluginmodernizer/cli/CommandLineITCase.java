@@ -10,6 +10,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.jenkins.tools.pluginmodernizer.cli.utils.GitHubServerContainer;
 import io.jenkins.tools.pluginmodernizer.cli.utils.ModernizerTestWatcher;
+import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
@@ -248,8 +249,8 @@ public class CommandLineITCase {
             gitRemote.start();
 
             Invoker invoker = buildInvoker();
-            InvocationRequest request =
-                    buildRequest("build-metadata %s".formatted(getRunArgs(wmRuntimeInfo, plugin)), logFile);
+            InvocationRequest request = buildRequest(
+                    "build-metadata %s".formatted(getRunArgs(wmRuntimeInfo, Plugin.build(plugin))), logFile);
             InvocationResult result = invoker.execute(request);
 
             // Assert output
@@ -304,7 +305,8 @@ public class CommandLineITCase {
 
             Invoker invoker = buildInvoker();
             InvocationRequest request = buildRequest(
-                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile1);
+                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin))),
+                    logFile1);
             InvocationResult result = invoker.execute(request);
 
             // Assert output
@@ -330,7 +332,8 @@ public class CommandLineITCase {
 
             // Ensure it still works after running again (with caching)
             InvocationRequest request2 = buildRequest(
-                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile2);
+                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin))),
+                    logFile2);
             InvocationResult result2 = invoker.execute(request2);
             assertAll(
                     () -> assertEquals(0, result2.getExitCode()),
@@ -358,7 +361,8 @@ public class CommandLineITCase {
 
             Invoker invoker = buildInvoker();
             InvocationRequest request = buildRequest(
-                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, plugin)), logFile);
+                    "dry-run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin))),
+                    logFile);
             InvocationResult result = invoker.execute(request);
 
             // Assert output
@@ -376,6 +380,51 @@ public class CommandLineITCase {
                             .resolve(".github")
                             .resolve("dependabot.yml")),
                     "Dependabot file was not created");
+        }
+    }
+
+    @Test
+    public void testRecipeOnLocalPlugin(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+
+        Path logFile = setupLogs("testRecipeOnLocalPlugin");
+
+        // Copy empty plugin to cache and use as local plugin
+        final String plugin = "empty";
+        final Path pluginPath = Path.of("src/test/resources").resolve(plugin);
+        Path targetPath = cachePath
+                .resolve("jenkins-plugin-modernizer-cli")
+                .resolve(plugin)
+                .resolve("sources");
+        FileUtils.copyDirectory(pluginPath.toFile(), targetPath.toFile());
+
+        final String recipe = "SetupSecurityScan";
+
+        try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
+
+            gitRemote.start();
+
+            // Junit attachment with logs file for the plugin build
+            System.out.printf(
+                    "[[ATTACHMENT|%s]]%n", Plugin.build(plugin).getLogFile().toAbsolutePath());
+            System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+
+            Invoker invoker = buildInvoker();
+            InvocationRequest request = buildRequest(
+                    "dry-run --recipe %s %s"
+                            .formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin, targetPath))),
+                    logFile);
+            InvocationResult result = invoker.execute(request);
+
+            // Assert output
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were commited on (.*)"))));
+
+            // Check that new file was created
+            assertTrue(
+                    Files.exists(targetPath.resolve(ArchetypeCommonFile.WORKFLOW_SECURITY.getPath())),
+                    "Workflow security file was not created");
         }
     }
 
@@ -487,16 +536,20 @@ public class CommandLineITCase {
      * @param plugin The plugin
      * @return the URL arguments
      */
-    private String getRunArgs(WireMockRuntimeInfo wmRuntimeInfo, String plugin) {
+    private String getRunArgs(WireMockRuntimeInfo wmRuntimeInfo, Plugin plugin) {
 
         String args = "";
         String mavenLocalRepo = System.getProperty("maven.repo.local");
         if (mavenLocalRepo != null) {
             args += "--maven-local-repo %s ".formatted(mavenLocalRepo);
         }
+        if (plugin.isLocal()) {
+            args += "--plugin-path %s ".formatted(plugin.getLocalRepository().toAbsolutePath());
+        } else {
+            args += "--plugins %s ".formatted(plugin.getName());
+        }
         args +=
                 """
-        --plugins %s
         --debug
         --maven-home %s
         --ssh-private-key %s
@@ -508,9 +561,8 @@ public class CommandLineITCase {
         --jenkins-plugins-stats-installations-url %s
         """
                         .formatted(
-                                plugin,
                                 getModernizerMavenHome(),
-                                keysPath.resolve(plugin),
+                                keysPath.resolve(plugin.getName()),
                                 cachePath,
                                 wmRuntimeInfo.getHttpBaseUrl() + "/api",
                                 wmRuntimeInfo.getHttpBaseUrl() + "/update-center.json",

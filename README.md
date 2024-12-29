@@ -136,10 +136,13 @@ From there you need to save both ID of installation (found on URL)
 
 # Run option
 
-- `--plugins` or `-p`: (optional) Name(s) of plugin directory cloned inside the `test-plugins` directory.
+- `--plugins`: (optional) Name(s) of plugin directory cloned inside the `test-plugins` directory.
 
 
-- `--plugin-file` or `-f`: (optional) Path to the text file that contains a list of plugins. (see example [plugin file](docs/example-plugins.txt))
+- `--plugin-file`: (optional) Path to the text file that contains a list of plugins. (see example [plugin file](docs/example-plugins.txt))
+
+
+- `--plugin-path`: (optional) Path to the plugin directory containing the pom.xml file.
 
 
 - `--recipe` or `-r`: (required) Name of recipe to apply to the plugins.

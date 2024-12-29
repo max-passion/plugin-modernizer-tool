@@ -2,11 +2,14 @@ package io.jenkins.tools.pluginmodernizer.cli.options;
 
 import io.jenkins.tools.pluginmodernizer.cli.converter.PluginConverter;
 import io.jenkins.tools.pluginmodernizer.cli.converter.PluginFileConverter;
+import io.jenkins.tools.pluginmodernizer.cli.converter.PluginPathConverter;
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import picocli.CommandLine;
 
 /**
@@ -15,10 +18,15 @@ import picocli.CommandLine;
 public final class PluginOptions implements IOption {
 
     /**
+     * Logger
+     */
+    private static final Logger LOG = LoggerFactory.getLogger(PluginOptions.class);
+
+    /**
      * List of plugins from CLI
      */
     @CommandLine.Option(
-            names = {"-p", "--plugins"},
+            names = {"--plugins"},
             description = "List of Plugins to Modernize.",
             split = ",",
             converter = PluginConverter.class)
@@ -28,14 +36,27 @@ public final class PluginOptions implements IOption {
      * List of plugins from file
      */
     @CommandLine.Option(
-            names = {"-f", "--plugin-file"},
+            names = {"--plugin-file"},
             description = "Path to the file that contains a list of plugins.",
             converter = PluginFileConverter.class)
     private List<Plugin> pluginsFromFile;
 
+    /**
+     * Path to a local plugin
+     */
+    @CommandLine.Option(
+            names = {"--plugin-path"},
+            description = "Path to the file that contains a list of plugins.",
+            converter = PluginPathConverter.class)
+    private Plugin pluginPath;
+
     @Override
     public void config(Config.Builder builder) {
         builder.withPlugins(getEffectivePlugins());
+        if (pluginPath != null) {
+            LOG.info("Running in dry-run because of local plugin: {}", pluginPath);
+            builder.withDryRun(true);
+        }
     }
 
     /**
@@ -49,6 +70,9 @@ public final class PluginOptions implements IOption {
         if (pluginsFromFile == null) {
             pluginsFromFile = List.of();
         }
-        return Stream.concat(plugins.stream(), pluginsFromFile.stream()).collect(Collectors.toList());
+        return Stream.concat(
+                        pluginPath != null ? Stream.of(pluginPath) : Stream.empty(),
+                        Stream.concat(plugins.stream(), pluginsFromFile.stream()))
+                .collect(Collectors.toList());
     }
 }

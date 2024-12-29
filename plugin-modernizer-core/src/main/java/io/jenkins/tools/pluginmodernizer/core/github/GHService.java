@@ -236,6 +236,9 @@ public class GHService {
      * @return True if the repository is forked
      */
     public boolean isForked(Plugin plugin) {
+        if (plugin.isLocal()) {
+            return false;
+        }
         try {
             GHOrganization organization = getOrganization();
             if (organization != null) {
@@ -253,6 +256,9 @@ public class GHService {
      * @return True if the repository is archived
      */
     public boolean isArchived(Plugin plugin) {
+        if (plugin.isLocal()) {
+            return false;
+        }
         return plugin.getRemoteRepository(this).isArchived();
     }
 
@@ -415,6 +421,10 @@ public class GHService {
      * @param plugin The plugin to sync
      */
     public void sync(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not syncing", plugin);
+            return;
+        }
         if (config.isDryRun()) {
             LOG.info("Skipping sync plugin {} in dry-run mode", plugin);
             return;
@@ -451,6 +461,10 @@ public class GHService {
      * @param plugin The plugin of the fork to delete
      */
     public void deleteFork(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not deleting fork", plugin);
+            return;
+        }
         if (config.isDryRun()) {
             LOG.info("Skipping delete fork for plugin {} in dry-run mode", plugin);
             return;
@@ -496,6 +510,10 @@ public class GHService {
      * @param plugin The plugin to fork
      */
     public void fetch(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not fetching", plugin);
+            return;
+        }
         GHRepository repository = config.isDryRun() || config.isFetchMetadataOnly() || plugin.isArchived(this)
                 ? getRepository(plugin)
                 : getRepositoryFork(plugin);
@@ -527,6 +545,10 @@ public class GHService {
      * @throws GitAPIException If the fetch operation failed
      */
     private void fetchRepository(Plugin plugin) throws GitAPIException, URISyntaxException {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not fetching", plugin);
+            return;
+        }
         LOG.debug("Fetching {}", plugin.getName());
         GHRepository repository = config.isDryRun() || config.isFetchMetadataOnly() || plugin.isArchived(this)
                 ? getRepository(plugin)
@@ -601,6 +623,10 @@ public class GHService {
      * @param plugin The plugin to checkout branch for
      */
     public void checkoutBranch(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not checking out branch", plugin);
+            return;
+        }
         try (Git git = Git.open(plugin.getLocalRepository().toFile())) {
             try {
                 git.checkout().setCreateBranch(true).setName(BRANCH_NAME).call();
@@ -627,6 +653,10 @@ public class GHService {
      * @param plugin The plugin to commit changes for
      */
     public void commitChanges(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not committing changes", plugin);
+            return;
+        }
         if (config.isDryRun()) {
             LOG.info("Skipping commits changes for plugin {} in dry-run mode", plugin);
             return;

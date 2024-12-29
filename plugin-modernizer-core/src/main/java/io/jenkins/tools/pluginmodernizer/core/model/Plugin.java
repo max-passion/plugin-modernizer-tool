@@ -47,6 +47,16 @@ public class Plugin {
     private String name;
 
     /**
+     * Flag to indicate if the plugin is local
+     */
+    private boolean local;
+
+    /**
+     * Local repository path if local plugin
+     */
+    private Path localRepository;
+
+    /**
      * Repository name under the jenkinsci organization
      */
     private String repositoryName;
@@ -98,6 +108,16 @@ public class Plugin {
     }
 
     /**
+     * Build a local plugin object with name and location
+     * @param name Name of the plugin
+     * @param location Location of the plugin
+     * @return Plugin object
+     */
+    public static Plugin build(String name, Path location) {
+        return new Plugin().withName(name).withLocal(true).withLocalRepository(location);
+    }
+
+    /**
      * Set the config of the plugin
      * @param config The config
      * @return Plugin object
@@ -114,6 +134,26 @@ public class Plugin {
      */
     public Plugin withName(String name) {
         this.name = name;
+        return this;
+    }
+
+    /**
+     * Set the local flag of the plugin
+     * @param local Local flag
+     * @return Plugin object
+     */
+    public Plugin withLocal(boolean local) {
+        this.local = local;
+        return this;
+    }
+
+    /**
+     * Set the local repository path of the plugin
+     * @param localRepository Local repository path
+     * @return Plugin object
+     */
+    public Plugin withLocalRepository(Path localRepository) {
+        this.localRepository = localRepository.toAbsolutePath();
         return this;
     }
 
@@ -380,10 +420,22 @@ public class Plugin {
     }
 
     /**
+     * Return if the plugin is local to the system
+     * @return True if the plugin is local
+     */
+    public boolean isLocal() {
+        return local;
+    }
+
+    /**
      * Get the local repository path
      * @return Local repository path
      */
     public Path getLocalRepository() {
+        // We work directly on the location
+        if (isLocal()) {
+            return localRepository;
+        }
         return Settings.getPluginsDirectory(this).resolve("sources");
     }
 
@@ -748,6 +800,11 @@ public class Plugin {
      * @return Cache manager
      */
     private CacheManager buildPluginTargetDirectoryCacheManager() {
+        // This is an absolute path
+        if (isLocal()) {
+            return new CacheManager(getLocalRepository().resolve("target"));
+        }
+        // This is a relative path to the cache manager root
         return new CacheManager(
                 Settings.getPluginsDirectory(this).resolve(getLocalRepository().resolve("target")));
     }
