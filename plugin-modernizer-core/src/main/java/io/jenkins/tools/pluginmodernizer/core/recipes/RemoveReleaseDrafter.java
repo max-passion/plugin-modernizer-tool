@@ -60,6 +60,10 @@ public class RemoveReleaseDrafter extends ScanningRecipe<AtomicBoolean> {
                         LOG.info("Deleting release drafter file: {}", sourceFile.getSourcePath());
                         return null;
                     }
+                    if (sourceFile.getSourcePath().equals(ArchetypeCommonFile.RELEASE_DRAFTER_WORKFLOW.getPath())) {
+                        LOG.info("Deleting release drafter workflow file: {}", sourceFile.getSourcePath());
+                        return null;
+                    }
                 }
                 return tree;
             }

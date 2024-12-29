@@ -420,6 +420,14 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.SetupDependabot
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.RemoveReleaseDrafter
+displayName: Remove Release Drafter if CD is enabled
+description: Remove Release Drafter if CD is enabled. See https://www.jenkins.io/doc/developer/publishing/releasing-cd/#configure-release-drafter.
+tags: ['chore']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.RemoveReleaseDrafter
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.FixJellyIssues
 displayName: Add XML declaration to Jelly files and create index.jelly if it doesn't exist
 description: Ensure the XML declaration `<?jelly escape-by-default='true'?>` is present in all `.jelly` files and create index.jelly if it doesn't exist.

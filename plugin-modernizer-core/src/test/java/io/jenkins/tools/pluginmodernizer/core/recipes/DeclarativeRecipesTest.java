@@ -1783,6 +1783,20 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 """));
     }
 
+    @Test
+    void shouldRemoveReleaseDrafterIfContinuousDeliveryEnabled() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.RemoveReleaseDrafter"),
+                // language=yaml
+                yaml("{}", sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_CD.getPath());
+                }),
+                yaml("{}", null, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.RELEASE_DRAFTER.getPath());
+                }));
+    }
+
     /**
      * Note this test need to be adapted to fix the dependabot config
      * (For example to reduce frequency or increase frequency for API plugins)

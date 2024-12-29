@@ -34,6 +34,11 @@ public enum ArchetypeCommonFile {
     RELEASE_DRAFTER(".github/release-drafter.yml"),
 
     /**
+     * Release workflows
+     */
+    RELEASE_DRAFTER_WORKFLOW(".github/workflows/release-drafter.yml"),
+
+    /**
      * Pull request template file
      */
     PULL_REQUEST_TEMPLATE(".github/PULL_REQUEST_TEMPLATE.md"),
