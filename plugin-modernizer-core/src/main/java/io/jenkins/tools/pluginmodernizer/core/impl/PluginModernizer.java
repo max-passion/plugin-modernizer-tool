@@ -290,6 +290,8 @@ public class PluginModernizer {
 
             // Recollect metadata after modernization
             if (!config.isFetchMetadataOnly()) {
+                plugin.withJDK(JDK.JAVA_17);
+                plugin.clean(mavenInvoker);
                 collectMetadata(plugin);
                 LOG.debug(
                         "Plugin {} metadata after modernization: {}",
