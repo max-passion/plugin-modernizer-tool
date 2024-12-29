@@ -1,7 +1,7 @@
 # Define the VERSION argument with a default value
 ARG VERSION=999999-SNAPSHOT
 
-# Second stage: Create the final image using Maven and Eclipse Temurin JDK 21
+# Create the image using Maven and Eclipse Temurin JDK 21
 FROM maven:3.9.9-eclipse-temurin-21-jammy AS result-image
 
 LABEL org.opencontainers.image.description="Using OpenRewrite Recipes for Plugin Modernization or Automation Plugin Build Metadata Updates"
@@ -38,6 +38,7 @@ ENV VERSION=${VERSION}
 # Copy the built JAR files from the downloaded artifacts to the final image
 # Fail fast if jars are missing
 COPY --chmod=755 plugin-modernizer-cli/target/jenkins-plugin-modernizer-${VERSION}.jar /jenkins-plugin-modernizer.jar
+COPY --chmod=755 plugin-modernizer-core/target/plugin-modernizer-core-${VERSION}.jar /jenkins-plugin-modernizer-core.jar
 
 # Install the core dependency using the Maven install plugin
 RUN mvn org.apache.maven.plugins:maven-install-plugin:${MVN_INSTALL_PLUGIN_VERSION}:install-file \
