@@ -15,6 +15,7 @@ import io.jenkins.tools.pluginmodernizer.core.model.UpdateCenterData;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Collections;
 import java.util.Map;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,15 +98,58 @@ public class GitHubServerContainer extends GitServerContainer {
 
         // Setup mocks
         WireMock wireMock = wmRuntimeInfo.getWireMock();
+
+        // User response
         wireMock.register(WireMock.get(WireMock.urlEqualTo("/api/user"))
                 .willReturn(WireMock.jsonResponse(new UserApiResponse("fake-owner", "User"), 200)));
+
+        // GET /api/repos/jenkinsci/<plugin>
         wireMock.register(WireMock.get(WireMock.urlEqualTo("/api/repos/jenkinsci/%s".formatted(plugin)))
                 .willReturn(WireMock.jsonResponse(
                         new RepoApiResponse(
+                                plugin,
+                                "jenkinsci/%s".formatted(plugin),
                                 "main",
                                 "%s/%s/%s".formatted(wmRuntimeInfo.getHttpBaseUrl(), "fake-owner", plugin),
-                                this.getGitRepoURIAsSSH().toString()),
+                                this.getGitRepoURIAsSSH().toString(),
+                                new OwnerObject("jenkinsci")),
                         200)));
+        var parentForkObject =
+                new ParentForkObject(plugin, "jenkinsci/%s".formatted(plugin), new OwnerObject("jenkinsci"));
+        // GET /api/repos/fake-owner/<plugin>
+        wireMock.register(WireMock.get(WireMock.urlEqualTo("/api/repos/fake-owner/%s".formatted(plugin)))
+                .willReturn(WireMock.jsonResponse(
+                        new RepoForkApiResponse(
+                                plugin,
+                                "fake-owner/%s".formatted(plugin),
+                                "main",
+                                "%s/%s/%s".formatted(wmRuntimeInfo.getHttpBaseUrl(), "fake-owner", plugin),
+                                this.getGitRepoURIAsSSH().toString(),
+                                parentForkObject),
+                        200)));
+
+        // POST /api/repos/fake-owner/merge-upstream
+        wireMock.register(
+                WireMock.post(WireMock.urlEqualTo("/api/repos/fake-owner/%s/merge-upstream".formatted(plugin)))
+                        .willReturn(WireMock.jsonResponse(
+                                new RepoForkApiResponse(
+                                        plugin,
+                                        "fake-owner/%s".formatted(plugin),
+                                        "main",
+                                        "%s/%s/%s".formatted(wmRuntimeInfo.getHttpBaseUrl(), "fake-owner", plugin),
+                                        this.getGitRepoURIAsSSH().toString(),
+                                        parentForkObject),
+                                200)));
+
+        // GET /api/repos/jenkinsci/<plugin>/pulls?state=open
+        wireMock.register(
+                WireMock.get(WireMock.urlEqualTo("/api/repos/jenkinsci/%s/pulls?state=open".formatted(plugin)))
+                        .willReturn(WireMock.jsonResponse(Collections.emptyList(), 200)));
+
+        // POST /api/repos/jenkinsci/<plugin>/pulls
+        wireMock.register(WireMock.post(WireMock.urlEqualTo("/api/repos/jenkinsci/%s/pulls".formatted(plugin)))
+                .willReturn(WireMock.jsonResponse(new PullRequestsResponse("PR"), 200)));
+
         wireMock.register(WireMock.get(WireMock.urlEqualTo("/update-center.json"))
                 .willReturn(WireMock.jsonResponse(updateCenterApiResponse, 200)));
         wireMock.register(WireMock.get(WireMock.urlEqualTo("/plugin-versions.json"))
@@ -187,10 +231,41 @@ public class GitHubServerContainer extends GitServerContainer {
     public record UserApiResponse(String login, String type) {}
 
     /**
-     * Setup the mock
-     * @param ssh_url the SSH URL
+     * Repo API response
      */
-    public record RepoApiResponse(String default_branch, String clone_url, String ssh_url) {}
+    public record RepoApiResponse(
+            String name,
+            String full_name,
+            String default_branch,
+            String clone_url,
+            String ssh_url,
+            OwnerObject owner) {}
+
+    public record PullRequestsResponse(String title) {}
+    ;
+
+    /**
+     * Owner fork object
+     * @param login the login
+     */
+    public record OwnerObject(String login) {}
+
+    /**
+     * Parent fork object
+     * @param name the name
+     */
+    public record ParentForkObject(String name, String full_name, OwnerObject owner) {}
+
+    /**
+     * Fork API response
+     */
+    public record RepoForkApiResponse(
+            String name,
+            String full_name,
+            String default_branch,
+            String clone_url,
+            String ssh_url,
+            ParentForkObject parent) {}
 
     /**
      * Setup the mock

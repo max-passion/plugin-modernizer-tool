@@ -340,6 +340,46 @@ public class CommandLineITCase {
     }
 
     @Test
+    public void testRunAddDependabot(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+
+        Path logFile = setupLogs("testRunAddDependabot");
+
+        final String plugin = "empty";
+        final String recipe = "SetupDependabot";
+
+        // Junit attachment with logs file for the plugin build
+        System.out.printf(
+                "[[ATTACHMENT|%s]]%n", Plugin.build(plugin).getLogFile().toAbsolutePath());
+        System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+
+        try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
+
+            gitRemote.start();
+
+            Invoker invoker = buildInvoker();
+            InvocationRequest request = buildRequest(
+                    "run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin))), logFile);
+            InvocationResult result = invoker.execute(request);
+
+            // Assert output
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile).stream()
+                            .anyMatch(line -> line.matches("(.*)Pull request was open on (.*)"))));
+
+            // Check that new file was created
+            assertTrue(
+                    Files.exists(cachePath
+                            .resolve("jenkins-plugin-modernizer-cli")
+                            .resolve(plugin)
+                            .resolve("sources")
+                            .resolve(".github")
+                            .resolve("dependabot.yml")),
+                    "Dependabot file was not created");
+        }
+    }
+
+    @Test
     public void testDryRunAddDependabot(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
 
         Path logFile = setupLogs("testDryRunAddDependabot");
