@@ -1,13 +1,19 @@
 package io.jenkins.tools.pluginmodernizer.core.visitors;
 
 import io.jenkins.tools.pluginmodernizer.core.config.RecipesConsts;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 import org.openrewrite.ExecutionContext;
-import org.openrewrite.maven.*;
+import org.openrewrite.maven.MavenDownloadingException;
+import org.openrewrite.maven.MavenIsoVisitor;
 import org.openrewrite.maven.internal.MavenPomDownloader;
 import org.openrewrite.maven.table.MavenMetadataFailures;
-import org.openrewrite.maven.tree.*;
-import org.openrewrite.semver.*;
+import org.openrewrite.maven.tree.GroupArtifact;
+import org.openrewrite.maven.tree.MavenMetadata;
+import org.openrewrite.maven.tree.MavenResolutionResult;
+import org.openrewrite.semver.LatestRelease;
+import org.openrewrite.semver.Semver;
 import org.openrewrite.xml.ChangeTagValueVisitor;
 import org.openrewrite.xml.tree.Xml;
 import org.slf4j.Logger;

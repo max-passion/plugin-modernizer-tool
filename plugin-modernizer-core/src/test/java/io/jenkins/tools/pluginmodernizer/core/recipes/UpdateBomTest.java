@@ -4,6 +4,7 @@ import static org.openrewrite.maven.Assertions.pomXml;
 
 import org.junit.jupiter.api.Test;
 import org.openrewrite.Issue;
+import org.openrewrite.maven.MavenParser;
 import org.openrewrite.test.RewriteTest;
 
 /**
@@ -107,7 +108,10 @@ public class UpdateBomTest implements RewriteTest {
     @Issue("https://github.com/jenkins-infra/plugin-modernizer-tool/issues/534")
     void shouldUpdateToLatestReleasedWithIncrementalsEnabled() {
         rewriteRun(
-                spec -> spec.recipe(new UpdateBom()),
+                spec -> {
+                    spec.parser(MavenParser.builder().activeProfiles("consume-incrementals"));
+                    spec.recipe(new UpdateBom());
+                },
                 // language=xml
                 pomXml(
                         """
@@ -128,20 +132,6 @@ public class UpdateBomTest implements RewriteTest {
                    <properties>
                         <jenkins.version>2.440.3</jenkins.version>
                    </properties>
-                   <profiles>
-                     <profile>
-                       <id>consume-incrementals</id>
-                       <activation>
-                         <activeByDefault>true</activeByDefault>
-                       </activation>
-                       <repositories>
-                        <repository>
-                          <id>incrementals</id>
-                          <url>https://repo.jenkins-ci.org/incrementals/</url>
-                        </repository>
-                       </repositories>
-                     </profile>
-                   </profiles>
                     <dependencyManagement>
                       <dependencies>
                         <dependency>
@@ -179,20 +169,6 @@ public class UpdateBomTest implements RewriteTest {
                    <properties>
                         <jenkins.version>2.440.3</jenkins.version>
                    </properties>
-                   <profiles>
-                     <profile>
-                       <id>consume-incrementals</id>
-                       <activation>
-                         <activeByDefault>true</activeByDefault>
-                       </activation>
-                       <repositories>
-                        <repository>
-                          <id>incrementals</id>
-                          <url>https://repo.jenkins-ci.org/incrementals/</url>
-                        </repository>
-                       </repositories>
-                     </profile>
-                   </profiles>
                     <dependencyManagement>
                       <dependencies>
                         <dependency>
@@ -237,7 +213,7 @@ public class UpdateBomTest implements RewriteTest {
                         <dependency>
                           <groupId>io.jenkins.tools.bom</groupId>
                           <artifactId>bom-2.440.x</artifactId>
-                          <version>2746.vb_79a_1d3e7b_c8</version>
+                          <version>2747.v42d8f18d1741</version>
                           <type>pom</type>
                           <scope>import</scope>
                         </dependency>
