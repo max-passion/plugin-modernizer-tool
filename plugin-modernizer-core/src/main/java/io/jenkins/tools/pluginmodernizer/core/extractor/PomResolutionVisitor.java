@@ -3,8 +3,11 @@ package io.jenkins.tools.pluginmodernizer.core.extractor;
 import io.jenkins.tools.pluginmodernizer.core.config.RecipesConsts;
 import java.util.Map;
 import java.util.Optional;
+import org.openrewrite.InMemoryExecutionContext;
 import org.openrewrite.marker.Markers;
+import org.openrewrite.maven.MavenDownloadingException;
 import org.openrewrite.maven.MavenIsoVisitor;
+import org.openrewrite.maven.internal.MavenPomDownloader;
 import org.openrewrite.maven.tree.MavenResolutionResult;
 import org.openrewrite.maven.tree.Parent;
 import org.openrewrite.maven.tree.Pom;
@@ -56,9 +59,51 @@ public class PomResolutionVisitor extends MavenIsoVisitor<PluginMetadata> {
         pluginMetadata.setPluginName(pom.getName());
         Parent parent = pom.getParent();
         if (parent != null) {
-            pluginMetadata.setParentVersion(parent.getVersion());
+
+            // Only set if direct parent
+            if (parent.getGroupId().equals(RecipesConsts.PLUGIN_POM_GROUP_ID)) {
+                pluginMetadata.setParentVersion(parent.getVersion());
+            }
+
+            // Special case of https://github.com/jenkinsci/analysis-pom-plugin
+            else if (parent.getArtifactId().equals(RecipesConsts.ANALYSIS_POM_ARTIFACT_ID)) {
+                try {
+
+                    // Set parent
+                    Pom parentPom = new MavenPomDownloader(new InMemoryExecutionContext())
+                            .download(parent.getGav(), null, null, pom.getRepositories());
+                    LOG.info("Parent pom {} downloaded", parent.getGav());
+                    if (parentPom.getParent() != null) {
+                        pluginMetadata.setParentVersion(parentPom.getParent().getVersion());
+                    }
+
+                    // Set bom
+                    setBomVersion(parentPom, pluginMetadata);
+
+                } catch (MavenDownloadingException e) {
+                    throw new RuntimeException(e);
+                }
+            }
         }
-        // Lookup by group ID to set the BOM version if any
+        // Lookup by group ID to set the BOM version not got already
+        if (pluginMetadata.getBomVersion() == null) {
+            setBomVersion(pom, pluginMetadata);
+        }
+
+        pluginMetadata.setProperties(properties);
+        pluginMetadata.setJenkinsVersion(
+                resolvedPom.getManagedVersion("org.jenkins-ci.main", "jenkins-core", null, null));
+
+        return document;
+    }
+
+    /**
+     * Set the bom version if any for the given pom
+     *
+     * @param pom            the pom
+     * @param pluginMetadata the plugin metadata
+     */
+    private void setBomVersion(Pom pom, PluginMetadata pluginMetadata) {
         pom.getDependencyManagement().stream()
                 .filter(dependency -> RecipesConsts.PLUGINS_BOM_GROUP_ID.equals(dependency.getGroupId()))
                 .findFirst()
@@ -66,10 +111,5 @@ public class PomResolutionVisitor extends MavenIsoVisitor<PluginMetadata> {
                     pluginMetadata.setBomArtifactId(dependency.getArtifactId());
                     pluginMetadata.setBomVersion(dependency.getVersion());
                 });
-        pluginMetadata.setProperties(properties);
-        pluginMetadata.setJenkinsVersion(
-                resolvedPom.getManagedVersion("org.jenkins-ci.main", "jenkins-core", null, null));
-
-        return document;
     }
 }

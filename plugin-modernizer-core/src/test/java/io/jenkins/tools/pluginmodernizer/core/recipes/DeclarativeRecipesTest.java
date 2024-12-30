@@ -875,6 +875,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                               <properties>
                                 <maven.compiler.release>11</maven.compiler.release>
                                 <jenkins.version>2.440.3</jenkins.version>
+                                <maven.compiler.source>11</maven.compiler.source>
+                                <maven.compiler.target>11</maven.compiler.target>
+                                <maven.compiler.release>11</maven.compiler.release>
                               </properties>
                               <repositories>
                                 <repository>

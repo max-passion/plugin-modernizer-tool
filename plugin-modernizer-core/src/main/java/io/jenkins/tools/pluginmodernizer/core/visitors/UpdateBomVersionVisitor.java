@@ -53,6 +53,10 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
 
         // Resolve artifact id
         Xml.Tag bomTag = getBomTag(document);
+        if (bomTag == null) {
+            LOG.info("Using bom, but not on the current pom (maybe on parent?)");
+            return document;
+        }
         Xml.Tag versionTag = bomTag.getChild("version").orElseThrow();
         Xml.Tag getProperties = getProperties(document);
 
@@ -92,6 +96,22 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
     }
 
     /**
+     * Get the bom tag from the document
+     * @param document The document
+     * @return The bom tag
+     */
+    public Xml.Tag getBomTag(Xml.Document document) {
+        return document.getRoot()
+                .getChild("dependencyManagement")
+                .flatMap(dm -> dm.getChild("dependencies"))
+                .flatMap(deps -> deps.getChild("dependency"))
+                .filter(dep -> dep.getChildValue("groupId")
+                        .map("io.jenkins.tools.bom"::equals)
+                        .orElse(false))
+                .orElse(null);
+    }
+
+    /**
      * Get the latest bom version
      * @param artifactId The artifact id
      * @param currentVersion The current version
@@ -126,22 +146,6 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
         } else {
             return latestBomReleaseComparator.upgrade(currentVersion, versions).orElse(null);
         }
-    }
-
-    /**
-     * Get the bom tag from the document
-     * @param document The document
-     * @return The bom tag
-     */
-    private Xml.Tag getBomTag(Xml.Document document) {
-        return document.getRoot()
-                .getChild("dependencyManagement")
-                .flatMap(dm -> dm.getChild("dependencies"))
-                .flatMap(deps -> deps.getChild("dependency"))
-                .filter(dep -> dep.getChildValue("groupId")
-                        .map("io.jenkins.tools.bom"::equals)
-                        .orElse(false))
-                .orElseThrow();
     }
 
     /**
