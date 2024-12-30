@@ -1,7 +1,8 @@
 package io.jenkins.tools.pluginmodernizer.core.utils;
 
-import static org.junit.jupiter.api.Assertions.*;
-import static org.mockito.Mockito.*;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.doReturn;
 
 import com.github.tomakehurst.wiremock.client.WireMock;
 import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
@@ -10,7 +11,11 @@ import com.google.inject.Guice;
 import io.jenkins.tools.pluginmodernizer.core.GuiceModule;
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
-import io.jenkins.tools.pluginmodernizer.core.model.*;
+import io.jenkins.tools.pluginmodernizer.core.model.HealthScoreData;
+import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
+import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
+import io.jenkins.tools.pluginmodernizer.core.model.PluginInstallationStatsData;
+import io.jenkins.tools.pluginmodernizer.core.model.UpdateCenterData;
 import java.lang.reflect.Field;
 import java.net.URL;
 import java.nio.file.Path;

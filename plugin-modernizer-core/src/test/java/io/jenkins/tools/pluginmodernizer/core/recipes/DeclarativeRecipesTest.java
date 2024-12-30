@@ -1,9 +1,7 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import static org.openrewrite.groovy.Assertions.groovy;
-import static org.openrewrite.java.Assertions.java;
-import static org.openrewrite.java.Assertions.mavenProject;
-import static org.openrewrite.java.Assertions.srcMainResources;
+import static org.openrewrite.java.Assertions.*;
 import static org.openrewrite.maven.Assertions.pomXml;
 import static org.openrewrite.test.SourceSpecs.text;
 import static org.openrewrite.yaml.Assertions.yaml;

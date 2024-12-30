@@ -1,6 +1,9 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Option;
+import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.jenkins.UpgradeVersionProperty;
 import org.openrewrite.maven.MavenIsoVisitor;
 import org.openrewrite.xml.tree.Xml;

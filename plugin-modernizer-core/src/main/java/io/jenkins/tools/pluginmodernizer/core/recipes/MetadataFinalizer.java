@@ -1,7 +1,9 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import io.jenkins.tools.pluginmodernizer.core.extractor.MetadataFinalizerVisitor;
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
 
 /**
  * Metadata finalizer. Executed after FetchMetadata to finalize the metadata and store it.
