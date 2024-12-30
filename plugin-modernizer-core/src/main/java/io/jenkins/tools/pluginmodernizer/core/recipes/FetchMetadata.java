@@ -2,7 +2,10 @@ package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import io.jenkins.tools.pluginmodernizer.core.extractor.MetadataVisitor;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Recipe;
+import org.openrewrite.RecipeList;
+import org.openrewrite.TreeVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

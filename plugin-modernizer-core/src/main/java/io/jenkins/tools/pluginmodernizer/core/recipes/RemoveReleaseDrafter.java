@@ -3,7 +3,11 @@ package io.jenkins.tools.pluginmodernizer.core.recipes;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import java.util.concurrent.atomic.AtomicBoolean;
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.ScanningRecipe;
+import org.openrewrite.SourceFile;
+import org.openrewrite.Tree;
+import org.openrewrite.TreeVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

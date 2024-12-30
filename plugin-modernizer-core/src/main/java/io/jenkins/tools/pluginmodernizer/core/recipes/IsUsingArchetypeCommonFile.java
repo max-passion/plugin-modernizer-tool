@@ -3,7 +3,11 @@ package io.jenkins.tools.pluginmodernizer.core.recipes;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFileVisitor;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.Recipe;
+import org.openrewrite.SourceFile;
+import org.openrewrite.Tree;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.marker.SearchResult;
 
 /**

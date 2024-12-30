@@ -2,10 +2,7 @@ package io.jenkins.tools.pluginmodernizer.core.impl;
 
 import static java.time.Clock.systemUTC;
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static org.junit.jupiter.api.Assertions.assertFalse;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 
 import io.jenkins.tools.pluginmodernizer.core.model.CacheEntry;
 import java.io.IOException;

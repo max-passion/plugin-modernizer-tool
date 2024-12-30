@@ -1,7 +1,11 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import io.jenkins.tools.pluginmodernizer.core.visitors.UpdateBomVersionVisitor;
-import org.openrewrite.*;
+import org.openrewrite.ExecutionContext;
+import org.openrewrite.NlsRewrite;
+import org.openrewrite.Preconditions;
+import org.openrewrite.Recipe;
+import org.openrewrite.TreeVisitor;
 import org.openrewrite.maven.table.MavenMetadataFailures;
 
 /**
