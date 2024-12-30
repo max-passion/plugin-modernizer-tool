@@ -114,6 +114,27 @@ public class TemplateUtilsTest {
     }
 
     @Test
+    public void testFriendlyPrTitleUpgradeToLatestJava8CoreVersion() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("2.346.3").when(metadata).getJenkinsVersion();
+        doReturn("io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("Require 2.346.3", result);
+    }
+
+    @Test
     public void testFriendlyPrTitleUpgradeNextMajorParentVersion() {
 
         // Mocks
