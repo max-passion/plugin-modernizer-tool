@@ -259,4 +259,35 @@ public class UpdateBomTest implements RewriteTest {
                  </project>
                  """));
     }
+
+    @Test
+    void shouldSkipIfOnParentBom() {
+        rewriteRun(
+                spec -> spec.recipe(new UpdateBom()),
+                // language=xml
+                pomXml(
+                        """
+                 <?xml version="1.0" encoding="UTF-8"?>
+                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                   <modelVersion>4.0.0</modelVersion>
+                   <parent>
+                     <groupId>org.jvnet.hudson.plugins</groupId>
+                     <artifactId>analysis-pom</artifactId>
+                     <version>10.0.0</version>
+                     <relativePath />
+                   </parent>
+                   <groupId>io.jenkins.plugins</groupId>
+                   <artifactId>checks</artifactId>
+                   <version>1.0.0-SNAPSHOT</version>
+                   <packaging>hpi</packaging>
+                   <name>Checks Plugin</name>
+                   <repositories>
+                     <repository>
+                       <id>repo.jenkins-ci.org</id>
+                       <url>https://repo.jenkins-ci.org/public/</url>
+                     </repository>
+                   </repositories>
+                 </project>
+                 """));
+    }
 }

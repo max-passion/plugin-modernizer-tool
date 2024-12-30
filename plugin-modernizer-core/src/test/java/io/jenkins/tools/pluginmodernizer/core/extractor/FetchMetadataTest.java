@@ -204,6 +204,50 @@ public class FetchMetadataTest implements RewriteTest {
     }
 
     @Test
+    void testWithDifferentParent() throws Exception {
+        rewriteRun(
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
+                // language=xml
+                pomXml(
+                        """
+                 <?xml version="1.0" encoding="UTF-8"?>
+                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                   <modelVersion>4.0.0</modelVersion>
+                   <parent>
+                     <groupId>org.jvnet.hudson.plugins</groupId>
+                     <artifactId>analysis-pom</artifactId>
+                     <version>10.0.0</version>
+                     <relativePath />
+                   </parent>
+                   <groupId>io.jenkins.plugins</groupId>
+                   <artifactId>check</artifactId>
+                   <version>1.0.0-SNAPSHOT</version>
+                   <packaging>hpi</packaging>
+                   <name>Check Plugin</name>
+                   <repositories>
+                     <repository>
+                       <id>repo.jenkins-ci.org</id>
+                       <url>https://repo.jenkins-ci.org/public/</url>
+                     </repository>
+                   </repositories>
+                 </project>
+                 """));
+
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+
+        // Check metadata
+        assertEquals("5.2", pluginMetadata.getParentVersion());
+        assertEquals("Check Plugin", pluginMetadata.getPluginName());
+        assertEquals("2.479.1", pluginMetadata.getJenkinsVersion());
+        assertEquals("3654.v237e4a_f2d8da_", pluginMetadata.getBomVersion());
+
+        // Only pom here
+        assertEquals(List.of(ArchetypeCommonFile.POM), pluginMetadata.getCommonFiles());
+    }
+
+    @Test
     void testWithOneCommonFile() throws Exception {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata()),

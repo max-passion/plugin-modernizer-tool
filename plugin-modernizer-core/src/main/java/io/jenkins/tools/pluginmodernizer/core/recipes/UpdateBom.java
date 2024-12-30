@@ -25,6 +25,6 @@ public class UpdateBom extends Recipe {
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return Preconditions.check(new IsUsingBom(), new UpdateBomVersionVisitor(new MavenMetadataFailures(this)));
+        return Preconditions.check(new IsUsingBom(true), new UpdateBomVersionVisitor(new MavenMetadataFailures(this)));
     }
 }
