@@ -14,4 +14,5 @@ public final class RecipesConsts {
 
     public static final String PLUGINS_BOM_GROUP_ID = "io.jenkins.tools.bom";
     public static final String VERSION_METADATA_PATTERN = "\\.v[a-f0-9_]+";
+    public static final String INCREMENTAL_REPO_ID = "incrementals";
 }

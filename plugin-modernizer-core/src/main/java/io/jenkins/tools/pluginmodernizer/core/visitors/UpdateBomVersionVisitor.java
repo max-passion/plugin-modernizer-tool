@@ -1,12 +1,13 @@
 package io.jenkins.tools.pluginmodernizer.core.visitors;
 
 import io.jenkins.tools.pluginmodernizer.core.config.RecipesConsts;
+import java.util.*;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.maven.*;
+import org.openrewrite.maven.internal.MavenPomDownloader;
 import org.openrewrite.maven.table.MavenMetadataFailures;
-import org.openrewrite.maven.trait.MavenDependency;
-import org.openrewrite.semver.LatestRelease;
-import org.openrewrite.semver.VersionComparator;
+import org.openrewrite.maven.tree.*;
+import org.openrewrite.semver.*;
 import org.openrewrite.xml.ChangeTagValueVisitor;
 import org.openrewrite.xml.tree.Xml;
 import org.slf4j.Logger;
@@ -22,7 +23,16 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
      */
     private static final Logger LOG = LoggerFactory.getLogger(UpdateBomVersionVisitor.class);
 
-    private transient MavenMetadataFailures metadataFailures;
+    /**
+     * The metadata failures from recipe
+     */
+    private final transient MavenMetadataFailures metadataFailures;
+
+    /**
+     * The version comparator for the bom
+     */
+    private final transient LatestRelease latestBomReleaseComparator =
+            new LatestRelease(RecipesConsts.VERSION_METADATA_PATTERN);
 
     /**
      * Contructor
@@ -49,14 +59,14 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
                     "bom-" + getProperties.getChildValue("jenkins.baseline").orElseThrow() + ".x";
         }
 
-        String newBomVersionAvailable = findNewerBomVersion(artifactId, version, ctx);
-        if (newBomVersionAvailable == null) {
+        String newBomVersion = getLatestBomVersion(artifactId, version, ctx);
+        if (newBomVersion == null) {
             LOG.debug("No newer version available for {}", artifactId);
             return document;
         }
+        LOG.debug("Newer version available for {}: {}", artifactId, newBomVersion);
 
-        return (Xml.Document)
-                new ChangeTagValueVisitor<>(versionTag, newBomVersionAvailable).visitNonNull(document, ctx);
+        return (Xml.Document) new ChangeTagValueVisitor<>(versionTag, newBomVersion).visitNonNull(document, ctx);
     }
 
     /**
@@ -66,20 +76,49 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
      * @param ctx The execution context
      * @return The newer bom version
      */
-    private String findNewerBomVersion(String artifactId, String currentVersion, ExecutionContext ctx) {
-        VersionComparator latestRelease = new LatestRelease(RecipesConsts.VERSION_METADATA_PATTERN);
+    public String getLatestBomVersion(String artifactId, String currentVersion, ExecutionContext ctx) {
         try {
-            return MavenDependency.findNewerVersion(
-                    RecipesConsts.PLUGINS_BOM_GROUP_ID,
-                    artifactId,
-                    currentVersion,
-                    getResolutionResult(),
-                    metadataFailures,
-                    latestRelease,
-                    ctx);
+            return getLatestBomVersion(artifactId, currentVersion, getResolutionResult(), ctx);
         } catch (MavenDownloadingException e) {
             LOG.warn("Failed to download metadata for {}", artifactId, e);
             return null;
+        }
+    }
+
+    /**
+     * Get the latest bom version
+     * @param artifactId The artifact id
+     * @param currentVersion The current version
+     * @param mrr The maven resolution result
+     * @param ctx The execution context
+     * @return The latest
+     */
+    private String getLatestBomVersion(
+            String artifactId, String currentVersion, MavenResolutionResult mrr, ExecutionContext ctx)
+            throws MavenDownloadingException {
+
+        // Since 'incrementals' repository is always enabled with -Pconsume-incrementals
+        // the only way to exclude incrementals bom version is to exclude the repository
+        MavenMetadata mavenMetadata = metadataFailures.insertRows(ctx, () -> (new MavenPomDownloader(ctx))
+                .downloadMetadata(
+                        new GroupArtifact(RecipesConsts.PLUGINS_BOM_GROUP_ID, artifactId),
+                        null,
+                        mrr.getPom().getRepositories().stream()
+                                .filter(r -> !Objects.equals(r.getId(), RecipesConsts.INCREMENTAL_REPO_ID))
+                                .toList()));
+
+        // Keep track of version found
+        List<String> versions = new ArrayList<>();
+        for (String v : mavenMetadata.getVersioning().getVersions()) {
+            if (latestBomReleaseComparator.isValid(currentVersion, v)) {
+                versions.add(v);
+            }
+        }
+        if (!Semver.isVersion(currentVersion) && !versions.isEmpty()) {
+            versions.sort(latestBomReleaseComparator);
+            return versions.get(versions.size() - 1);
+        } else {
+            return latestBomReleaseComparator.upgrade(currentVersion, versions).orElse(null);
         }
     }
 

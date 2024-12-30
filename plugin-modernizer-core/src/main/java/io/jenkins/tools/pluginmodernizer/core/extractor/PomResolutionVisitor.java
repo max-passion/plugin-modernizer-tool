@@ -60,7 +60,6 @@ public class PomResolutionVisitor extends MavenIsoVisitor<PluginMetadata> {
         }
         // Lookup by group ID to set the BOM version if any
         pom.getDependencyManagement().stream()
-                .peek(dependency -> LOG.debug("Dependency: {}", dependency))
                 .filter(dependency -> RecipesConsts.PLUGINS_BOM_GROUP_ID.equals(dependency.getGroupId()))
                 .findFirst()
                 .ifPresent(dependency -> {
