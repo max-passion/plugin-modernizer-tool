@@ -100,14 +100,15 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
      * @param document The document
      * @return The bom tag
      */
-    public Xml.Tag getBomTag(Xml.Document document) {
+    public static Xml.Tag getBomTag(Xml.Document document) {
         return document.getRoot()
                 .getChild("dependencyManagement")
                 .flatMap(dm -> dm.getChild("dependencies"))
-                .flatMap(deps -> deps.getChild("dependency"))
-                .filter(dep -> dep.getChildValue("groupId")
-                        .map("io.jenkins.tools.bom"::equals)
-                        .orElse(false))
+                .flatMap(deps -> deps.getChildren("dependency").stream()
+                        .filter(dep -> dep.getChildValue("groupId")
+                                .map(RecipesConsts.PLUGINS_BOM_GROUP_ID::equals)
+                                .orElse(false))
+                        .findFirst())
                 .orElse(null);
     }
 
@@ -140,7 +141,9 @@ public class UpdateBomVersionVisitor extends MavenIsoVisitor<ExecutionContext> {
                 versions.add(v);
             }
         }
-        if (!Semver.isVersion(currentVersion) && !versions.isEmpty()) {
+
+        // Take latest version available. Allow to downgrade from incrementals to release
+        if (!Semver.isVersion(currentVersion) && !versions.isEmpty() || (!versions.contains(currentVersion))) {
             versions.sort(latestBomReleaseComparator);
             return versions.get(versions.size() - 1);
         } else {

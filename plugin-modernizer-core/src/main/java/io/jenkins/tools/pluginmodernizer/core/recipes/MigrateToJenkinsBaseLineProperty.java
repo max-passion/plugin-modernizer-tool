@@ -1,10 +1,10 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
-import io.jenkins.tools.pluginmodernizer.core.config.RecipesConsts;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PomResolutionVisitor;
 import io.jenkins.tools.pluginmodernizer.core.visitors.AddBeforePropertyVisitor;
 import io.jenkins.tools.pluginmodernizer.core.visitors.AddPropertyCommentVisitor;
+import io.jenkins.tools.pluginmodernizer.core.visitors.UpdateBomVersionVisitor;
 import org.jspecify.annotations.Nullable;
 import org.openrewrite.Cursor;
 import org.openrewrite.ExecutionContext;
@@ -119,16 +119,10 @@ public class MigrateToJenkinsBaseLineProperty extends Recipe {
             }
 
             // Get the bom tag
-            Xml.Tag bom = document.getRoot()
-                    .getChild("dependencyManagement")
-                    .flatMap(dm -> dm.getChild("dependencies"))
-                    .map(deps -> deps.getChildren("dependency").stream()
-                            .filter(dep -> dep.getChildValue("groupId")
-                                    .map(RecipesConsts.PLUGINS_BOM_GROUP_ID::equals)
-                                    .orElse(false))
-                            .findFirst())
-                    .orElseThrow()
-                    .orElseThrow();
+            Xml.Tag bom = UpdateBomVersionVisitor.getBomTag(document);
+            if (bom == null) {
+                return;
+            }
 
             Xml.Tag artifactIdTag = bom.getChild("artifactId").orElseThrow();
             Xml.Tag version = bom.getChild("version").orElseThrow();
