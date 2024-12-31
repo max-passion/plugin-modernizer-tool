@@ -17,6 +17,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 import org.openrewrite.java.JavaParser;
+import org.openrewrite.maven.MavenParser;
 import org.openrewrite.test.RewriteTest;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -641,6 +642,144 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           </pluginRepositories>
                         </project>
                         """
+                                .formatted(Settings.getBomVersion())));
+    }
+
+    @Test
+    void upgradeToRecommendCoreVersionTestWithMultipleBom() {
+        rewriteRun(
+                spec -> {
+                    spec.parser(MavenParser.builder().activeProfiles("consume-incrementals"));
+                    spec.recipeFromResource(
+                            "/META-INF/rewrite/recipes.yml",
+                            "io.jenkins.tools.pluginmodernizer.UpgradeToRecommendCoreVersion");
+                },
+                // language=xml
+                pomXml(
+                        """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+                      <modelVersion>4.0.0</modelVersion>
+                      <parent>
+                        <groupId>org.jenkins-ci.plugins</groupId>
+                        <artifactId>plugin</artifactId>
+                        <version>4.88</version>
+                        <relativePath />
+                      </parent>
+                      <artifactId>my-api</artifactId>
+                      <version>${revision}-${changelist}</version>
+                      <packaging>hpi</packaging>
+                      <name>My API Plugin</name>
+                      <properties>
+                        <revision>2.17.0</revision>
+                        <changelist>999999-SNAPSHOT</changelist>
+                        <jenkins.version>2.401.3</jenkins.version>
+                      </properties>
+                      <repositories>
+                        <repository>
+                          <id>repo.jenkins-ci.org</id>
+                          <url>https://repo.jenkins-ci.org/public/</url>
+                        </repository>
+                      </repositories>
+                      <pluginRepositories>
+                        <pluginRepository>
+                          <id>repo.jenkins-ci.org</id>
+                          <url>https://repo.jenkins-ci.org/public/</url>
+                        </pluginRepository>
+                      </pluginRepositories>
+                      <dependencyManagement>
+                        <dependencies>
+                          <dependency>
+                            <groupId>com.fasterxml.jackson</groupId>
+                            <artifactId>jackson-bom</artifactId>
+                            <version>2.17.0</version>
+                            <scope>import</scope>
+                            <type>pom</type>
+                          </dependency>
+                          <dependency>
+                            <groupId>io.jenkins.tools.bom</groupId>
+                            <artifactId>bom-2.401.x</artifactId>
+                            <version>2745.vc7b_fe4c876fa_</version>
+                            <scope>import</scope>
+                            <type>pom</type>
+                          </dependency>
+                        </dependencies>
+                      </dependencyManagement>
+                      <dependencies>
+                        <dependency>
+                          <groupId>com.fasterxml.jackson.core</groupId>
+                          <artifactId>jackson-databind</artifactId>
+                        </dependency>
+                        <dependency>
+                          <groupId>io.jenkins.plugins</groupId>
+                          <artifactId>json-api</artifactId>
+                        </dependency>
+                      </dependencies>
+                    </project>
+                    """,
+                        """
+                    <?xml version="1.0" encoding="UTF-8"?>
+                    <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+                      <modelVersion>4.0.0</modelVersion>
+                      <parent>
+                        <groupId>org.jenkins-ci.plugins</groupId>
+                        <artifactId>plugin</artifactId>
+                        <version>4.88</version>
+                        <relativePath />
+                      </parent>
+                      <artifactId>my-api</artifactId>
+                      <version>${revision}-${changelist}</version>
+                      <packaging>hpi</packaging>
+                      <name>My API Plugin</name>
+                      <properties>
+                        <revision>2.17.0</revision>
+                        <changelist>999999-SNAPSHOT</changelist>
+                        <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+                        <jenkins.baseline>2.452</jenkins.baseline>
+                        <jenkins.version>${jenkins.baseline}.4</jenkins.version>
+                      </properties>
+                      <repositories>
+                        <repository>
+                          <id>repo.jenkins-ci.org</id>
+                          <url>https://repo.jenkins-ci.org/public/</url>
+                        </repository>
+                      </repositories>
+                      <pluginRepositories>
+                        <pluginRepository>
+                          <id>repo.jenkins-ci.org</id>
+                          <url>https://repo.jenkins-ci.org/public/</url>
+                        </pluginRepository>
+                      </pluginRepositories>
+                      <dependencyManagement>
+                        <dependencies>
+                          <dependency>
+                            <groupId>com.fasterxml.jackson</groupId>
+                            <artifactId>jackson-bom</artifactId>
+                            <version>2.17.0</version>
+                            <scope>import</scope>
+                            <type>pom</type>
+                          </dependency>
+                          <dependency>
+                            <groupId>io.jenkins.tools.bom</groupId>
+                            <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                            <version>%s</version>
+                            <scope>import</scope>
+                            <type>pom</type>
+                          </dependency>
+                        </dependencies>
+                      </dependencyManagement>
+                      <dependencies>
+                        <dependency>
+                          <groupId>com.fasterxml.jackson.core</groupId>
+                          <artifactId>jackson-databind</artifactId>
+                        </dependency>
+                        <dependency>
+                          <groupId>io.jenkins.plugins</groupId>
+                          <artifactId>json-api</artifactId>
+                        </dependency>
+                      </dependencies>
+                    </project>
+                    """
                                 .formatted(Settings.getBomVersion())));
     }
 
