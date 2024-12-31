@@ -3,16 +3,17 @@ package io.jenkins.tools.pluginmodernizer.core.extractor;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.model.CacheEntry;
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
+import io.jenkins.tools.pluginmodernizer.core.model.Platform;
+import io.jenkins.tools.pluginmodernizer.core.model.PlatformConfig;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PreconditionError;
-import java.io.Serial;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -20,10 +21,7 @@ import java.util.Set;
 /**
  * Metadata of a plugin extracted from its POM file or code
  */
-public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serializable {
-
-    @Serial
-    private static final long serialVersionUID = 1L;
+public class PluginMetadata extends CacheEntry<PluginMetadata> {
 
     /**
      * Name of the plugin
@@ -46,9 +44,19 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
     private List<ArchetypeCommonFile> commonFiles;
 
     /**
-     * JDK versions supported by the plugin
+     * List of platforms extracted from Jenkinsfile
      */
-    private Set<JDK> jdkVersions;
+    private List<PlatformConfig> platforms;
+
+    /**
+     * Use container agent for build extracted from Jenkinsfile
+     */
+    private Boolean useContainerAgent;
+
+    /**
+     * forkCount extracted from Jenkinsfile
+     */
+    private String forkCount;
 
     /**
      * Jenkins version required by the plugin
@@ -173,21 +181,71 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> implements Serial
     }
 
     public Set<JDK> getJdks() {
-        if (jdkVersions == null) {
-            jdkVersions = new HashSet<>();
+        if (platforms == null) {
+            platforms = new LinkedList<>();
         }
-        return jdkVersions;
+        return platforms.stream().map(PlatformConfig::jdk).collect(HashSet::new, Set::add, Set::addAll);
     }
 
-    public void addJdk(JDK jdk) {
-        if (jdkVersions == null) {
-            jdkVersions = new HashSet<>();
+    public Set<Platform> getPlatforms() {
+        if (platforms == null) {
+            platforms = new LinkedList<>();
         }
-        jdkVersions.add(jdk);
+        return platforms.stream().map(PlatformConfig::name).collect(HashSet::new, Set::add, Set::addAll);
     }
 
+    /**
+     * Set the JDK versions without platform information
+     * @param jdkVersions The JDK versions
+     */
     public void setJdks(Set<JDK> jdkVersions) {
-        this.jdkVersions = jdkVersions;
+        if (platforms == null) {
+            platforms = new ArrayList<>();
+        }
+        platforms.addAll(jdkVersions.stream()
+                .map(jdk -> new PlatformConfig(Platform.UNKNOWN, jdk, null, true))
+                .toList());
+    }
+
+    public void setPlatforms(List<PlatformConfig> platforms) {
+        this.platforms = platforms;
+    }
+
+    public void addPlatform(PlatformConfig platform) {
+        if (platforms == null) {
+            platforms = new ArrayList<>();
+        }
+        platforms.add(platform);
+    }
+
+    public void addPlatform(Platform platform, JDK jdk, String jenkins) {
+        if (platforms == null) {
+            platforms = new ArrayList<>();
+        }
+        platforms.add(new PlatformConfig(platform, jdk, jenkins, false));
+    }
+
+    public void addError(PreconditionError error) {
+        if (errors == null) {
+            errors = new HashSet<>();
+        }
+        errors.add(error);
+    }
+
+    public Boolean isUseContainerAgent() {
+        return useContainerAgent;
+    }
+
+    public void setUseContainerAgent(Boolean useContainerAgent) {
+        this.useContainerAgent = useContainerAgent;
+    }
+
+    public String getForkCount() {
+        return forkCount;
+    }
+
+    public void setForkCount(String forkCount) {
+        this.forkCount = forkCount;
     }
 
     /**
