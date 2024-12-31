@@ -2,12 +2,11 @@ package io.jenkins.tools.pluginmodernizer.core.model;
 
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.utils.JsonUtils;
-import java.io.Serializable;
 import java.nio.file.Path;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class CacheEntry<T extends CacheEntry<T>> implements Serializable {
+public abstract class CacheEntry<T extends CacheEntry<T>> {
 
     private static final Logger LOG = LoggerFactory.getLogger(CacheEntry.class);
 

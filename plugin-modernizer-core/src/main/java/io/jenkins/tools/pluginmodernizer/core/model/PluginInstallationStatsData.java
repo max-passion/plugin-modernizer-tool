@@ -1,11 +1,10 @@
 package io.jenkins.tools.pluginmodernizer.core.model;
 
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
-import java.io.Serializable;
 import java.nio.file.Path;
 import java.util.Map;
 
-public class PluginInstallationStatsData extends CacheEntry<PluginInstallationStatsData> implements Serializable {
+public class PluginInstallationStatsData extends CacheEntry<PluginInstallationStatsData> {
 
     /**
      * Plugins in the installation stats mapped by their name

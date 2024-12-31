@@ -10,7 +10,7 @@ import java.util.Map;
  * We are storing only the data we are interested in (like plugins).
  * Further implementation can consider ignoring plugin with deprecation
  */
-public class PluginVersionData extends CacheEntry<PluginVersionData> implements Serializable {
+public class PluginVersionData extends CacheEntry<PluginVersionData> {
 
     /**
      * Plugins in the update center mapped by their name

@@ -10,7 +10,7 @@ import java.util.Map;
  * We are storing only the data we are interested in (like plugins).
  * Further implementation can consider ignoring plugin with deprecation
  */
-public class HealthScoreData extends CacheEntry<HealthScoreData> implements Serializable {
+public class HealthScoreData extends CacheEntry<HealthScoreData> {
 
     /**
      * Plugins in the health score mapped by their name
