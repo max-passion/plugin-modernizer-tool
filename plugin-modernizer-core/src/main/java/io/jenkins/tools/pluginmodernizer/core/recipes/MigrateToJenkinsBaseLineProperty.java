@@ -1,5 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
+import io.jenkins.tools.pluginmodernizer.core.config.RecipesConsts;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PomResolutionVisitor;
 import io.jenkins.tools.pluginmodernizer.core.visitors.AddBeforePropertyVisitor;
@@ -117,14 +118,16 @@ public class MigrateToJenkinsBaseLineProperty extends Recipe {
                 maybeUpdateModel();
             }
 
-            // Change the bom artifact ID
+            // Get the bom tag
             Xml.Tag bom = document.getRoot()
                     .getChild("dependencyManagement")
                     .flatMap(dm -> dm.getChild("dependencies"))
-                    .flatMap(deps -> deps.getChild("dependency"))
-                    .filter(dep -> dep.getChildValue("groupId")
-                            .map("io.jenkins.tools.bom"::equals)
-                            .orElse(false))
+                    .map(deps -> deps.getChildren("dependency").stream()
+                            .filter(dep -> dep.getChildValue("groupId")
+                                    .map(RecipesConsts.PLUGINS_BOM_GROUP_ID::equals)
+                                    .orElse(false))
+                            .findFirst())
+                    .orElseThrow()
                     .orElseThrow();
 
             Xml.Tag artifactIdTag = bom.getChild("artifactId").orElseThrow();
