@@ -627,6 +627,95 @@ public class FetchMetadataTest implements RewriteTest {
     }
 
     @Test
+    void testJenkinsfileWithPlatfomsAndJdkVersionsAsParameter() {
+        Set<JDK> jdks = new LinkedHashSet<>();
+        jdks.add(JDK.JAVA_17);
+        jdks.add(JDK.JAVA_21);
+        EXPECTED_METADATA.addPlatform(Platform.LINUX, JDK.JAVA_17, null);
+        EXPECTED_METADATA.addPlatform(Platform.WINDOWS, JDK.JAVA_21, null);
+        rewriteRun(
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
+                // language=groovy
+                groovy(
+                        """
+                            def useContainerAgent = true
+                            def platforms = ["linux", "windows"]
+                            def params = [
+                                platforms: platforms,
+                                jdkVersions: [17, 21],
+                                forkCount: '1C',
+                                useContainerAgent: useContainerAgent,
+                            ]
+                            buildPlugin(params)
+                            """,
+                        spec -> spec.path("Jenkinsfile")),
+                pomXml(POM_XML));
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+
+        // Assert other param
+        assertNotNull(pluginMetadata.isUseContainerAgent());
+        assertTrue(pluginMetadata.isUseContainerAgent());
+        assertEquals("1C", pluginMetadata.getForkCount());
+
+        // Assert JDK
+        Set<JDK> jdkVersion = pluginMetadata.getJdks();
+        assertEquals(2, jdkVersion.size());
+
+        // Assert platform
+        Set<Platform> platforms = pluginMetadata.getPlatforms();
+        assertEquals(2, platforms.size());
+        assertTrue(platforms.contains(Platform.WINDOWS));
+        assertTrue(platforms.contains(Platform.LINUX));
+    }
+
+    @Test
+    void testJenkinsfileWithConditional() {
+        Set<JDK> jdks = new LinkedHashSet<>();
+        jdks.add(JDK.JAVA_17);
+        jdks.add(JDK.JAVA_21);
+        EXPECTED_METADATA.addPlatform(Platform.LINUX, JDK.JAVA_17, null);
+        EXPECTED_METADATA.addPlatform(Platform.WINDOWS, JDK.JAVA_21, null);
+        rewriteRun(
+                recipeSpec -> recipeSpec.recipe(new FetchMetadata()),
+                // language=groovy
+                groovy(
+                        """
+                    if (JENKINS_URL == 'https://ci.jenkins.io/') {
+                      buildPlugin(
+                        configurations: [
+                          [ platform: "linux", jdk: "21" ],
+                          [ platform: "linux", jdk: "17" ]
+                        ],
+                        useContainerAgent: true,
+                        timeout: 90
+                      )
+                      return
+                    }
+                    node() {
+                      // Not implemented
+                    }
+                    """,
+                        spec -> spec.path("Jenkinsfile")),
+                pomXml(POM_XML));
+        PluginMetadata pluginMetadata = new PluginMetadata().refresh();
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+
+        // Assert other param
+        assertNotNull(pluginMetadata.isUseContainerAgent());
+        assertTrue(pluginMetadata.isUseContainerAgent());
+
+        // Assert JDK
+        Set<JDK> jdkVersion = pluginMetadata.getJdks();
+        assertEquals(2, jdkVersion.size());
+
+        // Assert platform
+        Set<Platform> platforms = pluginMetadata.getPlatforms();
+        assertEquals(1, platforms.size());
+        assertTrue(platforms.contains(Platform.LINUX));
+    }
+
+    @Test
     void testJenkinsfileWithInlineConfigurations() {
         Set<JDK> jdks = new LinkedHashSet<>();
         jdks.add(JDK.JAVA_11);
