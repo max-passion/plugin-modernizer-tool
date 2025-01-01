@@ -358,6 +358,13 @@ public class Plugin {
     }
 
     /**
+     * Remove all errors from the plugin
+     */
+    public void removeErrors() {
+        errors.clear();
+    }
+
+    /**
      * Add a tag to the plugin
      * @param tag Tag to add
      * @return Plugin object
@@ -489,7 +496,7 @@ public class Plugin {
     }
 
     /**
-     * Execute maven compile on this plugin
+     * Execute maven compile on this plugin. Compile is skipped if only metadata is required
      * @param maven The maven invoker instance
      */
     public void compile(MavenInvoker maven) {
@@ -502,6 +509,21 @@ public class Plugin {
                 name,
                 this.getJDK().getMajor());
         maven.invokeGoal(this, "compile");
+        if (!hasErrors()) {
+            LOG.info("Done");
+        }
+    }
+
+    /**
+     * Verify the plugin without tests using the given maven invoker and JDK.
+     * This is useful to run recipes on very outdated plugin
+     * @param maven The maven invoker instance
+     * @param jdk The JDK to use
+     */
+    public void verifyWithoutTests(MavenInvoker maven, JDK jdk) {
+        LOG.info("Verifying plugin without tests {} using with JDK {} ... Please be patient", name, jdk.getMajor());
+        this.withJDK(jdk);
+        maven.invokeGoal(this, "verify", "-DskipTests");
         if (!hasErrors()) {
             LOG.info("Done");
         }
@@ -572,7 +594,7 @@ public class Plugin {
         // Static parse of the pom file and check for pattern preventing minimal build
         Path pom = getLocalRepository().resolve("pom.xml");
         if (!getLocalRepository().resolve("target").toFile().mkdir()) {
-            LOG.debug("Failed to create target directory for plugin {}", name);
+            LOG.trace("Failed to create target directory for plugin {}", name);
         }
         Document document = staticPomParse(pom);
 
