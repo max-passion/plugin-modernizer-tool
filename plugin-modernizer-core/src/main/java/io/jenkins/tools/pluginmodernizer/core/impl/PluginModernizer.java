@@ -6,6 +6,7 @@ import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.github.GHService;
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
+import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PluginProcessingException;
 import io.jenkins.tools.pluginmodernizer.core.utils.PluginService;
@@ -228,7 +229,7 @@ public class PluginModernizer {
 
             // Collect metadata and move metadata from the target directory of the plugin to the common cache
             if (!plugin.hasMetadata() || config.isFetchMetadataOnly()) {
-                collectMetadata(plugin);
+                collectMetadata(plugin, true);
 
             } else {
                 LOG.debug("Metadata already computed for plugin {}. Using cached metadata.", plugin.getName());
@@ -253,7 +254,7 @@ public class PluginModernizer {
 
                 // Retry to collect metadata after remediation to get up-to-date results
                 if (!config.isFetchMetadataOnly()) {
-                    collectMetadata(plugin);
+                    collectMetadata(plugin, true);
                 }
             }
 
@@ -267,6 +268,12 @@ public class PluginModernizer {
             }
 
             // Run OpenRewrite
+            if (plugin.getMetadata().getJdks().stream().allMatch(jdk -> jdk.equals(JDK.JAVA_8))) {
+                LOG.info("Plugin support only Java 8. Need a first compile to general classes");
+                plugin.verifyWithoutTests(mavenInvoker, JDK.JAVA_8);
+            } else {
+                plugin.withJDK(JDK.min(plugin.getMetadata().getJdks()));
+            }
             plugin.runOpenRewrite(mavenInvoker);
             if (plugin.hasErrors()) {
                 LOG.warn(
@@ -292,7 +299,7 @@ public class PluginModernizer {
             if (!config.isFetchMetadataOnly()) {
                 plugin.withJDK(JDK.JAVA_17);
                 plugin.clean(mavenInvoker);
-                collectMetadata(plugin);
+                collectMetadata(plugin, false);
                 LOG.debug(
                         "Plugin {} metadata after modernization: {}",
                         plugin.getName(),
@@ -325,8 +332,34 @@ public class PluginModernizer {
      * Collect metadata for a plugin
      * @param plugin The plugin
      */
-    private void collectMetadata(Plugin plugin) {
-        plugin.collectMetadata(mavenInvoker);
+    private void collectMetadata(Plugin plugin, boolean retryAfterFirstCompile) {
+        LOG.debug("Collecting metadata for plugin {}... Please be patient", plugin.getName());
+        plugin.withJDK(JDK.JAVA_17);
+        try {
+            plugin.collectMetadata(mavenInvoker);
+            if (plugin.hasErrors()) {
+                plugin.raiseLastError();
+            }
+        } catch (ModernizerException e) {
+            if (retryAfterFirstCompile) {
+                plugin.removeErrors();
+                LOG.warn(
+                        "Failed to collect metadata for plugin {}. Will retry after a first compile using lowest JDK",
+                        plugin.getName());
+                plugin.verifyWithoutTests(mavenInvoker, JDK.JAVA_8);
+                if (plugin.hasErrors()) {
+                    LOG.debug(
+                            "Plugin {} failed to compile with JDK 8. Skipping metadata collection after retry",
+                            plugin.getName());
+                    plugin.raiseLastError();
+                }
+                plugin.withJDK(JDK.JAVA_17);
+                plugin.collectMetadata(mavenInvoker);
+            } else {
+                LOG.info("Failed to collect metadata for plugin {}. Not retrying.", plugin.getName());
+                throw e;
+            }
+        }
         plugin.copyMetadata(cacheManager);
         plugin.loadMetadata(cacheManager);
         plugin.enrichMetadata(pluginService);

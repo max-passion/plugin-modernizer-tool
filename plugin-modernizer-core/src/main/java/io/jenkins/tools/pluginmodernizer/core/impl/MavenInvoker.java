@@ -73,14 +73,14 @@ public class MavenInvoker {
     /**
      * Invoke a goal on a plugin
      * @param plugin The plugin to run the goal on
-     * @param goal The goal to run. For example, "clean"
+     * @param goals The goals to run. For example, "clean"
      */
-    public void invokeGoal(Plugin plugin, String goal) {
-        LOG.debug("Running {} phase for plugin {}", goal, plugin.getName());
+    public void invokeGoal(Plugin plugin, String... goals) {
+        LOG.debug("Running {} phase for plugin {}", goals, plugin.getName());
         LOG.debug(
                 "Running maven on directory {}",
                 plugin.getLocalRepository().toAbsolutePath().toFile());
-        invokeGoals(plugin, goal);
+        invokeGoals(plugin, goals);
     }
 
     /**
