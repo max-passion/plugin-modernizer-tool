@@ -414,6 +414,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
+  - org.openrewrite.java.RemoveUnusedImports
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.SetupDependabot

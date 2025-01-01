@@ -268,6 +268,12 @@ public class PluginModernizer {
             }
 
             // Run OpenRewrite
+            if (plugin.getMetadata().getJdks().stream().allMatch(jdk -> jdk.equals(JDK.JAVA_8))) {
+                LOG.info("Plugin support only Java 8. Need a first compile to general classes");
+                plugin.verifyWithoutTests(mavenInvoker, JDK.JAVA_8);
+            } else {
+                plugin.withJDK(JDK.min(plugin.getMetadata().getJdks()));
+            }
             plugin.runOpenRewrite(mavenInvoker);
             if (plugin.hasErrors()) {
                 LOG.warn(
