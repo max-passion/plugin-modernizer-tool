@@ -461,7 +461,6 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <groupId>org.jenkins-ci.plugins</groupId>
                             <artifactId>plugin</artifactId>
                             <version>4.87</version>
-                            <relativePath />
                           </parent>
                           <groupId>io.jenkins.plugins</groupId>
                           <artifactId>empty</artifactId>
@@ -561,7 +560,6 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <groupId>org.jenkins-ci.plugins</groupId>
                             <artifactId>plugin</artifactId>
                             <version>4.87</version>
-                            <relativePath />
                           </parent>
                           <groupId>io.jenkins.plugins</groupId>
                           <artifactId>empty</artifactId>
@@ -799,7 +797,6 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <groupId>org.jenkins-ci.plugins</groupId>
                             <artifactId>plugin</artifactId>
                             <version>4.55</version>
-                            <relativePath />
                           </parent>
                           <groupId>io.jenkins.plugins</groupId>
                           <artifactId>empty</artifactId>
@@ -1002,7 +999,6 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 <groupId>org.jenkins-ci.plugins</groupId>
                                 <artifactId>plugin</artifactId>
                                 <version>4.87</version>
-                                <relativePath />
                               </parent>
                               <groupId>io.jenkins.plugins</groupId>
                               <artifactId>empty</artifactId>
