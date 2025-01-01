@@ -97,38 +97,7 @@ public enum PreconditionError {
                 plugin.withoutErrors();
                 return true;
             },
-            "Found older Java version in pom file preventing using recent Maven older than 3.9.x"),
-
-    /**
-     * If the plugin has missing relative path preventing modernization
-     */
-    MISSING_RELATIVE_PATH(
-            (document, xpath) -> {
-                try {
-                    Double parentRelativePath = (Double) xpath.evaluate(
-                            "count(//*[local-name()='project']/*[local-name()='parent']/*[local-name()='relativePath'])",
-                            document,
-                            XPathConstants.NUMBER);
-                    return parentRelativePath == null || parentRelativePath.equals(0.0);
-                } catch (Exception e) {
-                    return false;
-                }
-            },
-            plugin -> {
-                try {
-                    PomModifier pomModifier = new PomModifier(
-                            plugin.getLocalRepository().resolve("pom.xml").toString());
-                    pomModifier.addRelativePath();
-                    pomModifier.savePom(
-                            plugin.getLocalRepository().resolve("pom.xml").toString());
-                    plugin.withoutErrors();
-                    return true;
-                } catch (Exception e) {
-                    e.printStackTrace();
-                    return false;
-                }
-            },
-            "Missing relative path in pom file preventing parent download");
+            "Found older Java version in pom file preventing using recent Maven older than 3.9.x");
 
     /**
      * Predicate to check if the flag is applicable for the given Document and XPath
