@@ -6,6 +6,7 @@ import static org.openrewrite.maven.Assertions.pomXml;
 import static org.openrewrite.test.SourceSpecs.text;
 import static org.openrewrite.yaml.Assertions.yaml;
 
+import io.github.yamlpath.YamlPath;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import java.io.IOException;
@@ -1500,7 +1501,17 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
-    void replaceLibrariesByApiPluginsSimple() {
+    void replaceLibrariesByApiPluginsSimple() throws IOException {
+
+        // Read API plugin version
+        String jsonApiVersion = getApiPluginVersion("json-api");
+        String jsonPathApiVersion = getApiPluginVersion("json-path-api");
+        String gsonApiVersion = getApiPluginVersion("gson-api");
+        String jodaTimeApiVersion = getApiPluginVersion("joda-time-api");
+        String commonsLang3ApiVersion = getApiPluginVersion("commons-lang3-api");
+        String byteBuddyApiVersion = getApiPluginVersion("byte-buddy-api");
+        String commonTextApiVersion = getApiPluginVersion("commons-text-api");
+
         rewriteRun(
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml",
@@ -1608,27 +1619,27 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>byte-buddy-api</artifactId>
-                      <version>1.15.11-99.v078c614a_5258</version>
+                      <version>%s</version>
                     </dependency>
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>commons-lang3-api</artifactId>
-                      <version>3.17.0-84.vb_b_938040b_078</version>
+                      <version>%s</version>
                     </dependency>
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>commons-text-api</artifactId>
-                      <version>1.12.0-129.v99a_50df237f7</version>
+                      <version>%s</version>
                     </dependency>
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>gson-api</artifactId>
-                      <version>2.11.0-85.v1f4e87273c33</version>
+                      <version>%s</version>
                     </dependency>
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>joda-time-api</artifactId>
-                      <version>2.13.0-93.v9934da_29b_a_e9</version>
+                      <version>%s</version>
                     </dependency>
                     <dependency>
                       <groupId>org.apache.commons</groupId>
@@ -1638,12 +1649,12 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>json-api</artifactId>
-                      <version>20240303-101.v7a_8666713110</version>
+                      <version>%s</version>
                     </dependency>
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>json-path-api</artifactId>
-                      <version>2.9.0-118.v7f23ed82a_8b_8</version>
+                      <version>%s</version>
                     </dependency>
                     <dependency>
                       <groupId>org.ow2.asm</groupId>
@@ -1664,7 +1675,15 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """));
+                """
+                                .formatted(
+                                        byteBuddyApiVersion,
+                                        commonsLang3ApiVersion,
+                                        commonTextApiVersion,
+                                        gsonApiVersion,
+                                        jodaTimeApiVersion,
+                                        jsonApiVersion,
+                                        jsonPathApiVersion)));
     }
 
     @Test
@@ -2172,5 +2191,12 @@ public class DeclarativeRecipesTest implements RewriteTest {
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private String getApiPluginVersion(String apiPlugin) throws IOException {
+        return YamlPath.from(getClass().getResourceAsStream("/META-INF/rewrite/recipes.yml"))
+                .readSingle(
+                        "recipeList.'org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin'.(pluginArtifactId == %s).pluginVersion"
+                                .formatted(apiPlugin));
     }
 }
