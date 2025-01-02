@@ -87,6 +87,20 @@ public class PomModifier {
     }
 
     /**
+     * Return the Jenkins version of the POM file.
+     * @return the Jenkins version or null if not found
+     */
+    public String getJenkinsVersion() {
+        XPath xPath = XPathFactory.newInstance().newXPath();
+        try {
+            return xPath.compile("/project/properties/jenkins.version").evaluate(document);
+        } catch (Exception e) {
+            LOG.warn("Error getting jenkins.version: {}", e.getMessage());
+            return null;
+        }
+    }
+
+    /**
      * Return the groupId of the POM file.
      * @return the groupId or null if not found
      */

@@ -10,7 +10,9 @@ import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PluginProcessingException;
 import io.jenkins.tools.pluginmodernizer.core.utils.PluginService;
+import io.jenkins.tools.pluginmodernizer.core.utils.PomModifier;
 import jakarta.inject.Inject;
+import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -267,13 +269,38 @@ public class PluginModernizer {
                 return;
             }
 
-            // Run OpenRewrite
+            // Handle Java 8 plugins and outdated
             if (plugin.getMetadata().getJdks().stream().allMatch(jdk -> jdk.equals(JDK.JAVA_8))) {
-                LOG.info("Plugin support only Java 8. Need a first compile to general classes");
-                plugin.verifyWithoutTests(mavenInvoker, JDK.JAVA_8);
-            } else {
-                plugin.withJDK(JDK.min(plugin.getMetadata().getJdks()));
+                String jenkinsVersion = new PomModifier(
+                                plugin.getLocalRepository().resolve("pom.xml").toString())
+                        .getJenkinsVersion();
+                LOG.debug("Found jenkins version {}", jenkinsVersion);
+                JDK jdk = JDK.get(jenkinsVersion).stream().findFirst().orElse(JDK.JAVA_8);
+                LOG.info("Plugin support Java {}. Need a first compile to general classes", jdk.getMajor());
+                plugin.verifyQuickBuild(mavenInvoker, jdk);
+                if (plugin.hasErrors()) {
+                    plugin.raiseLastError();
+                }
+                // Ensure we recollect metadata if we will run a recipes just after
+                if (!config.isFetchMetadataOnly()) {
+                    collectMetadata(plugin, false);
+                }
+                // Reset the repo to not keep changes for build-metadata
+                // and try to set the right JDK and jenkins version
+                else {
+                    plugin.fetch(ghService);
+                    jenkinsVersion = new PomModifier(plugin.getLocalRepository()
+                                    .resolve("pom.xml")
+                                    .toString())
+                            .getJenkinsVersion();
+                    PluginMetadata metadata = plugin.getMetadata();
+                    metadata.setJenkinsVersion(jenkinsVersion);
+                    metadata.setJdks(new HashSet<>(JDK.get(jenkinsVersion)));
+                    metadata.save();
+                }
             }
+
+            // Run OpenRewrite
             plugin.runOpenRewrite(mavenInvoker);
             if (plugin.hasErrors()) {
                 LOG.warn(
@@ -333,7 +360,7 @@ public class PluginModernizer {
      * @param plugin The plugin
      */
     private void collectMetadata(Plugin plugin, boolean retryAfterFirstCompile) {
-        LOG.debug("Collecting metadata for plugin {}... Please be patient", plugin.getName());
+        LOG.trace("Collecting metadata for plugin {}... Please be patient", plugin.getName());
         plugin.withJDK(JDK.JAVA_17);
         try {
             plugin.collectMetadata(mavenInvoker);
@@ -346,7 +373,7 @@ public class PluginModernizer {
                 LOG.warn(
                         "Failed to collect metadata for plugin {}. Will retry after a first compile using lowest JDK",
                         plugin.getName());
-                plugin.verifyWithoutTests(mavenInvoker, JDK.JAVA_8);
+                plugin.verifyQuickBuild(mavenInvoker, JDK.JAVA_8);
                 if (plugin.hasErrors()) {
                     LOG.debug(
                             "Plugin {} failed to compile with JDK 8. Skipping metadata collection after retry",
