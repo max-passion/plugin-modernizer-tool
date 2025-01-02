@@ -374,6 +374,14 @@ recipeList:
           artifactId: commons-text
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.EnsureRelativePath
+displayName: Disable local resolution of parent POM
+description: Disable local resolution of parent POM.
+tags: ['chore']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToRecommendCoreVersion
 displayName: Upgrade to latest recommended core version and ensure the bom is matching the core version
 description: Upgrade to latest recommended core version and ensure the bom is matching the core version.
