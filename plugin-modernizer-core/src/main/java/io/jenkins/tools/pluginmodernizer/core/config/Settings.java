@@ -64,13 +64,7 @@ public class Settings {
 
     public static final ComparableVersion MAVEN_MINIMAL_VERSION = new ComparableVersion("3.9.7");
 
-    public static final String REMEDIATION_JENKINS_MINIMUM_VERSION;
-
     public static final String REMEDIATION_PLUGIN_PARENT_VERSION;
-
-    public static final String REMEDIATION_BOM_BASE;
-
-    public static final String REMEDIATION_BOM_VERSION;
 
     public static final List<Recipe> AVAILABLE_RECIPES;
 
@@ -129,9 +123,6 @@ public class Settings {
             throw new ModernizerException("Invalid URL format", e);
         }
 
-        REMEDIATION_JENKINS_MINIMUM_VERSION = getRemediationJenkinsMinimumVersion();
-        REMEDIATION_BOM_BASE = getRemediationBomBase();
-        REMEDIATION_BOM_VERSION = getRemediationBomVersion();
         REMEDIATION_PLUGIN_PARENT_VERSION = getRemediationPluginParentVersion();
 
         // Get recipes module
@@ -223,20 +214,8 @@ public class Settings {
         return new URL("https://%s".formatted(host));
     }
 
-    private static @NotNull String getRemediationJenkinsMinimumVersion() {
-        return readProperty("remediation.jenkins.minimum.version", "versions.properties");
-    }
-
     private static @NotNull String getRemediationPluginParentVersion() {
         return readProperty("remediation.jenkins.plugin.parent.version", "versions.properties");
-    }
-
-    private static @NotNull String getRemediationBomBase() {
-        return readProperty("remediation.bom.base", "versions.properties");
-    }
-
-    private static @NotNull String getRemediationBomVersion() {
-        return readProperty("remediation.bom.version", "versions.properties");
     }
 
     private static @Nullable URL getHealthScoreUrl() throws MalformedURLException {

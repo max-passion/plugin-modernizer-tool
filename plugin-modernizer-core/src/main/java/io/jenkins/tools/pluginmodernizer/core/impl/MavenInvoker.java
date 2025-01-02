@@ -114,6 +114,7 @@ public class MavenInvoker {
     private String[] getSingleRecipeArgs(Recipe recipe) {
         List<String> goals = new ArrayList<>();
         goals.add("org.openrewrite.maven:rewrite-maven-plugin:" + Settings.MAVEN_REWRITE_PLUGIN_VERSION + ":run");
+        goals.add("-Denforcer.skip=true");
         goals.add("-Dmaven.repo.local=%s".formatted(config.getMavenLocalRepo()));
         goals.add("-Drewrite.activeRecipes=" + recipe.getName());
         goals.add("-Drewrite.recipeArtifactCoordinates=io.jenkins.plugin-modernizer:plugin-modernizer-core:"
@@ -135,6 +136,13 @@ public class MavenInvoker {
                 Path jdkPath = jdk.getHome(jdkFetcher);
                 request.setJavaHome(jdkPath.toFile());
                 LOG.debug("JDK home: {}", jdkPath);
+
+                // In order to rewrite on outdated plugins set add-opens
+                if (jdk.getMajor() >= 17) {
+                    LOG.debug("Adding --add-opens for JDK 17+");
+                    request.setMavenOpts(
+                            "--add-opens java.base/java.lang=ALL-UNNAMED --add-opens java.base/java.io=ALL-UNNAMED --add-opens java.base/java.util=ALL-UNNAMED");
+                }
             }
             request.setBatchMode(true);
             request.setNoTransferProgress(false);
