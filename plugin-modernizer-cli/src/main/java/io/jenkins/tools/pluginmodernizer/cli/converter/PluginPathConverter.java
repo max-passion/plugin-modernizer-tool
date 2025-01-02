@@ -1,7 +1,7 @@
 package io.jenkins.tools.pluginmodernizer.cli.converter;
 
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
-import io.jenkins.tools.pluginmodernizer.core.utils.PomModifier;
+import io.jenkins.tools.pluginmodernizer.core.utils.StaticPomParser;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import picocli.CommandLine;
@@ -22,12 +22,12 @@ public class PluginPathConverter implements CommandLine.ITypeConverter<Plugin> {
         if (!Files.exists(pom)) {
             throw new IllegalArgumentException("Path does not contain a pom.xml: " + path);
         }
-        PomModifier pomModifier = new PomModifier(pom.toString());
-        String packaging = pomModifier.getPackaging();
+        StaticPomParser staticPomParser = new StaticPomParser(pom.toString());
+        String packaging = staticPomParser.getPackaging();
         if (!"hpi".equals(packaging)) {
             throw new IllegalArgumentException("Path does not contain a Jenkins plugin: " + path);
         }
-        String artifactId = pomModifier.getArtifactId();
+        String artifactId = staticPomParser.getArtifactId();
         if (artifactId == null) {
             throw new IllegalArgumentException("Path does not contain a valid Jenkins plugin: " + path);
         }

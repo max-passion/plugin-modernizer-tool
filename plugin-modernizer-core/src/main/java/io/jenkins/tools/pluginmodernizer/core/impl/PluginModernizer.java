@@ -10,9 +10,8 @@ import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PluginProcessingException;
 import io.jenkins.tools.pluginmodernizer.core.utils.PluginService;
-import io.jenkins.tools.pluginmodernizer.core.utils.PomModifier;
+import io.jenkins.tools.pluginmodernizer.core.utils.StaticPomParser;
 import jakarta.inject.Inject;
-import java.util.HashSet;
 import java.util.List;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -271,7 +270,7 @@ public class PluginModernizer {
 
             // Handle Java 8 plugins and outdated
             if (plugin.getMetadata().getJdks().stream().allMatch(jdk -> jdk.equals(JDK.JAVA_8))) {
-                String jenkinsVersion = new PomModifier(
+                String jenkinsVersion = new StaticPomParser(
                                 plugin.getLocalRepository().resolve("pom.xml").toString())
                         .getJenkinsVersion();
                 LOG.debug("Found jenkins version {}", jenkinsVersion);
@@ -281,22 +280,14 @@ public class PluginModernizer {
                 if (plugin.hasErrors()) {
                     plugin.raiseLastError();
                 }
-                // Ensure we recollect metadata if we will run a recipes just after
-                if (!config.isFetchMetadataOnly()) {
-                    collectMetadata(plugin, false);
-                }
+
+                // Ensure we recollect metadata
+                collectMetadata(plugin, false);
+
                 // Reset the repo to not keep changes for build-metadata
                 // and try to set the right JDK and jenkins version
-                else {
+                if (config.isFetchMetadataOnly()) {
                     plugin.fetch(ghService);
-                    jenkinsVersion = new PomModifier(plugin.getLocalRepository()
-                                    .resolve("pom.xml")
-                                    .toString())
-                            .getJenkinsVersion();
-                    PluginMetadata metadata = plugin.getMetadata();
-                    metadata.setJenkinsVersion(jenkinsVersion);
-                    metadata.setJdks(new HashSet<>(JDK.get(jenkinsVersion)));
-                    metadata.save();
                 }
             }
 

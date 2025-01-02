@@ -84,18 +84,25 @@ public class CommandLineITCase {
                         setJenkinsVersion("2.452.4");
                     }
                 }),
-                // Similar to vagrant plugin bom
+                // Similar to vagrant plugin pom
                 Arguments.of(new PluginMetadata() {
                     {
                         setPluginName("jenkins-1.5");
                         setJenkinsVersion("1.532.3");
                     }
                 }),
-                // Based on pyenv-pipeline plugin bom
+                // Based on pyenv-pipeline plugin pom
                 Arguments.of(new PluginMetadata() {
                     {
                         setPluginName("jenkins-1.6");
                         setJenkinsVersion("1.651.2");
+                    }
+                }),
+                // Based on adaptive-disconnector plugin pom
+                Arguments.of(new PluginMetadata() {
+                    {
+                        setPluginName("missing-relative-path-and-http-url");
+                        setJenkinsVersion("1.609");
                     }
                 }));
     }

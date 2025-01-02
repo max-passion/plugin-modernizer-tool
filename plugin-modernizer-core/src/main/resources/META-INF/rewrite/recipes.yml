@@ -199,6 +199,8 @@ recipeList:
       propertyName: configuration-as-code.version
   - org.openrewrite.maven.RemoveProperty:
       propertyName: java.version
+  - org.openrewrite.maven.RemoveProperty:
+      propertyName: java.level
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.ReplaceLibrariesWithApiPlugin
