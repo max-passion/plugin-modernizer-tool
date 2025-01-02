@@ -83,6 +83,20 @@ public class CommandLineITCase {
                         setPluginName("replace-by-api-plugins");
                         setJenkinsVersion("2.452.4");
                     }
+                }),
+                // Similar to vagrant plugin bom
+                Arguments.of(new PluginMetadata() {
+                    {
+                        setPluginName("jenkins-1.5");
+                        setJenkinsVersion("1.532.3");
+                    }
+                }),
+                // Based on pyenv-pipeline plugin bom
+                Arguments.of(new PluginMetadata() {
+                    {
+                        setPluginName("jenkins-1.6");
+                        setJenkinsVersion("1.651.2");
+                    }
                 }));
     }
 

@@ -515,15 +515,15 @@ public class Plugin {
     }
 
     /**
-     * Verify the plugin without tests using the given maven invoker and JDK.
+     * Verify the plugin without tests and quick build using the given maven invoker and JDK.
      * This is useful to run recipes on very outdated plugin
      * @param maven The maven invoker instance
      * @param jdk The JDK to use
      */
-    public void verifyWithoutTests(MavenInvoker maven, JDK jdk) {
+    public void verifyQuickBuild(MavenInvoker maven, JDK jdk) {
         LOG.info("Verifying plugin without tests {} using with JDK {} ... Please be patient", name, jdk.getMajor());
         this.withJDK(jdk);
-        maven.invokeGoal(this, "verify", "-DskipTests");
+        maven.invokeGoal(this, "verify", "-DskipTests", "-Pquick-build");
         if (!hasErrors()) {
             LOG.info("Done");
         }
