@@ -1,7 +1,10 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import static org.openrewrite.groovy.Assertions.groovy;
-import static org.openrewrite.java.Assertions.*;
+import static org.openrewrite.java.Assertions.java;
+import static org.openrewrite.java.Assertions.mavenProject;
+import static org.openrewrite.java.Assertions.srcMainResources;
+import static org.openrewrite.java.Assertions.srcTestJava;
 import static org.openrewrite.maven.Assertions.pomXml;
 import static org.openrewrite.test.SourceSpecs.text;
 import static org.openrewrite.yaml.Assertions.yaml;
@@ -9,10 +12,12 @@ import static org.openrewrite.yaml.Assertions.yaml;
 import io.github.yamlpath.YamlPath;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
+import io.jenkins.tools.pluginmodernizer.core.recipes.code.ReplaceRemovedSSHLauncherConstructorTest;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.List;
+import org.intellij.lang.annotations.Language;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.EnabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -26,6 +31,15 @@ import org.slf4j.LoggerFactory;
  * Test for declarative recipes from recipes.yml.
  */
 public class DeclarativeRecipesTest implements RewriteTest {
+
+    @Language("xml")
+    public static final String EXPECTED_JELLY =
+            """
+            <?jelly escape-by-default='true'?>
+            <div>
+               empty
+            </div>
+            """;
 
     /**
      * LOGGER.
@@ -452,6 +466,11 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.UpgradeToRecommendCoreVersion"),
                 // language=xml
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
+                // language=xml
                 pomXml(
                         """
                         <?xml version="1.0" encoding="UTF-8"?>
@@ -467,6 +486,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <scm>
+                            <connection>scm:git:git://github.com/jenkinsci/empty-plugin.git</connection>
+                          </scm>
                           <properties>
                             <jenkins.version>2.440.3</jenkins.version>
                              <maven.compiler.source>17</maven.compiler.source>
@@ -509,6 +531,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <scm>
+                            <connection>scm:git:https://github.com/jenkinsci/empty-plugin.git</connection>
+                          </scm>
                           <properties>
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                             <jenkins.baseline>2.452</jenkins.baseline>
@@ -554,6 +579,11 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.UpgradeToRecommendCoreVersion"),
+                // language=xml
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
                 // language=xml
                 pomXml(
                         """
@@ -657,6 +687,11 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             "io.jenkins.tools.pluginmodernizer.UpgradeToRecommendCoreVersion");
                 },
                 // language=xml
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
+                // language=xml
                 pomXml(
                         """
                     <?xml version="1.0" encoding="UTF-8"?>
@@ -668,7 +703,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         <version>4.88</version>
                         <relativePath />
                       </parent>
-                      <artifactId>my-api</artifactId>
+                      <artifactId>empty</artifactId>
                       <version>${revision}-${changelist}</version>
                       <packaging>hpi</packaging>
                       <name>My API Plugin</name>
@@ -729,7 +764,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         <version>4.88</version>
                         <relativePath />
                       </parent>
-                      <artifactId>my-api</artifactId>
+                      <artifactId>empty</artifactId>
                       <version>${revision}-${changelist}</version>
                       <packaging>hpi</packaging>
                       <name>My API Plugin</name>
@@ -792,6 +827,11 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion"),
                 // language=xml
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
+                // language=xml
                 pomXml(
                         """
                         <?xml version="1.0" encoding="UTF-8"?>
@@ -807,6 +847,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <scm>
+                            <connection>scm:git:git://github.com/jenkinsci/empty-plugin.git</connection>
+                          </scm>
                           <properties>
                              <jenkins.version>2.440.3</jenkins.version>
                           </properties>
@@ -850,6 +893,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <scm>
+                            <connection>scm:git:https://github.com/jenkinsci/empty-plugin.git</connection>
+                          </scm>
                           <properties>
                              <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                              <jenkins.baseline>2.462</jenkins.baseline>
@@ -886,9 +932,24 @@ public class DeclarativeRecipesTest implements RewriteTest {
     @Test
     void upgradeToUpgradeToLatestJava8CoreVersion() {
         rewriteRun(
-                spec -> spec.recipeFromResource(
-                        "/META-INF/rewrite/recipes.yml",
-                        "io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion"),
+                spec -> {
+                    var parser = JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true);
+                    collectRewriteTestDependencies().stream()
+                            .filter(entry -> entry.getFileName().toString().contains("ssh-slaves-1.12"))
+                            .forEach(parser::addClasspathEntry);
+                    spec.recipeFromResource(
+                                    "/META-INF/rewrite/recipes.yml",
+                                    "io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion")
+                            .parser(parser);
+                },
+                // language=java
+                srcTestJava(java(
+                        ReplaceRemovedSSHLauncherConstructorTest.BEFORE,
+                        ReplaceRemovedSSHLauncherConstructorTest.AFTER)),
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
                 // language=xml
                 pomXml(
                         """
@@ -906,6 +967,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <scm>
+                            <connection>scm:git:git://github.com/jenkinsci/empty-plugin.git</connection>
+                          </scm>
                           <properties>
                              <jenkins.version>2.303.3</jenkins.version>
                           </properties>
@@ -949,6 +1013,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <scm>
+                            <connection>scm:git:https://github.com/jenkinsci/empty-plugin.git</connection>
+                          </scm>
                           <properties>
                              <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                              <jenkins.baseline>2.346</jenkins.baseline>
@@ -994,6 +1061,11 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 },
                 mavenProject("test"),
                 // language=xml
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
+                // language=xml
                 pomXml(
                         """
                             <?xml version="1.0" encoding="UTF-8"?>
@@ -1009,6 +1081,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                               <version>1.0.0-SNAPSHOT</version>
                               <packaging>hpi</packaging>
                               <name>Empty Plugin</name>
+                              <scm>
+                                <connection>scm:git:https://github.com/jenkinsci/empty-plugin.git</connection>
+                              </scm>
                               <properties>
                                 <maven.compiler.release>11</maven.compiler.release>
                                 <jenkins.version>2.440.3</jenkins.version>
@@ -1045,6 +1120,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                               <version>1.0.0-SNAPSHOT</version>
                               <packaging>hpi</packaging>
                               <name>Empty Plugin</name>
+                              <scm>
+                                <connection>scm:git:https://github.com/jenkinsci/empty-plugin.git</connection>
+                              </scm>
                               <properties>
                                 <jenkins.version>2.479.1</jenkins.version>
                               </properties>
@@ -1096,6 +1174,11 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.UpgradeNextMajorParentVersion"),
+                // language=xml
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
                 // language=xml
                 pomXml(
                         """
@@ -1199,6 +1282,11 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.UpgradeNextMajorParentVersion"),
+                // language=xml
+                srcMainResources(text(
+                        null,
+                        EXPECTED_JELLY,
+                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath().getFileName()))),
                 // language=xml
                 pomXml(
                         """
@@ -2253,9 +2341,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
      *
      * @return List of Path
      */
-    private List<Path> collectRewriteTestDependencies() {
+    public static List<Path> collectRewriteTestDependencies() {
         try {
-            List<Path> entries = Files.list(Path.of("target/openrewrite-classpath"))
+            List<Path> entries = Files.list(Path.of("target/openrewrite-jars"))
                     .filter(p -> p.toString().endsWith(".jar"))
                     .toList();
             LOG.debug("Collected rewrite test dependencies: {}", entries);

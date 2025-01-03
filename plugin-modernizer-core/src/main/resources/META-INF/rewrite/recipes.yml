@@ -149,6 +149,8 @@ description: Upgrade to the next major parent version (5.X) requiring Jenkins 2.
 tags: ['dependencies']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
+  - io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateScmUrl
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
@@ -399,6 +401,8 @@ description: Upgrade to the latest recommended core version and ensure the BOM m
 tags: ['developer']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
+  - io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateScmUrl
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.452.4
@@ -414,6 +418,8 @@ description: Upgrade to latest LTS core version supporting Java 11.
 tags: ['developer']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
+  - io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateScmUrl
   - io.jenkins.tools.pluginmodernizer.UpgradeParentVersion
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.462.3
@@ -421,6 +427,11 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
+  - org.openrewrite.maven.UpgradeDependencyVersion: # Latest using Java 11 support
+      groupId: org.jenkins-ci.test
+      artifactId: docker-fixtures
+      newVersion: 190.vd6a_e600cb_775
+      versionPattern: "\\.v[a-f0-9_]+"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion
@@ -429,6 +440,8 @@ description: Upgrade to latest LTS core version supporting Java 8.
 tags: ['developer']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
+  - io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateScmUrl
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
@@ -436,10 +449,16 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.346.3
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
+  - io.jenkins.tools.pluginmodernizer.core.recipes.code.ReplaceRemovedSSHLauncherConstructor
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.java.RemoveUnusedImports
+  - org.openrewrite.maven.UpgradeDependencyVersion: # Latest using Java 8 support
+      groupId: org.jenkins-ci.test
+      artifactId: docker-fixtures
+      newVersion: 170.v2339def98d76
+      versionPattern: "\\.v[a-f0-9_]+"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.SetupDependabot
@@ -492,3 +511,11 @@ tags: ['condition']
 recipeList:
   - org.openrewrite.jenkins.IsJenkinsPlugin:
       version: "[2.489,)" # Adapt when LTS
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
+displayName: Create `index.jelly` if it doesn't exist
+description: Jenkins tooling [requires](https://github.com/jenkinsci/maven-hpi-plugin/pull/302) `src/main/resources/index.jelly` exists with a description.
+tags: ['chore']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureIndexJelly
