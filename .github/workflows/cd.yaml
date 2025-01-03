@@ -17,6 +17,7 @@ env:
 permissions:
   checks: read
   contents: write
+  packages: write
 
 jobs:
   validate:
