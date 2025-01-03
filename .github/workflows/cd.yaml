@@ -7,6 +7,13 @@ on:
     types:
       - completed
 
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+  DOCKER_BUILDKIT: 1
+  GHCR_USERNAME: ${{ github.repository_owner }}
+  GHCR_TOKEN: ${{ secrets.GHCR_TOKEN }}
+
 permissions:
   checks: read
   contents: write
@@ -173,8 +180,8 @@ jobs:
       - name: Login to GitHub Container Registry
         uses: docker/login-action@v3
         with:
-          registry: ghcr.io
-          username: ${{ github.actor }}
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Extract metadata (tags, labels) for Docker
