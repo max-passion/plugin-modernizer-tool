@@ -486,6 +486,50 @@ public class CommandLineITCase {
         }
     }
 
+    @Test
+    public void testRecipeOnLocalPluginWithRunMode(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+
+        Path logFile = setupLogs("testRecipeOnLocalPluginWithRunMode");
+
+        // Copy empty plugin to cache and use as local plugin
+        final String plugin = "empty";
+        final Path pluginPath = Path.of("src/test/resources").resolve(plugin);
+        Path targetPath = cachePath
+                .resolve("jenkins-plugin-modernizer-cli")
+                .resolve(plugin)
+                .resolve("sources");
+        FileUtils.copyDirectory(pluginPath.toFile(), targetPath.toFile());
+
+        final String recipe = "AddCodeOwner";
+
+        try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
+
+            gitRemote.start();
+
+            // Junit attachment with logs file for the plugin build
+            System.out.printf(
+                    "[[ATTACHMENT|%s]]%n", Plugin.build(plugin).getLogFile().toAbsolutePath());
+            System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+
+            Invoker invoker = buildInvoker();
+            InvocationRequest request = buildRequest(
+                    "run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin, targetPath))),
+                    logFile);
+            InvocationResult result = invoker.execute(request);
+
+            // Assert output
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were commited on (.*)"))));
+
+            // Check that new file was created
+            assertTrue(
+                    Files.exists(targetPath.resolve(ArchetypeCommonFile.CODEOWNERS.getPath())),
+                    "Code owner file was not created");
+        }
+    }
+
     /**
      * Build the invoker
      * @return the invoker
