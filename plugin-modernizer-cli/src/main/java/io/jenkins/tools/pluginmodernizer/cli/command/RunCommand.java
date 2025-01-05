@@ -75,8 +75,7 @@ public class RunCommand implements ICommand {
         envOptions.config(builder);
         pluginOptions.config(builder);
         githubOptions.config(builder);
-        return builder.withDryRun(false)
-                .withRecipe(recipe)
+        return builder.withRecipe(recipe)
                 .withDraft(draft)
                 .withRemoveForks(removeForks)
                 .build();
