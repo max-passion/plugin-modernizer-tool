@@ -27,7 +27,7 @@ public class RunCommand implements ICommand {
     /**
      * Plugins options
      */
-    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
+    @CommandLine.ArgGroup
     private PluginOptions pluginOptions;
 
     /**
@@ -73,6 +73,9 @@ public class RunCommand implements ICommand {
     public Config setup(Config.Builder builder) {
         options.config(builder);
         envOptions.config(builder);
+        if (pluginOptions == null) {
+            pluginOptions = new PluginOptions();
+        }
         pluginOptions.config(builder);
         githubOptions.config(builder);
         return builder.withRecipe(recipe)
