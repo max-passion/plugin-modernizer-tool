@@ -108,6 +108,12 @@ From there you need to save both ID of installation (found on URL)
 - `build-metadata`: Collect metadata for the given plugin and have them on the local cache
 - `recipes`: List available recipes
 
+# Auto completion
+
+```shell
+source <(plugin-modernizer generate-completion)
+```
+
 ## Global option
 
 - `--debug`: (optional) Enables debug mode. Defaults to false.
