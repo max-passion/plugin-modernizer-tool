@@ -37,6 +37,7 @@ public class DryRunCommand implements ICommand {
             names = {"-r", "--recipe"},
             required = true,
             description = "Recipe to be applied.",
+            completionCandidates = RecipeConverter.class,
             converter = RecipeConverter.class)
     private Recipe recipe;
 
