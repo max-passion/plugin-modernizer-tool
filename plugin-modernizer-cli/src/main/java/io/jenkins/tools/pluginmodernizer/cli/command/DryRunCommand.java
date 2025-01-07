@@ -27,7 +27,7 @@ public class DryRunCommand implements ICommand {
     /**
      * Plugins options
      */
-    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
+    @CommandLine.ArgGroup
     private PluginOptions pluginOptions;
 
     /**
@@ -37,6 +37,7 @@ public class DryRunCommand implements ICommand {
             names = {"-r", "--recipe"},
             required = true,
             description = "Recipe to be applied.",
+            completionCandidates = RecipeConverter.class,
             converter = RecipeConverter.class)
     private Recipe recipe;
 
@@ -61,6 +62,9 @@ public class DryRunCommand implements ICommand {
     @Override
     public Config setup(Config.Builder builder) {
         options.config(builder);
+        if (pluginOptions == null) {
+            pluginOptions = new PluginOptions();
+        }
         pluginOptions.config(builder);
         githubOptions.config(builder);
         envOptions.config(builder);

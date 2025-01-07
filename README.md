@@ -22,7 +22,7 @@ Plugin Modernizer is a generic CLI tool designed to automate the modernization o
 The CLI is also used to collect metadata from Jenkins plugins, such as the plugin's dependencies (including transitive) or JDKs used for building the plugin. Such metadata is planned to be integrated with existing Jenkins tooling such as 
 
 - [Jenkins Plugin Site](https://plugins.jenkins.io/)
-- [Jenkins stastistics](https://stats.jenkins.io/)
+- [Jenkins statistics](https://stats.jenkins.io/)
 - [Plugin Health Scoring](https://github.com/jenkins-infra/plugin-health-scoring)
 
 Learn more at [this project page](https://www.jenkins.io/projects/gsoc/2024/projects/using-openrewrite-recipes-for-plugin-modernization-or-automation-plugin-build-metadata-updates/).
@@ -30,11 +30,14 @@ Learn more at [this project page](https://www.jenkins.io/projects/gsoc/2024/proj
 ## Usage
 
 - [Getting Started](#getting-started)
-    - [Requirements to build](#requirements-to-build)
+    - [Requirements to build](#requirements)
     - [Build](#build)
     - [Using the tool](#using-the-tool)
     - [Setup](#setup)
-- [CLI Options](#cli-options)
+- [Subcommands](#subcommands)
+- [Global option](#global-option)
+- [GitHub option](#github-options)
+- [Run option](#run-option)
 - [Plugin Input Format](#plugin-input-format)
     - [Plugin option](#plugin-option)
     - [Plugin file option](#plugin-file-option)
@@ -42,6 +45,10 @@ Learn more at [this project page](https://www.jenkins.io/projects/gsoc/2024/proj
 - [Examples](#examples)
     - [without dry-run](#without-dry-run)
     - [with dry-run](#with-dry-run)
+- [Running with Docker](#running-with-docker)
+- [Reproducibility](#reproducibility)
+- [Contributing](#contributing)
+- [Debugging recipes](#how-to-debug-recipes)
 
 ## Getting Started
 
@@ -100,6 +107,12 @@ From there you need to save both ID of installation (found on URL)
 - `dry-run`: Run the modernization process in dry-run mode without forking or pushing changes
 - `build-metadata`: Collect metadata for the given plugin and have them on the local cache
 - `recipes`: List available recipes
+
+# Auto completion
+
+```shell
+source <(plugin-modernizer generate-completion)
+```
 
 ## Global option
 

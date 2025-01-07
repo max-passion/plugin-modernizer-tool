@@ -8,6 +8,7 @@ import io.jenkins.tools.pluginmodernizer.cli.command.RunCommand;
 import io.jenkins.tools.pluginmodernizer.cli.command.ValidateCommand;
 import io.jenkins.tools.pluginmodernizer.cli.command.VersionCommand;
 import org.slf4j.bridge.SLF4JBridgeHandler;
+import picocli.AutoComplete;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
 
@@ -16,6 +17,7 @@ import picocli.CommandLine.Command;
         description = "Plugin Modernizer. A tool to modernize Jenkins plugins",
         synopsisSubcommandLabel = "COMMAND",
         subcommands = {
+            AutoComplete.GenerateCompletion.class,
             ValidateCommand.class,
             ListRecipesCommand.class,
             BuildMetadataCommand.class,
@@ -39,6 +41,9 @@ public class Main {
      * @param args Command line arguments
      */
     public static void main(final String[] args) {
-        System.exit(new CommandLine(new Main()).execute(args));
+        CommandLine cmd = new CommandLine(new Main());
+        CommandLine gen = cmd.getSubcommands().get("generate-completion");
+        gen.getCommandSpec().usageMessage().hidden(true);
+        System.exit(cmd.execute(args));
     }
 }

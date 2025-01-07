@@ -4,9 +4,9 @@ import io.jenkins.tools.pluginmodernizer.cli.converter.PluginConverter;
 import io.jenkins.tools.pluginmodernizer.cli.converter.PluginFileConverter;
 import io.jenkins.tools.pluginmodernizer.cli.converter.PluginPathConverter;
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
+import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import java.util.List;
-import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -70,9 +70,19 @@ public final class PluginOptions implements IOption {
         if (pluginsFromFile == null) {
             pluginsFromFile = List.of();
         }
-        return Stream.concat(
+        List<Plugin> effectivePlugins = Stream.concat(
                         pluginPath != null ? Stream.of(pluginPath) : Stream.empty(),
                         Stream.concat(plugins.stream(), pluginsFromFile.stream()))
-                .collect(Collectors.toList());
+                .toList();
+
+        // Use current folder as plugin if no plugin is provided
+        if (effectivePlugins.isEmpty()) {
+            try {
+                return List.of(new PluginPathConverter().convert("."));
+            } catch (Exception e) {
+                throw new ModernizerException("Current directory doesn't seem to contains a plugin", e);
+            }
+        }
+        return effectivePlugins;
     }
 }

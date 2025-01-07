@@ -27,7 +27,7 @@ public class RunCommand implements ICommand {
     /**
      * Plugins options
      */
-    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
+    @CommandLine.ArgGroup
     private PluginOptions pluginOptions;
 
     /**
@@ -37,6 +37,7 @@ public class RunCommand implements ICommand {
             names = {"-r", "--recipe"},
             required = true,
             description = "Recipe to be applied.",
+            completionCandidates = RecipeConverter.class,
             converter = RecipeConverter.class)
     private Recipe recipe;
 
@@ -73,10 +74,12 @@ public class RunCommand implements ICommand {
     public Config setup(Config.Builder builder) {
         options.config(builder);
         envOptions.config(builder);
+        if (pluginOptions == null) {
+            pluginOptions = new PluginOptions();
+        }
         pluginOptions.config(builder);
         githubOptions.config(builder);
-        return builder.withDryRun(false)
-                .withRecipe(recipe)
+        return builder.withRecipe(recipe)
                 .withDraft(draft)
                 .withRemoveForks(removeForks)
                 .build();

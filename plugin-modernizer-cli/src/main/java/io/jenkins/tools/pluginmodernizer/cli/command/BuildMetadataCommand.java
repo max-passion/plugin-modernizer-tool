@@ -29,7 +29,7 @@ public class BuildMetadataCommand implements ICommand {
     /**
      * Plugins options
      */
-    @CommandLine.ArgGroup(exclusive = true, multiplicity = "1")
+    @CommandLine.ArgGroup
     private PluginOptions pluginOptions;
 
     /**
@@ -56,6 +56,9 @@ public class BuildMetadataCommand implements ICommand {
     public Config setup(Config.Builder builder) {
         options.config(builder);
         envOptions.config(builder);
+        if (pluginOptions == null) {
+            pluginOptions = new PluginOptions();
+        }
         pluginOptions.config(builder);
         return builder.withSshPrivateKey(sshPrivateKey)
                 .withRecipe(Settings.FETCH_METADATA_RECIPE)
