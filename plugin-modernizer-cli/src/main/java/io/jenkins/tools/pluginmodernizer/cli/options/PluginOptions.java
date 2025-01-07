@@ -78,7 +78,7 @@ public final class PluginOptions implements IOption {
         // Use current folder as plugin if no plugin is provided
         if (effectivePlugins.isEmpty()) {
             try {
-                effectivePlugins.add(new PluginPathConverter().convert("."));
+                return List.of(new PluginPathConverter().convert("."));
             } catch (Exception e) {
                 throw new ModernizerException("Current directory doesn't seem to contains a plugin", e);
             }
