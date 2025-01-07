@@ -8,6 +8,14 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.FetchMetadata
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.MergeGitIgnoreRecipe
+displayName: Merge .gitignore Entries
+description: Merges the .gitignore entries from the archetype with the existing .gitignore file.
+tags: ['chore']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.MergeGitIgnoreRecipe
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
 displayName: Setup the Jenkinsfile
 description: Add a missing Jenkinsfile to the Jenkins plugin.
