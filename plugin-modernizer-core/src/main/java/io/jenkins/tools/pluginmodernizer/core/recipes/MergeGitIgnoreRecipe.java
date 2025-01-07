@@ -1,5 +1,10 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
+import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.util.List;
+import java.util.stream.Collectors;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
@@ -7,12 +12,6 @@ import org.openrewrite.maven.MavenIsoVisitor;
 import org.openrewrite.xml.tree.Xml;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.util.List;
-import java.util.stream.Collectors;
 
 public class MergeGitIgnoreRecipe extends Recipe {
     private static final Logger LOG = LoggerFactory.getLogger(MergeGitIgnoreRecipe.class);
@@ -54,9 +53,7 @@ public class MergeGitIgnoreRecipe extends Recipe {
             try {
                 if (Files.exists(gitIgnorePath) && Files.exists(archetypeGitIgnorePath)) {
                     String merged = mergeGitIgnoreFiles(
-                        Files.readString(gitIgnorePath),
-                        Files.readString(archetypeGitIgnorePath)
-                    );
+                            Files.readString(gitIgnorePath), Files.readString(archetypeGitIgnorePath));
                     Files.writeString(gitIgnorePath, merged);
                 }
             } catch (IOException e) {
@@ -68,7 +65,7 @@ public class MergeGitIgnoreRecipe extends Recipe {
         private String mergeGitIgnoreFiles(String existing, String fromArchetype) {
             List<String> existingLines = existing.lines().collect(Collectors.toList());
             List<String> archetypeLines = fromArchetype.lines().collect(Collectors.toList());
-            
+
             StringBuilder merged = new StringBuilder(existing);
             if (!existing.endsWith("\n")) {
                 merged.append("\n");
