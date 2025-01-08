@@ -31,6 +31,10 @@ public class TemplateUtils {
      * @return The rendered pull request body
      */
     public static String renderPullRequestBody(Plugin plugin, Recipe recipe) {
+        if (hasBodyTemplate(recipe)) {
+            String shortName = recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", "");
+            return renderTemplate("pr-body-%s.jte".formatted(shortName), Map.of("plugin", plugin, "recipe", recipe));
+        }
         return renderTemplate("pr-body.jte", Map.of("plugin", plugin, "recipe", recipe));
     }
 
@@ -85,5 +89,16 @@ public class TemplateUtils {
         String shortName = recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", "");
         TemplateEngine templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
         return templateEngine.hasTemplate("pr-title-%s.jte".formatted(shortName));
+    }
+
+    /**
+     * Check if a body template exists for one recipe
+     * @param recipe The recipe to check
+     * @return True if a body template exists
+     */
+    private static boolean hasBodyTemplate(Recipe recipe) {
+        String shortName = recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", "");
+        TemplateEngine templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
+        return templateEngine.hasTemplate("pr-body-%s.jte".formatted(shortName));
     }
 }
