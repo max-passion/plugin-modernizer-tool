@@ -12,7 +12,7 @@ import org.junit.platform.commons.util.ReflectionUtils;
 public class GlobalOptionsTest {
 
     @Test
-    public void testWithoutDefault() {
+    public void testGlobalOptionsWithoutDefault() {
         Config.Builder builder = Config.builder();
         GlobalOptions globalOptions = new GlobalOptions();
         globalOptions.config(builder);
@@ -29,7 +29,7 @@ public class GlobalOptionsTest {
     }
 
     @Test
-    public void testWithCustom() throws Exception {
+    public void testGlobalOptionsWithCustom() throws Exception {
         Config.Builder builder = Config.builder();
         GlobalOptions globalOptions = new GlobalOptions();
 
