@@ -24,22 +24,29 @@ public class TemplateUtils {
      */
     private TemplateUtils() {}
 
+    private static String getTemplateNameForRecipe(String prefix, Recipe recipe) {
+        String shortName = recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", "");
+        return "%s-%s.jte".formatted(prefix, shortName);
+    }
+
     /**
      * Render the pull request body
+     *
      * @param plugin Plugin to modernize
      * @param recipe Recipe to apply
      * @return The rendered pull request body
      */
     public static String renderPullRequestBody(Plugin plugin, Recipe recipe) {
         if (hasBodyTemplate(recipe)) {
-            String shortName = recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", "");
-            return renderTemplate("pr-body-%s.jte".formatted(shortName), Map.of("plugin", plugin, "recipe", recipe));
+            return renderTemplate(
+                    getTemplateNameForRecipe("pr-body", recipe), Map.of("plugin", plugin, "recipe", recipe));
         }
         return renderTemplate("pr-body.jte", Map.of("plugin", plugin, "recipe", recipe));
     }
 
     /**
      * Render the commit message
+     *
      * @param plugin Plugin to modernize
      * @param recipe Recipe to apply
      * @return The rendered commit message
@@ -50,6 +57,7 @@ public class TemplateUtils {
 
     /**
      * Render the pull request title
+     *
      * @param plugin Plugin to modernize
      * @param recipe Recipe to apply
      * @return The rendered pull request title
@@ -64,8 +72,9 @@ public class TemplateUtils {
 
     /**
      * Render a generic template
+     *
      * @param templateName Name of the template
-     * @param params Parameters to pass to the template
+     * @param params       Parameters to pass to the template
      * @return The rendered template
      */
     private static String renderTemplate(String templateName, Map<String, Object> params) {
@@ -82,6 +91,7 @@ public class TemplateUtils {
 
     /**
      * Check if a title template exists for one recipe
+     *
      * @param recipe The recipe to check
      * @return True if a title template exists
      */
@@ -93,12 +103,12 @@ public class TemplateUtils {
 
     /**
      * Check if a body template exists for one recipe
+     *
      * @param recipe The recipe to check
      * @return True if a body template exists
      */
     private static boolean hasBodyTemplate(Recipe recipe) {
-        String shortName = recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", "");
         TemplateEngine templateEngine = TemplateEngine.createPrecompiled(ContentType.Html);
-        return templateEngine.hasTemplate("pr-body-%s.jte".formatted(shortName));
+        return templateEngine.hasTemplate(getTemplateNameForRecipe("pr-body", recipe));
     }
 }
