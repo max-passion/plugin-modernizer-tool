@@ -64,7 +64,9 @@ public class TemplateUtils {
      */
     public static String renderPullRequestTitle(Plugin plugin, Recipe recipe) {
         if (hasTitleTemplate(recipe)) {
-            return renderTemplate("pr-title-%s.jte".formatted(getTemplateNameForRecipe("pr-title", recipe)), Map.of("plugin", plugin, "recipe", recipe));
+            return renderTemplate(
+                    "pr-title-%s.jte".formatted(getTemplateNameForRecipe("pr-title", recipe)),
+                    Map.of("plugin", plugin, "recipe", recipe));
         }
         return renderTemplate("pr-title.jte", Map.of("plugin", plugin, "recipe", recipe));
     }
