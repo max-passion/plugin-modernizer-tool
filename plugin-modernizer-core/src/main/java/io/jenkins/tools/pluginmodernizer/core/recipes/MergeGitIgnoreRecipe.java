@@ -7,9 +7,8 @@ import java.util.List;
 import java.util.stream.Collectors;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.Recipe;
-import org.openrewrite.Tree;
-import org.openrewrite.TreeVisitor;
 import org.openrewrite.text.PlainText;
+import org.openrewrite.text.PlainTextVisitor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,11 +31,11 @@ public class MergeGitIgnoreRecipe extends Recipe {
     }
 
     @Override
-    public TreeVisitor<?, ExecutionContext> getVisitor() {
+    public PlainTextVisitor<ExecutionContext> getVisitor() {
         return new GitIgnoreMerger(archetypeGitIgnorePath);
     }
 
-    private static class GitIgnoreMerger extends TreeVisitor<PlainText, ExecutionContext> {
+    private static class GitIgnoreMerger extends PlainTextVisitor<ExecutionContext> {
         private final Path archetypeGitIgnorePath;
 
         GitIgnoreMerger(Path archetypeGitIgnorePath) {
@@ -44,8 +43,7 @@ public class MergeGitIgnoreRecipe extends Recipe {
         }
 
         @Override
-        public PlainText visit(Tree tree, ExecutionContext ctx) {
-            PlainText text = (PlainText) tree;
+        public PlainText visitText(PlainText text, ExecutionContext ctx) {
             Path sourcePath = text.getSourcePath();
 
             // Early return if source path is null
@@ -60,22 +58,22 @@ public class MergeGitIgnoreRecipe extends Recipe {
             }
 
             String fileName = fileNamePath.toString();
-            if (fileName == null || fileName.isEmpty() || !".gitignore".equals(fileName)) {
-                return text;
+            if (!".gitignore".equals(fileName)) {
+                return text; // Return early if not a .gitignore file
             }
 
             try {
-                if (Files.exists(sourcePath) && Files.exists(archetypeGitIgnorePath)) {
-                    String existingContent = Files.readString(sourcePath);
+                if (Files.exists(archetypeGitIgnorePath)) {
+                    String existingContent = text.getText();
                     String archetypeContent = Files.readString(archetypeGitIgnorePath);
                     String mergedContent = mergeGitIgnoreFiles(existingContent, archetypeContent);
 
-                    Files.writeString(sourcePath, mergedContent);
-                    LOG.info("Merged .gitignore at {}", sourcePath);
+                    // Instead of writing directly to file, return modified LST
+                    return text.withText(mergedContent);
                 }
             } catch (IOException e) {
-                LOG.error("Error processing .gitignore files at {}", sourcePath, e);
-                throw new RuntimeException("Failed to process .gitignore files", e);
+                LOG.error("Error reading archetype .gitignore file", e);
+                throw new RuntimeException("Failed to read archetype .gitignore file", e);
             }
 
             return text;
