@@ -46,27 +46,35 @@ public class MergeGitIgnoreRecipe extends Recipe {
         @Override
         public PlainText visit(Tree tree, ExecutionContext ctx) {
             PlainText text = (PlainText) tree;
-            if (!(tree instanceof PlainText)) {
-                return null;
-            }
-            // Check if the current file is a `.gitignore` file
-            if (!text.getSourcePath().getFileName().toString().equals(".gitignore")) {
+            Path sourcePath = text.getSourcePath();
+
+            // Early return if source path is null
+            if (sourcePath == null) {
                 return text;
             }
 
-            Path gitIgnorePath = text.getSourcePath();
+            // Safely get filename with null checks
+            Path fileNamePath = sourcePath.getFileName();
+            if (fileNamePath == null) {
+                return text;
+            }
+
+            String fileName = fileNamePath.toString();
+            if (fileName == null || fileName.isEmpty() || !".gitignore".equals(fileName)) {
+                return text;
+            }
+
             try {
-                if (Files.exists(gitIgnorePath) && Files.exists(archetypeGitIgnorePath)) {
-                    String existingContent = Files.readString(gitIgnorePath);
+                if (Files.exists(sourcePath) && Files.exists(archetypeGitIgnorePath)) {
+                    String existingContent = Files.readString(sourcePath);
                     String archetypeContent = Files.readString(archetypeGitIgnorePath);
                     String mergedContent = mergeGitIgnoreFiles(existingContent, archetypeContent);
 
-                    // Write back the merged content to the file
-                    Files.writeString(gitIgnorePath, mergedContent);
-                    LOG.info("Merged .gitignore at {}", gitIgnorePath);
+                    Files.writeString(sourcePath, mergedContent);
+                    LOG.info("Merged .gitignore at {}", sourcePath);
                 }
             } catch (IOException e) {
-                LOG.error("Error processing .gitignore files at {}", gitIgnorePath, e);
+                LOG.error("Error processing .gitignore files at {}", sourcePath, e);
                 throw new RuntimeException("Failed to process .gitignore files", e);
             }
 
