@@ -16,6 +16,7 @@ import java.nio.file.Path;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
+import java.util.Set;
 import java.util.stream.StreamSupport;
 import org.apache.sshd.client.SshClient;
 import org.apache.sshd.common.keyprovider.FileKeyPairProvider;
@@ -58,6 +59,11 @@ public class GHService {
 
     // TODO: Use unique branch name (with prefix ?) to avoid conflicts
     private static final String BRANCH_NAME = "plugin-modernizer-tool";
+
+    /**
+     * Allowed github tags for PR
+     */
+    private static final Set<String> ALLOWED_TAGS = Set.of("chore", "dependencies", "developer");
 
     @Inject
     private Config config;
@@ -877,7 +883,10 @@ public class GHService {
             LOG.info("Pull request created: {}", pr.getHtmlUrl());
             plugin.withPullRequest();
             try {
-                String[] tags = plugin.getTags().toArray(String[]::new);
+                String[] tags = plugin.getTags().stream()
+                        .filter(ALLOWED_TAGS::contains)
+                        .sorted()
+                        .toArray(String[]::new);
                 if (tags.length > 0) {
                     pr.addLabels(tags);
                 }
