@@ -5,12 +5,19 @@ import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.when;
 
 import ch.qos.logback.classic.spi.ILoggingEvent;
+import io.jenkins.tools.pluginmodernizer.cli.options.GlobalOptions;
 import java.nio.file.Path;
 import java.util.Collections;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.slf4j.Marker;
 
 public class PluginLoggerDiscriminatorTest {
+
+    @BeforeEach
+    void resetSingleton() {
+        GlobalOptions.reset();
+    }
 
     @Test
     void testGetDiscriminatingValueNoMarkers() {

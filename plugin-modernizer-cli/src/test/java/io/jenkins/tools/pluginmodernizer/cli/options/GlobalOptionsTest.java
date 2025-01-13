@@ -6,10 +6,16 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import java.lang.reflect.Field;
+import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.platform.commons.util.ReflectionUtils;
 
 public class GlobalOptionsTest {
+
+    @BeforeEach
+    void resetSingleton() {
+        GlobalOptions.reset();
+    }
 
     @Test
     public void testGlobalOptionsWithoutDefault() {

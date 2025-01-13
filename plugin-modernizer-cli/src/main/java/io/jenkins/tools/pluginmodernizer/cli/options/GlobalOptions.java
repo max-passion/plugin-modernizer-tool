@@ -30,6 +30,10 @@ public class GlobalOptions implements IOption {
         }
         return instance;
     }
+    // reset to default
+    public static void reset() {
+        instance = null;
+    }
 
     @CommandLine.Option(
             names = {"--debug"},
@@ -56,7 +60,7 @@ public class GlobalOptions implements IOption {
      */
     @Override
     public void config(Config.Builder builder) {
-        Config.DEBUG = debug;
+        Config.setDebug(debug);
         builder.withVersion(getVersion())
                 .withCachePath(
                         !cachePath.endsWith(Settings.CACHE_SUBDIR)
