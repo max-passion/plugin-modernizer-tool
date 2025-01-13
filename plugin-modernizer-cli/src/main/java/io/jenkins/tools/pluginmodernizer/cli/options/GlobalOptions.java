@@ -19,6 +19,18 @@ import picocli.CommandLine;
         commandListHeading = "%nCommands:%n")
 public class GlobalOptions implements IOption {
 
+    private static GlobalOptions instance;
+
+    private GlobalOptions() {}
+
+    // Static method to get the singleton instance
+    public static synchronized GlobalOptions getInstance() {
+        if (instance == null) {
+            instance = new GlobalOptions();
+        }
+        return instance;
+    }
+
     @CommandLine.Option(
             names = {"--debug"},
             description = "Enable debug logging.")
