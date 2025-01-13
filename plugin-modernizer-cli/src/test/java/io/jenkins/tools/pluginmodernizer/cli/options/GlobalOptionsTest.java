@@ -14,7 +14,7 @@ public class GlobalOptionsTest {
     @Test
     public void testGlobalOptionsWithoutDefault() {
         Config.Builder builder = Config.builder();
-        GlobalOptions globalOptions = new GlobalOptions();
+        GlobalOptions globalOptions = GlobalOptions.getInstance();
         globalOptions.config(builder);
 
         // Check defaults
@@ -31,7 +31,7 @@ public class GlobalOptionsTest {
     @Test
     public void testGlobalOptionsWithCustom() throws Exception {
         Config.Builder builder = Config.builder();
-        GlobalOptions globalOptions = new GlobalOptions();
+        GlobalOptions globalOptions = GlobalOptions.getInstance();
 
         // Set debug
         Field debugField = ReflectionUtils.findFields(
