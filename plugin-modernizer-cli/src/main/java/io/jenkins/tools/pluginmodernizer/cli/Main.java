@@ -42,11 +42,11 @@ public class Main {
      * @param args Command line arguments
      */
     public static void main(final String[] args) {
-        CommandLine cmd = new CommandLine(new Main());
         GlobalOptions globalOptions = GlobalOptions.getInstance();
+        CommandLine cmd = new CommandLine(new Main());
+        cmd.addMixin("globalOptions", globalOptions);
         CommandLine gen = cmd.getSubcommands().get("generate-completion");
         gen.getCommandSpec().usageMessage().hidden(true);
-        cmd.addMixin("globalOptions", globalOptions);
         System.exit(cmd.execute(args));
     }
 }
