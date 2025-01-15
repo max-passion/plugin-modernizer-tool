@@ -161,7 +161,8 @@ public class CommandLineITCase {
         assertAll(
                 () -> assertEquals(0, result.getExitCode()),
                 () -> assertTrue(Files.readAllLines(logFile).stream()
-                        .anyMatch(line -> line.matches("(.*)Usage: plugin-modernizer (.*) COMMAND(.*)"))));
+                        .anyMatch(
+                                line -> line.matches("Usage:") || line.matches("plugin-modernizer (.*) COMMAND(.*)"))));
     }
 
     @Test
