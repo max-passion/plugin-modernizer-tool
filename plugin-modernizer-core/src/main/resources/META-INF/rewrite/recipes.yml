@@ -387,7 +387,7 @@ recipeList:
   - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: commons-text-api
-      pluginVersion: 1.12.0-148.v4fc7a_db_79160
+      pluginVersion: 1.13.0-150.vfc0d7966fc38
       replaces:
         - groupId: org.apache.commons
           artifactId: commons-text
