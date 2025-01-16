@@ -257,7 +257,7 @@ public class CommandLineITCase {
                         Files.readAllLines(logFile).stream().noneMatch(line -> line.matches("conditions\\..*"))),
                 // Until https://github.com/jenkins-infra/plugin-modernizer-tool/issues/614
                 () -> assertFalse(
-                        Files.readAllLines(logFile).stream().anyMatch(line -> line.matches(".*SetupGitIgnore.*"))),
+                        Files.readAllLines(logFile).stream().anyMatch(line -> line.matches(".*MergeGitIgnoreRecipe.*"))),
                 () -> assertTrue(Files.readAllLines(logFile).stream()
                         .anyMatch(
                                 line -> line.matches(".*FetchMetadata - Extracts metadata from a Jenkins plugin.*"))));
