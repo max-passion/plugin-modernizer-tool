@@ -371,7 +371,7 @@ recipeList:
   - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: byte-buddy-api
-      pluginVersion: 1.15.11-99.v078c614a_5258
+      pluginVersion: 1.16.0-109.v2a_9f5387f958
       replaces:
         - groupId: net.bytebuddy
           artifactId: byte-buddy
