@@ -26,8 +26,6 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openrewrite.Issue;
 import org.openrewrite.java.JavaParser;
 import org.openrewrite.test.RewriteTest;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 /**
  * Tests for {@link FetchMetadata}.
@@ -36,8 +34,6 @@ import org.slf4j.LoggerFactory;
 // To fix at some point (maybe when adding concurrency in plugin modernizer)
 @Execution(ExecutionMode.SAME_THREAD)
 public class FetchMetadataTest implements RewriteTest {
-
-    private static final Logger LOG = LoggerFactory.getLogger(FetchMetadataTest.class);
 
     private static final PluginMetadata EXPECTED_METADATA;
 
@@ -201,7 +197,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM), "POM file is missing");
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
         assertEquals(0, jdkVersion.size());
         assertEquals(EXPECTED_METADATA.getParentVersion(), pluginMetadata.getParentVersion());
@@ -247,7 +243,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM), "POM file is missing");
 
         // Check metadata
         assertEquals("5.2", pluginMetadata.getParentVersion());
@@ -308,7 +304,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM), "POM file is missing");
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
         assertEquals(0, jdkVersion.size());
         assertEquals(EXPECTED_METADATA.getParentVersion(), pluginMetadata.getParentVersion());
@@ -521,8 +517,8 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         // Files are present
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.POM), "POM is missing");
 
         // Assert JDK
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
@@ -553,7 +549,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         // Files are present
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert JDK
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
@@ -583,7 +579,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         // Files are present
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert JDK
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
@@ -613,7 +609,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         // Files are present
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert JDK
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
@@ -643,7 +639,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         // Files are present
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
         assertEquals(2, jdkVersion.size());
@@ -670,7 +666,7 @@ public class FetchMetadataTest implements RewriteTest {
 
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
         // Files are present
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert JDK
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
@@ -715,7 +711,7 @@ public class FetchMetadataTest implements RewriteTest {
                         spec -> spec.path("Jenkinsfile")),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert JDK
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
@@ -753,7 +749,7 @@ public class FetchMetadataTest implements RewriteTest {
                         spec -> spec.path("Jenkinsfile")),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert other param
         assertNotNull(pluginMetadata.isUseContainerAgent());
@@ -801,7 +797,7 @@ public class FetchMetadataTest implements RewriteTest {
                         spec -> spec.path("Jenkinsfile")),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert other param
         assertNotNull(pluginMetadata.isUseContainerAgent());
@@ -848,7 +844,7 @@ public class FetchMetadataTest implements RewriteTest {
                         spec -> spec.path("Jenkinsfile")),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata().refresh();
-        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE));
+        assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
 
         // Assert JDK
         Set<JDK> jdkVersion = pluginMetadata.getJdks();
