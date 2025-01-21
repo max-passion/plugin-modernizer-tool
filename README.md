@@ -158,7 +158,7 @@ git config commit.gpgsign true
 - `validate`: Validate the configuration and environment variables (work in progress)
 - `run`: Run the modernization process
 - `dry-run`: Run the modernization process in dry-run mode without forking or pushing changes
-- `build-metadata`: Collect metadata for the given plugin and have them on the local cache
+- `build-metadata / fetch-metadata`: Collect metadata for the given plugin and have them on the local cache
 - `recipes`: List available recipes
 
 # Auto completion
