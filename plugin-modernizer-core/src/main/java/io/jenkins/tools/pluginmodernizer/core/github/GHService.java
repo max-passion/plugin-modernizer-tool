@@ -626,6 +626,24 @@ public class GHService {
                     .setDirectory(plugin.getLocalRepository().toFile())
                     .call()) {
                 LOG.debug("Clone successfully from {}", remoteUri);
+            } catch (GitAPIException e) {
+                if (e.getCause() instanceof org.apache.sshd.common.SshException) {
+                    LOG.warn("SSH authentication failed. Retrying with HTTPS...");
+                    remoteUri = new URIish(repository.getHttpTransportUrl());
+                    try (Git gitHttps = Git.cloneRepository()
+                            .setCredentialsProvider(getCredentialProvider())
+                            .setRemote("origin")
+                            .setURI(remoteUri.toString())
+                            .setDirectory(plugin.getLocalRepository().toFile())
+                            .call()) {
+                        LOG.debug("Clone successfully from {}", remoteUri);
+                    } catch (GitAPIException ex) {
+                        plugin.addError("Failed to fetch the repository using HTTPS", ex);
+                        plugin.raiseLastError();
+                    }
+                } else {
+                    throw e;
+                }
             }
         }
     }
