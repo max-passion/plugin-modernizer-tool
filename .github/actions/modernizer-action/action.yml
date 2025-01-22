@@ -1,0 +1,40 @@
+name: "Plugin Modernizer Action"
+description: "Run the Plugin Modernizer tool on the Jenkins plugin"
+inputs:
+  command:
+    description: "Command to execute for Plugin Modernizer"
+    required: true
+    default: "validate"
+
+  arguments:
+    description: "The command-line arguments to be passed"
+    required: false
+    default: ""
+
+  working-directory:
+    description: "The directory to change into"
+    required: false
+    default: ${{ github.workspace }}
+
+runs:
+  using: "composite"
+  steps:
+    - name: Setup Temurin 17
+      uses: actions/setup-java@v4
+      with:
+        java-version: 17
+        distribution: temurin
+
+    - name: Download Plugin Modernizer JAR
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        API_URL="https://api.github.com/repos/jenkins-infra/plugin-modernizer-tool/releases/latest"
+        JAR_URL=$(curl -s $API_URL | grep "browser_download_url" | grep ".jar" | head -n 1 | cut -d '"' -f 4)
+        curl -L -o plugin-modernizer.jar $JAR_URL
+
+    - name: Run Plugin Modernizer
+      shell: bash
+      working-directory: ${{ inputs.working-directory }}
+      run: |
+        java -jar plugin-modernizer.jar ${{ inputs.command }} ${{ inputs.arguments }}
