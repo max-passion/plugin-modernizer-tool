@@ -1,6 +1,6 @@
 name: Test github actions for Plugin Modernizer
 on:
-  workflow_dispatch:
+  push:
 
 jobs:
   test-modernizer:
