@@ -16,6 +16,10 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
+  version:
+    description: 'The version of Plugin Modernizer to download and execute'
+    default: "latest"
+    required: true
 
 runs:
   using: "composite"
@@ -32,7 +36,11 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        API_URL="https://api.github.com/repos/jenkins-infra/plugin-modernizer-tool/releases/latest"
+        if [ "$VERSION" == "latest" ]; then
+          API_URL="https://api.github.com/repos/jenkins-infra/plugin-modernizer-tool/releases/latest"
+        else
+          API_URL="https://api.github.com/repos/jenkins-infra/plugin-modernizer-tool/releases/tags/${{ inputs.version }}"
+        fi
         JAR_URL=$(curl -s $API_URL | grep "browser_download_url" | grep ".jar" | head -n 1 | cut -d '"' -f 4)
         curl -L -o plugin-modernizer.jar $JAR_URL
 
