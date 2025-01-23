@@ -19,11 +19,13 @@ inputs:
 runs:
   using: "composite"
   steps:
-    - name: Setup Temurin 17
-      uses: actions/setup-java@v4
+    - name: Setup Maven Action
+      uses: s4u/setup-maven-action@v1.18.0
       with:
+        java-distribution: 'temurin'
         java-version: 17
-        distribution: temurin
+        maven-version: 3.9.9
+        cache-enabled: true
 
     - name: Download Plugin Modernizer JAR
       shell: bash
