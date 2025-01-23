@@ -36,7 +36,7 @@ runs:
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        if [ "$VERSION" == "latest" ]; then
+        if [ ${{ inputs.version }} == "latest" ]; then
           API_URL="https://api.github.com/repos/jenkins-infra/plugin-modernizer-tool/releases/latest"
         else
           API_URL="https://api.github.com/repos/jenkins-infra/plugin-modernizer-tool/releases/tags/${{ inputs.version }}"
