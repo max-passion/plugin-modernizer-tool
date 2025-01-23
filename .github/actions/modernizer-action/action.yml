@@ -16,6 +16,7 @@ inputs:
     required: false
     default: ${{ github.workspace }}
 
+
 runs:
   using: "composite"
   steps:
@@ -35,8 +36,13 @@ runs:
         JAR_URL=$(curl -s $API_URL | grep "browser_download_url" | grep ".jar" | head -n 1 | cut -d '"' -f 4)
         curl -L -o plugin-modernizer.jar $JAR_URL
 
+    - name: Setting Maven Repository
+      shell: bash
+      run: |
+        mkdir -p ~/.m2/repository
+
     - name: Run Plugin Modernizer
       shell: bash
       working-directory: ${{ inputs.working-directory }}
       run: |
-        java -jar plugin-modernizer.jar ${{ inputs.command }} ${{ inputs.arguments }}
+        java -jar plugin-modernizer.jar ${{ inputs.command }} ${{ inputs.arguments }} --maven-home=$(echo $(which mvn) | sed 's:/bin/mvn::')
