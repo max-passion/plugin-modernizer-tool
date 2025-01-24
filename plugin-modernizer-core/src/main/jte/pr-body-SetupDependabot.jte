@@ -23,6 +23,10 @@ Managing dependencies can be a time-consuming and challenging task, especially w
 
 - **Enhance Compatibility and Stability:** Regular updates enhance both performance and compatibility with other plugins and the Jenkins core, ensuring a smooth experience for your users.
 
+- **Improve GitHub integration**
+
+- **Enhance the [plugin health score](https://plugins.jenkins.io/${plugin.getName()}/healthscore/)**
+
 - **Focus on What Matters:** With Dependabot, you can concentrate on developing new features and fixing bugs, while it takes care of keeping everything up-to-date under the hood.
 
 Setting up Dependabot exemplifies a proactive approach to modern software maintenance, aligning your plugin with the best practices in the industry. We invite you to test these updates and embrace a maintenance workflow that is efficient and secure.
