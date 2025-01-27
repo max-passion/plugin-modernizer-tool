@@ -92,8 +92,8 @@ public class GHService {
         setSshKeyAuth();
         if (Settings.GITHUB_TOKEN == null
                 && (config.getGithubAppId() == null
-                        || config.getGithubAppSourceInstallationId() == null
-                        || config.getGithubAppTargetInstallationId() == null)) {
+                || config.getGithubAppSourceInstallationId() == null
+                || config.getGithubAppTargetInstallationId() == null)) {
             throw new ModernizerException("Please set GH_TOKEN, GITHUB_TOKEN or configure GitHub app authentication.");
         }
         if (getGithubOwner() == null) {
@@ -120,8 +120,8 @@ public class GHService {
         }
         if (Settings.GITHUB_TOKEN == null
                 && (config.getGithubAppId() == null
-                        || config.getGithubAppSourceInstallationId() == null
-                        || config.getGithubAppTargetInstallationId() == null)) {
+                || config.getGithubAppSourceInstallationId() == null
+                || config.getGithubAppTargetInstallationId() == null)) {
             throw new ModernizerException("Please set GH_TOKEN, GITHUB_TOKEN or configure GitHub app authentication.");
         }
         try {
