@@ -37,8 +37,19 @@ import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.SshSessionFactory;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
-import org.jetbrains.annotations.NotNull;
-import org.kohsuke.github.*;
+import org.kohsuke.github.GHApp;
+import org.kohsuke.github.GHAppInstallationToken;
+import org.kohsuke.github.GHBranchSync;
+import org.kohsuke.github.GHFileNotFoundException;
+import org.kohsuke.github.GHIssueState;
+import org.kohsuke.github.GHMyself;
+import org.kohsuke.github.GHOrganization;
+import org.kohsuke.github.GHPullRequest;
+import org.kohsuke.github.GHRepository;
+import org.kohsuke.github.GHUser;
+import org.kohsuke.github.GitHub;
+import org.kohsuke.github.GitHubBuilder;
+import org.kohsuke.github.GHRepositoryForkBuilder;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -365,7 +376,7 @@ public class GHService {
      * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
      */
-    private GHRepository defaultbranchonlyfork(@NotNull GHRepository originalRepo, GHOrganization organization)
+    private GHRepository defaultbranchonlyfork(GHRepository originalRepo, GHOrganization organization)
             throws IOException, InterruptedException {
         GHRepositoryForkBuilder builder = originalRepo.createFork();
         if (organization != null) {
