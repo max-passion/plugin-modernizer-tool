@@ -360,10 +360,10 @@ public class GHService {
             LOG.info(
                     "Forking the repository to personal account {}...",
                     getCurrentUser().getLogin());
-            return defaultbranchonlyfork(originalRepo, null);
+            return fork(originalRepo, null);
         } else {
             LOG.info("Forking the repository to organisation {}...", organization.getLogin());
-            return defaultbranchonlyfork(originalRepo, organization);
+            return fork(originalRepo, organization);
         }
     }
 
@@ -376,7 +376,7 @@ public class GHService {
      * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
      */
-    private GHRepository defaultbranchonlyfork(GHRepository originalRepo, GHOrganization organization)
+    private GHRepository fork(GHRepository originalRepo, GHOrganization organization)
             throws IOException, InterruptedException {
         GHRepositoryForkBuilder builder = originalRepo.createFork();
         if (organization != null) {
