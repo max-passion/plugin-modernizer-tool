@@ -2227,7 +2227,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     <dependency>
                       <groupId>io.jenkins.plugins</groupId>
                       <artifactId>commons-compress-api</artifactId>
-                      <version>1.27.1-1</version>
+                      <version>%s</version>
                     </dependency>
                   </dependencies>
                   <repositories>
@@ -2243,7 +2243,8 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """));
+                """
+                                .formatted(Settings.getPluginVersion("commons-compress-api"))));
     }
 
     @Test
