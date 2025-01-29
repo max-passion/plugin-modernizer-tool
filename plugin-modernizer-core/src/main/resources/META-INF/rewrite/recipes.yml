@@ -153,6 +153,9 @@ recipeList:
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.kohsuke.stapler.StaplerRequest
       newFullyQualifiedTypeName: org.kohsuke.stapler.StaplerRequest2
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.kohsuke.stapler.StaplerResponse
+      newFullyQualifiedTypeName: org.kohsuke.stapler.StaplerResponse2
   - org.openrewrite.java.ChangeMethodName:
       methodPattern: org.kohsuke.stapler.Stapler getCurrentRequest()
       newMethodName: getCurrentRequest2
