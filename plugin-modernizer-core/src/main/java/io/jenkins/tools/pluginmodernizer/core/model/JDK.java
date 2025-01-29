@@ -5,7 +5,10 @@ import io.jenkins.tools.pluginmodernizer.core.utils.JdkFetcher;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.*;
+import java.util.Arrays;
+import java.util.Comparator;
+import java.util.List;
+import java.util.Set;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 
 /**
