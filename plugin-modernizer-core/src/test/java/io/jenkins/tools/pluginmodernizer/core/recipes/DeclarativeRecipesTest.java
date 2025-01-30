@@ -1481,8 +1481,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </project>
                             """
                                 .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getPluginVersion("jenkins-test-harness"))),
+                                        Settings.getJenkinsParentVersion(), Settings.getJenkinsTestHarnessVersion())),
                 srcMainResources(
                         // language=java
                         java(
@@ -1641,7 +1640,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         """
                                 .formatted(
                                         Settings.getJenkinsParentVersion(),
-                                        Settings.getPluginVersion("jenkins-test-harness"),
+                                        Settings.getJenkinsTestHarnessVersion(),
                                         Settings.getBomVersion())));
     }
 
@@ -1769,7 +1768,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 """
                                 .formatted(
                                         Settings.getJenkinsParentVersion(),
-                                        Settings.getPluginVersion("jenkins-test-harness"),
+                                        Settings.getJenkinsTestHarnessVersion(),
                                         Settings.getBomVersion())));
     }
 
