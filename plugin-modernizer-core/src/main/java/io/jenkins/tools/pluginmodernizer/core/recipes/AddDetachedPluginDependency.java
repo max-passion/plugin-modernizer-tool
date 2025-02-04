@@ -108,7 +108,6 @@ public class AddDetachedPluginDependency extends ScanningRecipe<Set<String>> {
                             .getVisitor()
                             .visitNonNull(document, ctx);
                 }
-                LOG.info("Document after adding dependency: {}", document.printAll());
                 return super.visitDocument(document, ctx);
             }
         };
