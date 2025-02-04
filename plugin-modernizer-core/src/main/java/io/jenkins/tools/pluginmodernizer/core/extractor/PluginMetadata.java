@@ -1,5 +1,7 @@
 package io.jenkins.tools.pluginmodernizer.core.extractor;
 
+import com.fasterxml.jackson.annotation.JsonCreator;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.model.CacheEntry;
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
@@ -105,7 +107,8 @@ public class PluginMetadata extends CacheEntry<PluginMetadata> {
      * Create a new plugin metadata with the given key
      * @param key The key
      */
-    public PluginMetadata(String key) {
+    @JsonCreator
+    public PluginMetadata(@JsonProperty("key") String key) {
         super(new CacheManager(Path.of("target")), PluginMetadata.class, key, Path.of("."));
     }
 
