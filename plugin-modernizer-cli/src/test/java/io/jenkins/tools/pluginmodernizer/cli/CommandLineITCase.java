@@ -558,7 +558,7 @@ public class CommandLineITCase {
     @Tag("Slow")
     public void testComplexRecipeOnLocalPlugin(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
 
-        Path logFile = setupLogs("testRecipeOnLocalPlugin");
+        Path logFile = setupLogs("testComplexRecipeOnLocalPlugin");
 
         // Copy empty plugin to cache and use as local plugin
         final String plugin = "empty";
