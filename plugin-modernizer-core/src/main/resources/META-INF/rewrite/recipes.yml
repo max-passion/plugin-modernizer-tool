@@ -295,7 +295,7 @@ recipeList:
   - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: joda-time-api
-      pluginVersion: 2.13.0-93.v9934da_29b_a_e9
+      pluginVersion: 2.13.1-115.va_6b_5f8efb_1d8
       replaces:
         - groupId: joda-time
           artifactId: joda-time
