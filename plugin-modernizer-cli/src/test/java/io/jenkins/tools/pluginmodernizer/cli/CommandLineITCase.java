@@ -556,6 +556,47 @@ public class CommandLineITCase {
 
     @Test
     @Tag("Slow")
+    public void testComplexRecipeOnLocalPlugin(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+
+        Path logFile = setupLogs("testRecipeOnLocalPlugin");
+
+        // Copy empty plugin to cache and use as local plugin
+        final String plugin = "empty";
+        final Path pluginPath = Path.of("src/test/resources").resolve(plugin);
+        Path targetPath = cachePath
+                .resolve("jenkins-plugin-modernizer-cli")
+                .resolve(plugin)
+                .resolve("sources");
+        FileUtils.copyDirectory(pluginPath.toFile(), targetPath.toFile());
+        Git.init().setDirectory(targetPath.toFile()).call().close();
+
+        final String recipe = "UpgradeNextMajorParentVersion";
+
+        try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
+
+            gitRemote.start();
+
+            // Junit attachment with logs file for the plugin build
+            System.out.printf("[[ATTACHMENT|%s]]%n", getMavenInvokerLog(plugin));
+            System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+
+            Invoker invoker = buildInvoker();
+            InvocationRequest request = buildRequest(
+                    "dry-run --recipe %s %s"
+                            .formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin, targetPath))),
+                    logFile);
+            InvocationResult result = invoker.execute(request);
+
+            // Assert output
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode()),
+                    () -> assertTrue(Files.readAllLines(logFile).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were made on (.*)"))));
+        }
+    }
+
+    @Test
+    @Tag("Slow")
     public void testRecipeOnLocalPluginWithRunMode(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
 
         Path logFile = setupLogs("testRecipeOnLocalPluginWithRunMode");
