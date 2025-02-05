@@ -4,6 +4,7 @@ import static org.junit.jupiter.api.Assertions.assertFalse;
 import static org.junit.jupiter.api.Assertions.assertSame;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.mockito.ArgumentMatchers.anyBoolean;
 import static org.mockito.ArgumentMatchers.anyString;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.ArgumentMatchers.isNull;
@@ -24,6 +25,7 @@ import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PluginProcessingException;
 import io.jenkins.tools.pluginmodernizer.core.model.Recipe;
+import io.jenkins.tools.pluginmodernizer.core.utils.TemplateUtils;
 import java.io.File;
 import java.io.IOException;
 import java.lang.reflect.Field;
@@ -780,6 +782,44 @@ public class GHServiceTest {
         service.openPullRequest(plugin);
 
         verify(pr, times(1)).addLabels(List.of("dependencies", "developer").toArray(String[]::new));
+    }
+
+    @Test
+    public void shouldUpdatePullRequest() throws Exception {
+
+        // Mocks
+        Recipe recipe = Mockito.mock(Recipe.class);
+        GHRepository repository = Mockito.mock(GHRepository.class);
+        GHPullRequest existingPr = Mockito.mock(GHPullRequest.class);
+        GHPullRequestQueryBuilder prQuery = Mockito.mock(GHPullRequestQueryBuilder.class);
+        PagedIterable<?> prQueryList = Mockito.mock(PagedIterable.class);
+        GHCommitPointer head = Mockito.mock(GHCommitPointer.class);
+
+        doReturn(recipe).when(config).getRecipe();
+        doReturn("recipe1").when(recipe).getName();
+        doReturn(null).when(config).getGithubAppTargetInstallationId();
+        doReturn(false).when(config).isDraft();
+        doReturn(true).when(plugin).hasChangesPushed();
+        doReturn(repository).when(plugin).getRemoteRepository(eq(service));
+        doReturn(TemplateUtils.renderBranchName(plugin, recipe)).when(head).getRef();
+        doReturn(head).when(existingPr).getHead();
+
+        // Return one open PR that match the branch name
+        doReturn(prQuery).when(repository).queryPullRequests();
+        doReturn(prQuery).when(prQuery).state(eq(GHIssueState.OPEN));
+        doReturn(prQueryList).when(prQuery).list();
+        doReturn(List.of(existingPr)).when(prQueryList).toList();
+
+        // Test
+        service.openPullRequest(plugin);
+
+        // We update a PR
+        verify(existingPr, times(1)).setTitle(anyString());
+        verify(existingPr, times(1)).setBody(anyString());
+
+        // We don't open a PR
+        verify(repository, never())
+                .createPullRequest(anyString(), anyString(), isNull(), anyString(), anyBoolean(), anyBoolean());
     }
 
     @Test

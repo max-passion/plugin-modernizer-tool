@@ -966,7 +966,7 @@ public class GHService {
     }
 
     /**
-     * Open a pull request for the plugin
+     * Open or update a pull request for the plugin and current recipe
      *
      * @param plugin The plugin to open a pull request for
      */
@@ -1004,7 +1004,17 @@ public class GHService {
         Optional<GHPullRequest> existingPR = checkIfPullRequestExists(plugin);
         if (existingPR.isPresent()) {
             LOG.info("Pull request already exists: {}", existingPR.get().getHtmlUrl());
-            return;
+            GHPullRequest existing = existingPR.get();
+            try {
+                existing.setTitle(prTitle);
+                existing.setBody(prBody);
+                plugin.withPullRequest();
+                LOG.info("Pull request update: {}", existing.getHtmlUrl());
+                return;
+            } catch (Exception e) {
+                plugin.addError("Failed to update pull request", e);
+                plugin.raiseLastError();
+            }
         }
 
         try {
@@ -1096,6 +1106,8 @@ public class GHService {
                     .list()
                     .toList();
             return pullRequests.stream()
+                    .peek(pr -> LOG.debug(
+                            "Checking pull request with ref {}", pr.getHead().getRef()))
                     .filter(pr -> pr.getHead().getRef().equals(branchName))
                     .findFirst();
         } catch (IOException e) {
