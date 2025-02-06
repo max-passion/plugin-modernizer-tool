@@ -1784,10 +1784,14 @@ public class DeclarativeRecipesTest implements RewriteTest {
     @Test
     void upgradeNextMajorParentVersionTestWithBom() {
         rewriteRun(
-                spec -> spec.recipeFromResource(
-                        "/META-INF/rewrite/recipes.yml",
-                        "io.jenkins.tools.pluginmodernizer.UpgradeNextMajorParentVersion"),
-                // language=xml
+                spec -> {
+                    var parser = JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true);
+                    collectRewriteTestDependencies().forEach(parser::addClasspathEntry);
+                    spec.recipeFromResource(
+                                    "/META-INF/rewrite/recipes.yml",
+                                    "io.jenkins.tools.pluginmodernizer.UpgradeNextMajorParentVersion")
+                            .parser(parser);
+                }, // language=xml
                 srcMainResources(text(
                         null,
                         EXPECTED_JELLY,
@@ -1909,7 +1913,30 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 .formatted(
                                         Settings.getJenkinsParentVersion(),
                                         Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getBomVersion())));
+                                        Settings.getBomVersion())),
+                srcTestJava(
+                        java(
+                                """
+                        package hudson.util;
+                        public class ChartUtil {}
+                        """)),
+                srcMainResources(
+                        // language=java
+                        java(
+                                """
+                                import javax.servlet.ServletException;
+                                import org.kohsuke.stapler.Stapler;
+                                import org.kohsuke.stapler.StaplerRequest;
+                                import org.kohsuke.stapler.StaplerResponse;
+                                import hudson.util.ChartUtil;
+
+                                public class Foo {
+                                    public void foo() {
+                                        StaplerRequest req = Stapler.getCurrentRequest();
+                                        StaplerResponse response = Stapler.getCurrentResponse();
+                                    }
+                                }
+                                """)));
     }
 
     @Test
