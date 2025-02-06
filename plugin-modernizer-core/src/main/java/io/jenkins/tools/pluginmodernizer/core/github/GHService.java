@@ -1010,6 +1010,7 @@ public class GHService {
                 existing.setBody(prBody);
                 plugin.withPullRequest();
                 LOG.info("Pull request update: {}", existing.getHtmlUrl());
+                deleteLegacyPrs(plugin);
                 return;
             } catch (Exception e) {
                 plugin.addError("Failed to update pull request", e);
@@ -1028,6 +1029,7 @@ public class GHService {
                     config.isDraft());
             LOG.info("Pull request created: {}", pr.getHtmlUrl());
             plugin.withPullRequest();
+            deleteLegacyPrs(plugin);
             try {
                 String[] tags = plugin.getTags().stream()
                         .filter(ALLOWED_TAGS::contains)
@@ -1113,6 +1115,33 @@ public class GHService {
         } catch (IOException e) {
             plugin.addError("Failed to check if pull request exists", e);
             return Optional.empty();
+        }
+    }
+
+    /**
+     * Delete legacy PR open from the plugin-modernizer-tool branch
+     * @param plugin The plugin to check
+     */
+    private void deleteLegacyPrs(Plugin plugin) {
+        GHRepository repository = plugin.getRemoteRepository(this);
+        try {
+            List<GHPullRequest> pullRequests = repository
+                    .queryPullRequests()
+                    .state(GHIssueState.OPEN)
+                    .list()
+                    .toList();
+            pullRequests.stream()
+                    .filter(pr -> pr.getHead().getRef().equals("plugin-modernizer-tool"))
+                    .forEach(pr -> {
+                        try {
+                            pr.close();
+                            LOG.info("Deleted legacy pull request: {}", pr.getHtmlUrl());
+                        } catch (IOException e) {
+                            LOG.debug("Failed to delete legacy pull request");
+                        }
+                    });
+        } catch (IOException e) {
+            LOG.warn("Failed to check if legacy pull request exists", e);
         }
     }
 
