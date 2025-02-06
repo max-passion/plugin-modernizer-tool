@@ -153,6 +153,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsTestHarnessVersion:
       jenkinsVersion: 2.479.1
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateStaplerAndJavaxToJakarta
+  - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
@@ -177,6 +178,16 @@ tags: ['dependencies']
 recipeList:
   - org.openrewrite.maven.RemoveRedundantDependencyVersions:
       onlyIfVersionsMatch: false # Keep newer dependencies
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
+displayName: Remove <developers> tag
+tags: ['chore']
+description: Remove <developers> tag from the pom.xml.
+recipeList:
+  - org.openrewrite.xml.RemoveXmlTag:
+      xPath: /project/developers
+      fileMatcher: '**/pom.xml'
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
@@ -391,6 +402,7 @@ recipeList:
       minimumVersion: ${jenkins.core.minimum.version}
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsTestHarnessVersion:
       jenkinsVersion: ${jenkins.core.minimum.version}
+  - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
@@ -412,6 +424,7 @@ recipeList:
       minimumVersion: 2.462.3
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsTestHarnessVersion:
         jenkinsVersion: 2.462.3
+  - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
@@ -443,6 +456,7 @@ recipeList:
       jenkinsVersion: 2.346.1
   - io.jenkins.tools.pluginmodernizer.core.recipes.AddDetachedPluginDependency:
       jenkinsVersion: 2.346.3
+  - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.core.recipes.code.ReplaceRemovedSSHLauncherConstructor
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
