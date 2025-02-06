@@ -218,7 +218,7 @@
       </resource>
       <resource>
         <targetPath>META-INF/rewrite</targetPath>
-        <filtering>false</filtering>
+        <filtering>true</filtering>
         <directory>src/main/resources/META-INF/rewrite</directory>
         <includes>
           <include>recipes.yml</include>

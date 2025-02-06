@@ -702,8 +702,8 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins-test-harness.version>2225.v04fa_3929c9b_5</jenkins-test-harness.version>
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-                            <jenkins.baseline>2.462</jenkins.baseline>
-                            <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                            <jenkins.baseline>%s</jenkins.baseline>
+                            <jenkins.version>${jenkins.baseline}.%s</jenkins.version>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -740,7 +740,10 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           </pluginRepositories>
                         </project>
                         """
-                                .formatted(Settings.getBomVersion())));
+                                .formatted(
+                                        Settings.getJenkinsMinimumBaseline(),
+                                        Settings.getJenkinsMinimumPatchVersion(),
+                                        Settings.getBomVersion())));
     }
 
     @Test
@@ -818,7 +821,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <connection>scm:git:https://github.com/jenkinsci/empty-plugin.git</connection>
                           </scm>
                           <properties>
-                            <jenkins.version>2.462.3</jenkins.version>
+                            <jenkins.version>%s</jenkins.version>
                             <jenkins-test-harness.version>2225.v04fa_3929c9b_5</jenkins-test-harness.version>
                           </properties>
                           <repositories>
@@ -835,7 +838,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           </pluginRepositories>
                         </project>
                         """
-                                .formatted(Settings.getBomVersion())));
+                                .formatted(Settings.getJenkinsMinimumVersion())));
     }
 
     @Test
@@ -925,8 +928,8 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins-test-harness.version>2225.v04fa_3929c9b_5</jenkins-test-harness.version>
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-                            <jenkins.baseline>2.462</jenkins.baseline>
-                            <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                            <jenkins.baseline>%s</jenkins.baseline>
+                            <jenkins.version>${jenkins.baseline}.%s</jenkins.version>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -959,7 +962,10 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           </pluginRepositories>
                         </project>
                         """
-                                .formatted(Settings.getBomVersion())));
+                                .formatted(
+                                        Settings.getJenkinsMinimumBaseline(),
+                                        Settings.getJenkinsMinimumPatchVersion(),
+                                        Settings.getBomVersion())));
     }
 
     @Test
@@ -1069,8 +1075,8 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         <revision>2.17.0</revision>
                         <changelist>999999-SNAPSHOT</changelist>
                         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-                        <jenkins.baseline>2.462</jenkins.baseline>
-                        <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                        <jenkins.baseline>%s</jenkins.baseline>
+                        <jenkins.version>${jenkins.baseline}.%s</jenkins.version>
                       </properties>
                       <repositories>
                         <repository>
@@ -1118,7 +1124,10 @@ public class DeclarativeRecipesTest implements RewriteTest {
                       </dependencies>
                     </project>
                     """
-                                .formatted(Settings.getBomVersion())));
+                                .formatted(
+                                        Settings.getJenkinsMinimumBaseline(),
+                                        Settings.getJenkinsMinimumPatchVersion(),
+                                        Settings.getBomVersion())));
     }
 
     @Test
