@@ -14,19 +14,19 @@ scms:
       username: "{{ .github.username }}"
       branch: "{{ .github.branch }}"
 
-# Source configuration to get the previous Jenkins LTS version
+# Source configuration to get the minimal Jenkins LTS version
 sources:
-  JenkinsPreviousLTS:
-    name: Get the previous Jenkins LTS version
+  JenkinsMinimalLTS:
+    name: Get the minimal Jenkins LTS version
     kind: shell
     spec:
-      command: bash ./updatecli/scripts/jenkins-lts.sh 1 # Shell command to retrieve the previous Jenkins LTS version
+      command: bash ./updatecli/scripts/jenkins-lts.sh 2 # Shell command to retrieve the previous Jenkins LTS version
 
 # Condition to test that the previous LTS Jenkins version exists
 conditions:
-  jenkinsPreviousLTSVersion:
+  JenkinsMinimalLTSVersion:
     kind: jenkins
-    sourceid: JenkinsPreviousLTS
+    sourceid: JenkinsMinimalLTS
 
 # Target configuration to update the Jenkins LTS version in the pom.xml file
 targets:
@@ -36,8 +36,8 @@ targets:
     spec:
       file: ./pom.xml # Path to the pom.xml file
       matchPattern: "<jenkins.core.minimum.version>.*</jenkins.core.minimum.version>" # Regex pattern to match the jenkins.core.minimum.version property
-      replacePattern: '<jenkins.core.minimum.version>{{ source "JenkinsPreviousLTS" }}</jenkins.core.minimum.version>' # Replacement pattern to update the version
-    sourceid: JenkinsPreviousLTS
+      replacePattern: '<jenkins.core.minimum.version>{{ source "JenkinsMinimalLTS" }}</jenkins.core.minimum.version>' # Replacement pattern to update the version
+    sourceid: JenkinsMinimalLTS
     scmid: default
 
 # Action to create a GitHub pull request with the changes
@@ -45,7 +45,7 @@ actions:
   default:
     kind: github/pullrequest
     scmid: default
-    title: 'chore(properties): Bump the recommended Jenkins core version to {{ source "JenkinsPreviousLTS" }} in the `pom.xml` file' # Title of the pull request
+    title: 'chore(properties): Bump the recommended Jenkins core version to {{ source "JenkinsMinimalLTS" }} in the `pom.xml` file' # Title of the pull request
     spec:
       labels:
         - dependencies
