@@ -610,6 +610,42 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
+    void removeDevelopersTag() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag"),
+                // language=xml
+                pomXml(
+                        """
+                        <?xml version="1.0" encoding="UTF-8"?>
+                        <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                          <modelVersion>4.0.0</modelVersion>
+                          <groupId>io.jenkins.plugins</groupId>
+                          <artifactId>empty</artifactId>
+                          <version>1.0.0-SNAPSHOT</version>
+                          <name>Empty pom</name>
+                          <developers>
+                            <developer>
+                              <id>bhacker</id>
+                              <name>Bob Q. Hacker</name>
+                              <email>bhacker@nowhere.net</email>
+                            </developer>
+                          </developers>
+                        </project>
+                        """,
+                        """
+                        <?xml version="1.0" encoding="UTF-8"?>
+                        <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                          <modelVersion>4.0.0</modelVersion>
+                          <groupId>io.jenkins.plugins</groupId>
+                          <artifactId>empty</artifactId>
+                          <version>1.0.0-SNAPSHOT</version>
+                          <name>Empty pom</name>
+                        </project>
+                        """));
+    }
+
+    @Test
     void upgradeToRecommendCoreVersionTest() {
         rewriteRun(
                 spec -> spec.recipeFromResource(
@@ -648,6 +684,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <developers>
+                            <developer>
+                              <id>bhacker</id>
+                              <name>Bob Q. Hacker</name>
+                              <email>bhacker@nowhere.net</email>
+                            </developer>
+                          </developers>
                           <scm>
                             <connection>scm:git:git://github.com/jenkinsci/empty-plugin.git</connection>
                           </scm>
@@ -778,6 +821,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <developers>
+                            <developer>
+                              <id>bhacker</id>
+                              <name>Bob Q. Hacker</name>
+                              <email>bhacker@nowhere.net</email>
+                            </developer>
+                          </developers>
                           <scm>
                             <connection>scm:git:git://github.com/jenkinsci/empty-plugin.git</connection>
                           </scm>
@@ -873,6 +923,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <developers>
+                            <developer>
+                              <id>bhacker</id>
+                              <name>Bob Q. Hacker</name>
+                              <email>bhacker@nowhere.net</email>
+                            </developer>
+                          </developers>
                           <properties>
                             <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                             <jenkins.baseline>2.440</jenkins.baseline>
@@ -1003,6 +1060,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                       <version>${revision}-${changelist}</version>
                       <packaging>hpi</packaging>
                       <name>My API Plugin</name>
+                      <developers>
+                        <developer>
+                          <id>bhacker</id>
+                          <name>Bob Q. Hacker</name>
+                          <email>bhacker@nowhere.net</email>
+                        </developer>
+                      </developers>
                       <properties>
                         <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                         <revision>2.17.0</revision>
@@ -1162,6 +1226,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <developers>
+                            <developer>
+                              <id>bhacker</id>
+                              <name>Bob Q. Hacker</name>
+                              <email>bhacker@nowhere.net</email>
+                            </developer>
+                          </developers>
                           <scm>
                             <connection>scm:git:git://github.com/jenkinsci/empty-plugin.git</connection>
                           </scm>
@@ -1302,6 +1373,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <developers>
+                            <developer>
+                              <id>bhacker</id>
+                              <name>Bob Q. Hacker</name>
+                              <email>bhacker@nowhere.net</email>
+                            </developer>
+                          </developers>
                           <scm>
                             <connection>scm:git:git://github.com/jenkinsci/empty-plugin.git</connection>
                           </scm>
@@ -1696,6 +1774,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                               <version>1.0.0-SNAPSHOT</version>
                               <packaging>hpi</packaging>
                               <name>Empty Plugin</name>
+                              <developers>
+                                <developer>
+                                  <id>bhacker</id>
+                                  <name>Bob Q. Hacker</name>
+                                  <email>bhacker@nowhere.net</email>
+                                </developer>
+                              </developers>
                               <scm>
                                 <connection>scm:git:https://github.com/jenkinsci/empty-plugin.git</connection>
                               </scm>
@@ -1827,6 +1912,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <version>1.0.0-SNAPSHOT</version>
                           <packaging>hpi</packaging>
                           <name>Empty Plugin</name>
+                          <developers>
+                            <developer>
+                              <id>bhacker</id>
+                              <name>Bob Q. Hacker</name>
+                              <email>bhacker@nowhere.net</email>
+                            </developer>
+                          </developers>
                           <properties>
                             <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                             <java.version>17</java.version>
@@ -1981,6 +2073,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <version>1.0.0-SNAPSHOT</version>
                   <packaging>hpi</packaging>
                   <name>Empty Plugin</name>
+                  <developers>
+                    <developer>
+                      <id>bhacker</id>
+                      <name>Bob Q. Hacker</name>
+                      <email>bhacker@nowhere.net</email>
+                    </developer>
+                  </developers>
                   <properties>
                     <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                     <jenkins.baseline>2.440</jenkins.baseline>

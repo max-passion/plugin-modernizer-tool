@@ -541,4 +541,43 @@ public class TemplateUtilsTest {
         // Assert
         assertEquals("Merges .gitignore entries from archetype with existing .gitignore file.", result);
     }
+
+    @Test
+    public void testFriendlyPrTitleRemoveDevelopersTag() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn("io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("chore: Remove `developers` tag from pom.xml", result);
+    }
+
+    @Test
+    public void testFriendlyPrBodyRemoveDevelopersTag() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn("io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestBody(plugin, recipe);
+
+        // Just ensure it's using some key overall text
+        assertTrue(result.contains("Why is this important?"), "Missing 'Why is this important?' section");
+        assertTrue(
+                result.contains("Removing `developers` Tag from `pom.xml"),
+                "Missing 'Removing `developers` Tag' section");
+    }
 }
