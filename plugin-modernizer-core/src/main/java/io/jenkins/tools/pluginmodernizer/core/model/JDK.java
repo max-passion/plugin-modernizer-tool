@@ -284,6 +284,9 @@ public enum JDK {
      * @return The list of buildable JDKs
      */
     public static List<JDK> get(String jenkinsVersion) {
+        if (jenkinsVersion == null || jenkinsVersion.isEmpty()) {
+            return List.of(JDK.min());
+        }
         ComparableVersion jenkinsVersionComparable = new ComparableVersion(jenkinsVersion);
         return Arrays.stream(JDK.values())
 

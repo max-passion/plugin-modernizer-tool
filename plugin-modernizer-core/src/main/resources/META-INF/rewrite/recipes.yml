@@ -182,7 +182,7 @@ recipeList:
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
 displayName: Remove developers tag
-tags: ['chore']
+tags: ['chore', 'skip-verification']
 description: Remove developers tag from the pom.xml.
 recipeList:
   - org.openrewrite.xml.RemoveXmlTag:
