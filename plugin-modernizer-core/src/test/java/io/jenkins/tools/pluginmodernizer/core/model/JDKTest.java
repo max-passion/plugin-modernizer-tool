@@ -107,6 +107,9 @@ public class JDKTest {
     @Test
     public void getBuildableJdk() {
 
+        assertEquals(1, JDK.get(null).size());
+        assertEquals(JDK.JAVA_8, JDK.get(null).get(0));
+
         assertEquals(1, JDK.get("2.163").size());
         assertEquals(JDK.JAVA_8, JDK.get("2.163").get(0));
 
@@ -148,6 +151,10 @@ public class JDKTest {
         assertEquals(2, JDK.get("2.479.1").size());
         assertEquals(JDK.JAVA_17, JDK.get("2.479.1").get(0));
         assertEquals(JDK.JAVA_21, JDK.get("2.479.1").get(1));
+
+        assertEquals(2, JDK.get("2.492.1").size());
+        assertEquals(JDK.JAVA_17, JDK.get("2.492.1").get(0));
+        assertEquals(JDK.JAVA_21, JDK.get("2.492.1").get(1));
     }
 
     @Test
