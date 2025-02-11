@@ -2587,6 +2587,140 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
+    void replaceLibrariesByApiPluginWithBom() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml",
+                        "io.jenkins.tools.pluginmodernizer.ReplaceLibrariesWithApiPlugin"),
+                // language=xml
+                pomXml(
+                        """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+                  <modelVersion>4.0.0</modelVersion>
+                  <parent>
+                    <groupId>org.jenkins-ci.plugins</groupId>
+                    <artifactId>plugin</artifactId>
+                    <version>4.88</version>
+                    <relativePath />
+                  </parent>
+                  <artifactId>antexec</artifactId>
+                  <version>${changelist}</version>
+                  <packaging>hpi</packaging>
+                  <properties>
+                    <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+                    <jenkins.baseline>2.479</jenkins.baseline>
+                    <jenkins.version>${jenkins.baseline}.1</jenkins.version>
+                  </properties>
+                  <dependencyManagement>
+                    <dependencies>
+                      <dependency>
+                        <groupId>io.jenkins.tools.bom</groupId>
+                        <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                        <version>4051.v78dce3ce8b_d6</version>
+                        <scope>import</scope>
+                        <type>pom</type>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.jenkins-ci.tools</groupId>
+                        <artifactId>maven-hpi-plugin</artifactId>
+                        <version>3.61</version>
+                      </dependency>
+                    </dependencies>
+                  </dependencyManagement>
+                  <dependencies>
+                    <dependency>
+                      <groupId>org.jenkins-ci.plugins</groupId>
+                      <artifactId>ant</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jenkins-ci.plugins</groupId>
+                      <artifactId>token-macro</artifactId>
+                    </dependency>
+                  </dependencies>
+                  <repositories>
+                    <repository>
+                      <id>repo.jenkins-ci.org</id>
+                      <url>https://repo.jenkins-ci.org/public/</url>
+                    </repository>
+                  </repositories>
+                  <pluginRepositories>
+                    <pluginRepository>
+                      <id>repo.jenkins-ci.org</id>
+                      <url>https://repo.jenkins-ci.org/public/</url>
+                    </pluginRepository>
+                  </pluginRepositories>
+                </project>
+                """,
+                        """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+                  <modelVersion>4.0.0</modelVersion>
+                  <parent>
+                    <groupId>org.jenkins-ci.plugins</groupId>
+                    <artifactId>plugin</artifactId>
+                    <version>4.88</version>
+                    <relativePath />
+                  </parent>
+                  <artifactId>antexec</artifactId>
+                  <version>${changelist}</version>
+                  <packaging>hpi</packaging>
+                  <properties>
+                    <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
+                    <jenkins.baseline>2.479</jenkins.baseline>
+                    <jenkins.version>${jenkins.baseline}.1</jenkins.version>
+                  </properties>
+                  <dependencyManagement>
+                    <dependencies>
+                      <dependency>
+                        <groupId>io.jenkins.tools.bom</groupId>
+                        <artifactId>bom-${jenkins.baseline}.x</artifactId>
+                        <version>4051.v78dce3ce8b_d6</version>
+                        <scope>import</scope>
+                        <type>pom</type>
+                      </dependency>
+                      <dependency>
+                        <groupId>org.jenkins-ci.tools</groupId>
+                        <artifactId>maven-hpi-plugin</artifactId>
+                        <version>3.61</version>
+                      </dependency>
+                    </dependencies>
+                  </dependencyManagement>
+                  <dependencies>
+                    <dependency>
+                      <groupId>io.jenkins.plugins</groupId>
+                      <artifactId>asm-api</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>io.jenkins.plugins</groupId>
+                      <artifactId>json-path-api</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jenkins-ci.plugins</groupId>
+                      <artifactId>ant</artifactId>
+                    </dependency>
+                    <dependency>
+                      <groupId>org.jenkins-ci.plugins</groupId>
+                      <artifactId>token-macro</artifactId>
+                    </dependency>
+                  </dependencies>
+                  <repositories>
+                    <repository>
+                      <id>repo.jenkins-ci.org</id>
+                      <url>https://repo.jenkins-ci.org/public/</url>
+                    </repository>
+                  </repositories>
+                  <pluginRepositories>
+                    <pluginRepository>
+                      <id>repo.jenkins-ci.org</id>
+                      <url>https://repo.jenkins-ci.org/public/</url>
+                    </pluginRepository>
+                  </pluginRepositories>
+                </project>
+                """));
+    }
+
+    @Test
     void replaceLibrariesByApiPluginsAsm() {
         rewriteRun(
                 spec -> spec.recipeFromResource(
@@ -3187,7 +3321,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
     private String getApiPluginVersion(String apiPlugin) throws IOException {
         return YamlPath.from(getClass().getResourceAsStream("/META-INF/rewrite/recipes.yml"))
                 .readSingle(
-                        "recipeList.'org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin'.(pluginArtifactId == %s).pluginVersion"
+                        "recipeList.'io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin'.(pluginArtifactId == %s).pluginVersion"
                                 .formatted(apiPlugin));
     }
 }
