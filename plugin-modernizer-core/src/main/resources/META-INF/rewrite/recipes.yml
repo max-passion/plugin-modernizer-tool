@@ -233,7 +233,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: json-api
       pluginVersion: 20250107-125.v28b_a_ffa_eb_f01
@@ -249,7 +249,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: json-path-api
       pluginVersion: 2.9.0-138.vc943da_d833b_6
@@ -265,7 +265,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithASMRemoved
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: asm-api
       pluginVersion: 9.7.1-97.v4cc844130d97
@@ -289,7 +289,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: joda-time-api
       pluginVersion: 2.13.1-115.va_6b_5f8efb_1d8
@@ -305,7 +305,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: gson-api
       pluginVersion: 2.12.1-113.v347686d6729f
@@ -321,7 +321,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: org.jenkins-ci.plugins
       pluginArtifactId: jsoup
       pluginVersion: 1.18.3-30.v952e9442d416
@@ -337,7 +337,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithCommonsCompressRemoved
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: commons-compress-api
       pluginVersion: 1.27.1-2
@@ -356,7 +356,7 @@ preconditions:
   - org.openrewrite.jenkins.IsJenkinsPlugin:
       version: "[2.361.4,)"
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: commons-lang3-api
       pluginVersion: 3.17.0-84.vb_b_938040b_078
@@ -372,7 +372,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: byte-buddy-api
       pluginVersion: 1.17.0-117.v025ccb_c559d7
@@ -388,7 +388,7 @@ tags: ['developer']
 preconditions:
   - io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion
 recipeList:
-  - org.openrewrite.jenkins.ReplaceLibrariesWithApiPlugin:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: commons-text-api
       pluginVersion: 1.13.0-153.v91dcd89e2a_22
