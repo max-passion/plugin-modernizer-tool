@@ -252,7 +252,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: json-path-api
-      pluginVersion: 2.9.0-138.vc943da_d833b_6
+      pluginVersion: 2.9.0-148.v22a_7ffe323ce
       replaces:
         - groupId: com.jayway.jsonpath
           artifactId: json-path
