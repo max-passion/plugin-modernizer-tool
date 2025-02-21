@@ -428,7 +428,7 @@ public class MigrateToJenkinsBaseLinePropertyTest implements RewriteTest {
                   <properties>
                     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                     <jenkins.baseline>2.479</jenkins.baseline>
-                    <jenkins.version>${jenkins.baseline}.1</jenkins.version>
+                    <jenkins.version>${jenkins.baseline}.3</jenkins.version>
                   </properties>
                   <dependencyManagement>
                     <dependencies>
