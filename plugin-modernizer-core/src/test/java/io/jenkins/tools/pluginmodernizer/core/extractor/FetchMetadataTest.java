@@ -240,7 +240,7 @@ public class FetchMetadataTest implements RewriteTest {
         // Check metadata
         assertEquals("5.2", pluginMetadata.getParentVersion());
         assertEquals("Check Plugin", pluginMetadata.getPluginName());
-        assertEquals("2.479.1", pluginMetadata.getJenkinsVersion());
+        assertEquals("2.479.3", pluginMetadata.getJenkinsVersion());
         assertEquals("3654.v237e4a_f2d8da_", pluginMetadata.getBomVersion());
 
         // Only pom here
