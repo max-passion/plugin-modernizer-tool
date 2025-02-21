@@ -149,9 +149,9 @@ recipeList:
       artifactId: plugin
       newVersion: 5.X
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
-      minimumVersion: 2.479.1
+      minimumVersion: 2.479.3
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsTestHarnessVersion:
-      jenkinsVersion: 2.479.1
+      jenkinsVersion: 2.479.3
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateStaplerAndJavaxToJakarta
   - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
@@ -528,7 +528,7 @@ description: Check if the plugin is using a version with ASM removed
 tags: ['condition']
 recipeList:
   - org.openrewrite.jenkins.IsJenkinsPlugin:
-      version: "[2.479.1,)"
+      version: "[2.479.3,)"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithCommonsCompressRemoved
