@@ -301,7 +301,7 @@ public class TemplateUtilsTest {
         String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
 
         // Assert
-        assertEquals("feat(java): Require Jenkins core 2.479.1 and Java 17.", result);
+        assertEquals("feat(java): Require Jenkins core 2.479.3 and Java 17.", result);
     }
 
     @Test
