@@ -292,7 +292,7 @@ public class TemplateUtilsTest {
         Recipe recipe = mock(Recipe.class);
 
         doReturn(metadata).when(plugin).getMetadata();
-        doReturn("2.479.1").when(metadata).getJenkinsVersion();
+        doReturn("2.479.3").when(metadata).getJenkinsVersion();
         doReturn("io.jenkins.tools.pluginmodernizer.UpgradeNextMajorParentVersion")
                 .when(recipe)
                 .getName();
@@ -313,7 +313,7 @@ public class TemplateUtilsTest {
         Recipe recipe = mock(Recipe.class);
 
         doReturn(metadata).when(plugin).getMetadata();
-        doReturn("2.479.1").when(metadata).getJenkinsVersion();
+        doReturn("2.479.3").when(metadata).getJenkinsVersion();
         doReturn("io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty")
                 .when(recipe)
                 .getName();
@@ -335,7 +335,7 @@ public class TemplateUtilsTest {
         Recipe recipe = mock(Recipe.class);
 
         doReturn(metadata).when(plugin).getMetadata();
-        doReturn("2.479.1").when(metadata).getJenkinsVersion();
+        doReturn("2.479.3").when(metadata).getJenkinsVersion();
         doReturn("io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty")
                 .when(recipe)
                 .getName();

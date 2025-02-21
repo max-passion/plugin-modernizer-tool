@@ -383,7 +383,7 @@ public class MigrateToJenkinsBaseLinePropertyTest implements RewriteTest {
                   <packaging>hpi</packaging>
                   <name>Empty Plugin</name>
                   <properties>
-                    <jenkins.version>2.479.1</jenkins.version>
+                    <jenkins.version>2.479.3</jenkins.version>
                   </properties>
                   <dependencyManagement>
                     <dependencies>
