@@ -528,7 +528,7 @@ description: Check if the plugin is using a version with ASM removed
 tags: ['condition']
 recipeList:
   - org.openrewrite.jenkins.IsJenkinsPlugin:
-      version: "[2.479.3,)"
+      version: "[2.479.1,)"
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithCommonsCompressRemoved
