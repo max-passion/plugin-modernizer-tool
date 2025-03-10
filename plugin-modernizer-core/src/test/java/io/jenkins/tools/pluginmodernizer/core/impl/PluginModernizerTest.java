@@ -1,13 +1,20 @@
 package io.jenkins.tools.pluginmodernizer.core.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
+import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.github.GHService;
+import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
+import io.jenkins.tools.pluginmodernizer.core.model.Recipe;
 import io.jenkins.tools.pluginmodernizer.core.utils.PluginService;
+import java.net.URL;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.util.Arrays;
+import java.util.List;
 import org.apache.maven.artifact.versioning.ComparableVersion;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -113,5 +120,78 @@ class PluginModernizerTest {
     void testCleanCache() {
         pluginModernizer.cleanCache();
         verify(cacheManager).wipe();
+    }
+
+    @Test
+    public void testListRecipes() {
+
+        PluginModernizer spyPluginModernizer = spy(pluginModernizer);
+
+        Recipe recipe1 = createMockRecipe("RecipeA", "Description A");
+        Recipe recipe2 = createMockRecipe("RecipeC", "Description C");
+
+        // Create a sorted list to simulate what would be returned after sorting
+        List<Recipe> sortedMockRecipes = Arrays.asList(recipe1, recipe2);
+
+        doAnswer(invocation -> {
+                    sortedMockRecipes.stream()
+                            .forEach(recipe -> LOG.info(
+                                    "{} - {}",
+                                    recipe.getName().replaceAll(Settings.RECIPE_FQDN_PREFIX + ".", ""),
+                                    recipe.getDescription()));
+                    return null;
+                })
+                .when(spyPluginModernizer)
+                .listRecipes();
+
+        // Call the method
+        spyPluginModernizer.listRecipes();
+
+        // Verify logger interactions
+        verify(LOG).info(eq("{} - {}"), eq("RecipeA"), eq("Description A"));
+        verify(LOG).info(eq("{} - {}"), eq("RecipeC"), eq("Description C"));
+    }
+
+    @Test
+    public void testStart() throws Exception {
+        // Setup for validation step
+        when(ghService.isConnected()).thenReturn(true);
+
+        // Setup config values for logging
+        Recipe mockRecipe = mock(Recipe.class);
+        when(mockRecipe.getName()).thenReturn("TestRecipe");
+
+        Plugin plugin1 = mock(Plugin.class);
+        Plugin plugin2 = mock(Plugin.class);
+        List<Plugin> mockPlugins = Arrays.asList(plugin1, plugin2);
+
+        when(config.getPlugins()).thenReturn(mockPlugins);
+        when(config.getRecipe()).thenReturn(mockRecipe);
+        when(config.getJenkinsUpdateCenter()).thenReturn(new URL("https://update-center-url.com"));
+        when(config.getJenkinsPluginVersions()).thenReturn(new URL("https://plugin-versions-url.com"));
+        when(config.getPluginHealthScore()).thenReturn(new URL("https://health-score-url.com"));
+        when(config.getPluginStatsInstallations()).thenReturn(new URL("https://stats-installations-url.com"));
+        when(config.getCachePath()).thenReturn(Paths.get("cache-path"));
+        when(config.getMavenHome()).thenReturn(Paths.get("maven-home"));
+        when(config.getMavenLocalRepo()).thenReturn(Paths.get("maven-local-repo"));
+        when(config.isDryRun()).thenReturn(true);
+
+        when(ghService.isSshKeyAuth()).thenReturn(false);
+
+        PluginModernizer pluginModernizerSpy = spy(pluginModernizer);
+
+        pluginModernizerSpy.start();
+
+        // Verify public method interactions
+        verify(pluginModernizerSpy).validate();
+        verify(cacheManager).init();
+        verify(pluginService).getPluginVersionData();
+    }
+
+    private Recipe createMockRecipe(String name, String description) {
+        Recipe recipe = mock(Recipe.class);
+        when(recipe.getName()).thenReturn(name);
+        when(recipe.getDescription()).thenReturn(description);
+        return recipe;
     }
 }
