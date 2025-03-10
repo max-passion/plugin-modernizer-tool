@@ -17,13 +17,26 @@ import org.mockito.MockitoAnnotations;
 import org.slf4j.Logger;
 
 class PluginModernizerTest {
-    @Mock private Config config;
-    @Mock private MavenInvoker mavenInvoker;
-    @Mock private GHService ghService;
-    @Mock private PluginService pluginService;
-    @Mock private CacheManager cacheManager;
-    @Mock private Logger LOG;
-    @InjectMocks private PluginModernizer pluginModernizer;
+    @Mock
+    private Config config;
+
+    @Mock
+    private MavenInvoker mavenInvoker;
+
+    @Mock
+    private GHService ghService;
+
+    @Mock
+    private PluginService pluginService;
+
+    @Mock
+    private CacheManager cacheManager;
+
+    @Mock
+    private Logger LOG;
+
+    @InjectMocks
+    private PluginModernizer pluginModernizer;
 
     @BeforeEach
     void setUp() {
