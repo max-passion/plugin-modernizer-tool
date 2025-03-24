@@ -152,6 +152,10 @@ recipeList:
       minimumVersion: 2.479.3
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsTestHarnessVersion:
       jenkinsVersion: 2.479.3
+  - org.openrewrite.java.ChangePackage:  #deprecating
+      oldPackageName: com.gargoylesoftware.htmlunit
+      newPackageName: org.htmlunit
+      recursive: true
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateStaplerAndJavaxToJakarta
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateAcegiSecurityToSpringSecurity
   - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag

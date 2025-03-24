@@ -2082,6 +2082,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         java(
                                 """
                                 import javax.servlet.ServletException;
+                                import com.gargoylesoftware.htmlunit.HttpMethod;
+                                import com.gargoylesoftware.htmlunit.WebRequest;
+                                import com.gargoylesoftware.htmlunit.html.HtmlPage;
                                 import org.kohsuke.stapler.Stapler;
                                 import org.kohsuke.stapler.StaplerRequest;
                                 import org.kohsuke.stapler.StaplerResponse;
@@ -2093,7 +2096,23 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                         StaplerResponse response = Stapler.getCurrentResponse();
                                     }
                                 }
-                                """)));
+                                """,
+                                """
+                                import javax.servlet.ServletException;
+                                import org.htmlunit.HttpMethod;
+                                import org.htmlunit.WebRequest;
+                                import org.htmlunit.html.HtmlPage;
+                                import org.kohsuke.stapler.Stapler;
+                                import org.kohsuke.stapler.StaplerRequest;
+                                import org.kohsuke.stapler.StaplerResponse;
+                                import hudson.util.ChartUtil;
+
+                                public class Foo {
+                                    public void foo() {
+                                        StaplerRequest req = Stapler.getCurrentRequest();
+                                        StaplerResponse response = Stapler.getCurrentResponse();
+                                    }
+                                }""")));
     }
 
     @Test
