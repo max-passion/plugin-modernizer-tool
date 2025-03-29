@@ -106,6 +106,14 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.MigrateToJUnit5
+displayName: Migrate to JUnit 5
+description: Migrate tests to JUnit5.
+tags: ['migration', 'testing']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.AnnotateWithJenkins
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 displayName: Migrate pom to using jenkins.baseline property if bom is present
 description: Migrate pom to using jenkins.baseline property if bom is present.
