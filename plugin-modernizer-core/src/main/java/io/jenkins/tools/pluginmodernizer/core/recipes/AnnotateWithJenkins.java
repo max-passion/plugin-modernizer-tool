@@ -1,10 +1,12 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashSet;
 import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
+import java.util.stream.Collectors;
 import org.openrewrite.ExecutionContext;
 import org.openrewrite.ScanningRecipe;
 import org.openrewrite.Tree;
@@ -12,6 +14,7 @@ import org.openrewrite.TreeVisitor;
 import org.openrewrite.java.AnnotationMatcher;
 import org.openrewrite.java.JavaIsoVisitor;
 import org.openrewrite.java.tree.J;
+import org.openrewrite.java.tree.JRightPadded;
 import org.openrewrite.java.tree.JavaType;
 import org.openrewrite.java.tree.Space;
 import org.openrewrite.marker.Markers;
@@ -78,7 +81,9 @@ public class AnnotateWithJenkins extends ScanningRecipe<Set<String>> {
                         LOG.info("Field annotated with @Rule is of type : {}", fieldNameType);
                         J.ClassDeclaration classDecl = getCursor().firstEnclosing(J.ClassDeclaration.class);
                         if (classDecl != null) {
-                            acc.add(classDecl.getSimpleName());
+                            assert classDecl.getType() != null : "classDecl.getType() is null";
+                            LOG.info("Full Name: {}", classDecl.getType().getFullyQualifiedName());
+                            acc.add(classDecl.getType().getFullyQualifiedName());
                         }
                     }
                 }
@@ -98,7 +103,8 @@ public class AnnotateWithJenkins extends ScanningRecipe<Set<String>> {
         @Override
         public J.ClassDeclaration visitClassDeclaration(J.ClassDeclaration classDecl, ExecutionContext ctx) {
 
-            if (acc.contains(classDecl.getSimpleName())) {
+            assert classDecl.getType() != null;
+            if (acc.contains(classDecl.getType().getFullyQualifiedName())) {
                 if (classDecl.getLeadingAnnotations().stream()
                         .noneMatch(new AnnotationMatcher("@WithJenkins")::matches)) {
 
@@ -123,7 +129,96 @@ public class AnnotateWithJenkins extends ScanningRecipe<Set<String>> {
 
                     LOG.info("Annotated class with @WithJenkins: {}", classDecl.getSimpleName());
                 }
+                // Remove the @Rule JenkinsRule field
+                classDecl = classDecl.withBody(classDecl
+                        .getBody()
+                        .withStatements(classDecl.getBody().getStatements().stream()
+                                .filter(statement -> {
+                                    if (statement instanceof J.VariableDeclarations) {
+                                        J.VariableDeclarations varDecl = (J.VariableDeclarations) statement;
+                                        return varDecl.getVariables().stream().noneMatch(variable -> {
+                                            JavaType.FullyQualified type = (JavaType.FullyQualified) variable.getType();
+                                            return type != null
+                                                    && type.getFullyQualifiedName()
+                                                            .equals("org.jvnet.hudson.test.JenkinsRule")
+                                                    && varDecl.getLeadingAnnotations().stream()
+                                                            .anyMatch(ann -> ann.getSimpleName()
+                                                                    .equals("Rule"));
+                                        });
+                                    }
+                                    return true;
+                                })
+                                .collect(Collectors.toList())));
+
+                // Add parameter JenkinsRule j to all the methods that uses j.something
+                classDecl = classDecl.withBody(classDecl
+                        .getBody()
+                        .withStatements(classDecl.getBody().getStatements().stream()
+                                .map(statement -> {
+                                    if (statement instanceof J.MethodDeclaration) {
+                                        J.MethodDeclaration methodDecl = (J.MethodDeclaration) statement;
+                                        if (methodDecl.getBody() != null
+                                                && methodDecl.getBody().getStatements().stream()
+                                                        .anyMatch(stmt ->
+                                                                stmt.print().contains("j."))) {
+                                            LOG.info("Method Name: {}", methodDecl.getSimpleName());
+                                            methodDecl = methodDecl.withParameters(
+                                                    new ArrayList<>(methodDecl.getParameters()) {
+                                                        {
+                                                            add(
+                                                                    0,
+                                                                    new J.VariableDeclarations(
+                                                                            Tree.randomId(),
+                                                                            Space.EMPTY,
+                                                                            Markers.EMPTY,
+                                                                            Collections.emptyList(),
+                                                                            Collections.emptyList(),
+                                                                            new J.Identifier(
+                                                                                    Tree.randomId(),
+                                                                                    Space.EMPTY,
+                                                                                    Markers.EMPTY,
+                                                                                    "JenkinsRule",
+                                                                                    JavaType.buildType(
+                                                                                            "org.jvnet.hudson.test.JenkinsRule"),
+                                                                                    null),
+                                                                            null,
+                                                                            Collections.emptyList(),
+                                                                            Collections.singletonList(
+                                                                                    new JRightPadded<>(
+                                                                                            new J.VariableDeclarations
+                                                                                                    .NamedVariable(
+                                                                                                    Tree.randomId(),
+                                                                                                    Space.SINGLE_SPACE,
+                                                                                                    Markers.EMPTY,
+                                                                                                    new J.Identifier(
+                                                                                                            Tree
+                                                                                                                    .randomId(),
+                                                                                                            Space.EMPTY,
+                                                                                                            Markers
+                                                                                                                    .EMPTY,
+                                                                                                            "j",
+                                                                                                            JavaType
+                                                                                                                    .buildType(
+                                                                                                                            "org.jvnet.hudson.test.JenkinsRule"),
+                                                                                                            null),
+                                                                                                    Collections
+                                                                                                            .emptyList(),
+                                                                                                    null,
+                                                                                                    null),
+                                                                                            Space.EMPTY,
+                                                                                            Markers.EMPTY))));
+                                                        }
+                                                    });
+                                        }
+
+                                        return methodDecl;
+                                    }
+
+                                    return statement;
+                                })
+                                .collect(Collectors.toList())));
             }
+
             return super.visitClassDeclaration(classDecl, ctx);
         }
     }

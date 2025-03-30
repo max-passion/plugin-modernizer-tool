@@ -15,7 +15,7 @@ import org.openrewrite.test.RewriteTest;
 @Execution(ExecutionMode.CONCURRENT)
 public class AnnotateWithJenkinsTest implements RewriteTest {
     @Test
-    void shouldAddWithJenkinsAnnotationWhenRuleWithJenkinsRuleIsUsed() {
+    void shouldAddWithJenkinsAnnotationWhenRuleWithJenkinsRuleIsUsedAndPassJenkinsRuleAsParameter() {
         rewriteRun(
                 spec -> {
                     var parser = JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true);
@@ -38,7 +38,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
 
                             @Test
                             public void myTestMethod() {
-                                // some test
+                                j.before();
                             }
                         }
                         """,
@@ -50,12 +50,55 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
 
                         @WithJenkins
                         public class MyTest {
+
+                            @Test
+                            public void myTestMethod(JenkinsRule j,) {
+                                j.before();
+                            }
+                        }
+                        """));
+    }
+
+    @Test
+    void shouldAddWithJenkinsAnnotationWhenRuleWithJenkinsRuleIsUsedButNotPassJenkinsRuleAsParameter() {
+        rewriteRun(
+                spec -> {
+                    var parser = JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true);
+                    collectRewriteTestDependencies().forEach(parser::addClasspathEntry);
+                    spec.recipe(new AnnotateWithJenkins())
+                            .parser(parser)
+                            .expectedCyclesThatMakeChanges(1)
+                            .cycles(1);
+                },
+                // language=java
+                java(
+                        """
+                        import org.junit.Rule;
+                        import org.jvnet.hudson.test.JenkinsRule;
+                        import org.junit.Test;
+
+                        public class MyTest {
                             @Rule
                             public JenkinsRule j = new JenkinsRule();
 
                             @Test
                             public void myTestMethod() {
-                                // some test
+                                // j.before();
+                            }
+                        }
+                        """,
+                        """
+                        import org.junit.Rule;
+                        import org.jvnet.hudson.test.JenkinsRule;
+                        import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
+                        import org.junit.Test;
+
+                        @WithJenkins
+                        public class MyTest {
+
+                            @Test
+                            public void myTestMethod() {
+                                // j.before();
                             }
                         }
                         """));
