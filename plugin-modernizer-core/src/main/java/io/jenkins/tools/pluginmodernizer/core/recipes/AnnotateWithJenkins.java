@@ -82,7 +82,6 @@ public class AnnotateWithJenkins extends ScanningRecipe<Set<String>> {
                         J.ClassDeclaration classDecl = getCursor().firstEnclosing(J.ClassDeclaration.class);
                         if (classDecl != null) {
                             assert classDecl.getType() != null : "classDecl.getType() is null";
-                            LOG.info("Full Name: {}", classDecl.getType().getFullyQualifiedName());
                             acc.add(classDecl.getType().getFullyQualifiedName());
                         }
                     }
@@ -161,54 +160,54 @@ public class AnnotateWithJenkins extends ScanningRecipe<Set<String>> {
                                                 && methodDecl.getBody().getStatements().stream()
                                                         .anyMatch(stmt ->
                                                                 stmt.print().contains("j."))) {
-                                            LOG.info("Method Name: {}", methodDecl.getSimpleName());
-                                            methodDecl = methodDecl.withParameters(
-                                                    new ArrayList<>(methodDecl.getParameters()) {
-                                                        {
-                                                            add(
-                                                                    0,
-                                                                    new J.VariableDeclarations(
+                                            LOG.info(
+                                                    "JenkinsRule j parameter added to: {}", methodDecl.getSimpleName());
+                                            J.MethodDeclaration finalMethodDecl = methodDecl;
+                                            methodDecl = methodDecl.withParameters(new ArrayList<>() {
+
+                                                {
+                                                    boolean emptyParams = finalMethodDecl.getParameters().stream()
+                                                            .anyMatch(param -> param instanceof J.Empty);
+                                                    if (!emptyParams) {
+                                                        addAll(finalMethodDecl.getParameters());
+                                                    }
+
+                                                    add(new J.VariableDeclarations(
+                                                            Tree.randomId(),
+                                                            emptyParams ? Space.EMPTY : Space.SINGLE_SPACE,
+                                                            Markers.EMPTY,
+                                                            Collections.emptyList(),
+                                                            Collections.emptyList(),
+                                                            new J.Identifier(
+                                                                    Tree.randomId(),
+                                                                    Space.EMPTY,
+                                                                    Markers.EMPTY,
+                                                                    "JenkinsRule",
+                                                                    JavaType.buildType(
+                                                                            "org.jvnet.hudson.test.JenkinsRule"),
+                                                                    null),
+                                                            null,
+                                                            Collections.emptyList(),
+                                                            Collections.singletonList(new JRightPadded<>(
+                                                                    new J.VariableDeclarations.NamedVariable(
                                                                             Tree.randomId(),
-                                                                            Space.EMPTY,
+                                                                            Space.SINGLE_SPACE,
                                                                             Markers.EMPTY,
-                                                                            Collections.emptyList(),
-                                                                            Collections.emptyList(),
                                                                             new J.Identifier(
                                                                                     Tree.randomId(),
                                                                                     Space.EMPTY,
                                                                                     Markers.EMPTY,
-                                                                                    "JenkinsRule",
+                                                                                    "j",
                                                                                     JavaType.buildType(
                                                                                             "org.jvnet.hudson.test.JenkinsRule"),
                                                                                     null),
-                                                                            null,
                                                                             Collections.emptyList(),
-                                                                            Collections.singletonList(
-                                                                                    new JRightPadded<>(
-                                                                                            new J.VariableDeclarations
-                                                                                                    .NamedVariable(
-                                                                                                    Tree.randomId(),
-                                                                                                    Space.SINGLE_SPACE,
-                                                                                                    Markers.EMPTY,
-                                                                                                    new J.Identifier(
-                                                                                                            Tree
-                                                                                                                    .randomId(),
-                                                                                                            Space.EMPTY,
-                                                                                                            Markers
-                                                                                                                    .EMPTY,
-                                                                                                            "j",
-                                                                                                            JavaType
-                                                                                                                    .buildType(
-                                                                                                                            "org.jvnet.hudson.test.JenkinsRule"),
-                                                                                                            null),
-                                                                                                    Collections
-                                                                                                            .emptyList(),
-                                                                                                    null,
-                                                                                                    null),
-                                                                                            Space.EMPTY,
-                                                                                            Markers.EMPTY))));
-                                                        }
-                                                    });
+                                                                            null,
+                                                                            null),
+                                                                    Space.EMPTY,
+                                                                    Markers.EMPTY))));
+                                                }
+                                            });
                                         }
 
                                         return methodDecl;
