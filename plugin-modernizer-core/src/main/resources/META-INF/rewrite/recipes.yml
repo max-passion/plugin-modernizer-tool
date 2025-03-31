@@ -114,15 +114,22 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.AnnotateWithJenkins  
   - org.openrewrite.java.testing.junit5.UpdateTestAnnotation
   - org.openrewrite.java.testing.junit5.UpdateBeforeAfterAnnotations
-  - org.openrewrite.java.testing.junit5.IgnoreToDisabled
+  - org.openrewrite.java.ChangeType:  #org.openrewrite.java.testing.junit5.IgnoreToDisabled
+      oldFullyQualifiedTypeName: org.junit.Ignore
+      newFullyQualifiedTypeName: org.junit.jupiter.api.Disabled
   - org.openrewrite.java.testing.junit5.TemporaryFolderToTempDir
   - org.openrewrite.java.testing.junit5.AssertToAssertions
   - org.openrewrite.java.testing.junit5.AssertThrowsOnLastStatement
   - org.openrewrite.java.testing.junit5.ExpectedExceptionToAssertThrows
   - org.openrewrite.java.testing.junit5.AssertTrueInstanceofToAssertInstanceOf
   - org.openrewrite.java.testing.junit5.RemoveTryCatchFailBlocks
-  - org.openrewrite.java.testing.junit5.UseHamcrestAssertThat
-  - org.openrewrite.java.testing.junit5.StaticImports
+  - org.openrewrite.java.ChangeMethodTargetToStatic: #org.openrewrite.java.testing.junit5.UseHamcrestAssertThat
+      methodPattern: org.junit.Assert assertThat(..)
+      fullyQualifiedTargetTypeName: org.hamcrest.MatcherAssert
+  - org.openrewrite.java.UseStaticImport:
+      methodPattern: org.hamcrest.MatcherAssert assertThat(..)
+  - org.openrewrite.java.UseStaticImport: #org.openrewrite.java.testing.junit5.StaticImports
+      methodPattern: org.junit.jupiter.api.Assertions *(..)
   - org.openrewrite.java.testing.junit5.AddMissingTestBeforeAfterAnnotations
   - org.openrewrite.java.testing.cleanup.TestsShouldNotBePublic
 ---
