@@ -656,7 +656,7 @@ public class TemplateUtilsTest {
 
         // Just ensure it's using some key overall text
         assertTrue(
-                result.contains("This PR aims to migrate all tests to JUnit5. Changes include:"),
-                "Missing This PR aims to migrate all tests to JUnit5. Changes include: section");
+                result.contains("This PR aims to migrate all tests to JUnit 5. Changes include:"),
+                "Missing This PR aims to migrate all tests to JUnit 5. Changes include: section");
     }
 }
