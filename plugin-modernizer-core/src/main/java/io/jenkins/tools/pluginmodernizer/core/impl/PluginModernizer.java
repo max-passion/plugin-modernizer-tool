@@ -515,7 +515,7 @@ public class PluginModernizer {
 
     private void printModifiedFiles(Plugin plugin) {
         if (plugin.getModifiedFiles().isEmpty()) {
-            LOG.info("Recipe didn't made any changes");
+            LOG.info("Recipe didn't make any change.");
             return;
         }
         for (String modification : plugin.getModifiedFiles()) {
