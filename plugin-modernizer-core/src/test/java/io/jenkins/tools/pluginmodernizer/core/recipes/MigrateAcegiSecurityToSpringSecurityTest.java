@@ -24,6 +24,7 @@ public class MigrateAcegiSecurityToSpringSecurityTest implements RewriteTest {
                     spec.recipe(new MigrateAcegiSecurityToSpringSecurity()).parser(parser);
                 },
                 java(
+                        // language=java
                         """
                          import java.util.ArrayList;
                          import java.util.List;
@@ -86,7 +87,9 @@ public class MigrateAcegiSecurityToSpringSecurityTest implements RewriteTest {
                              }
                          }
                          """,
+                        // language=java
                         """
+
                         import java.util.ArrayList;
                         import java.util.List;
                         import org.springframework.security.core.Authentication;
@@ -161,6 +164,7 @@ public class MigrateAcegiSecurityToSpringSecurityTest implements RewriteTest {
                             .parser(parser);
                 },
                 java(
+                        // language=java
                         """
                          import org.acegisecurity.Authentication;
                          import org.acegisecurity.GrantedAuthority;
@@ -201,6 +205,7 @@ public class MigrateAcegiSecurityToSpringSecurityTest implements RewriteTest {
                              }
                          }
                          """,
+                        // language=java
                         """
                         import org.springframework.security.authentication.AbstractAuthenticationToken;
                         import org.springframework.security.core.Authentication;
@@ -255,6 +260,7 @@ public class MigrateAcegiSecurityToSpringSecurityTest implements RewriteTest {
                     spec.recipe(new MigrateAcegiSecurityToSpringSecurity()).parser(parser);
                 },
                 java(
+                        // language=java
                         """
                          import org.acegisecurity.Authentication;
                          import org.acegisecurity.GrantedAuthority;
@@ -286,8 +292,8 @@ public class MigrateAcegiSecurityToSpringSecurityTest implements RewriteTest {
                              }
                          }
                          """,
+                        // language=java
                         """
-
                         import org.springframework.security.core.Authentication;
                         import org.springframework.security.core.GrantedAuthority;
                         import org.springframework.security.core.context.SecurityContextHolder;
