@@ -195,7 +195,7 @@ public class TemplateUtilsTest {
         String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
 
         // Assert
-        assertEquals("Updates SCM URLs in POM files from git:// to https:// protocol.", result);
+        assertEquals("Updates SCM URLs in POM files from git:// to https:// protocol", result);
     }
 
     @Test
@@ -238,7 +238,7 @@ public class TemplateUtilsTest {
         String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
 
         // Assert
-        assertEquals("chore(pom): Use recommended core version 2.452.4, and Java 11.", result);
+        assertEquals("chore(pom): Use recommended core version 2.452.4, and Java 11", result);
     }
 
     @Test
@@ -301,7 +301,7 @@ public class TemplateUtilsTest {
         String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
 
         // Assert
-        assertEquals("feat(java): Require Jenkins core 2.479.3 and Java 17.", result);
+        assertEquals("feat(java): Require Jenkins core 2.479.3 and Java 17", result);
     }
 
     @Test
@@ -559,7 +559,7 @@ public class TemplateUtilsTest {
         String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
 
         // Assert
-        assertEquals("Merges .gitignore entries from archetype with existing .gitignore file.", result);
+        assertEquals("Merges .gitignore entries from archetype with existing .gitignore file", result);
     }
 
     @Test
@@ -620,5 +620,43 @@ public class TemplateUtilsTest {
         // Just ensure it's using some key overall text
         assertTrue(result.contains("Why is this important?"), "Missing 'Why is this important?' section");
         assertTrue(result.contains("org.jsoup:jsoup"), "Missing org.jsoup:jsoup dependency section");
+    }
+
+    @Test
+    public void testFriendlyPrTitleMigrateToJUnit5() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn("io.jenkins.tools.pluginmodernizer.MigrateToJUnit5")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("refactor(tests): Migrate tests to JUnit 5", result);
+    }
+
+    @Test
+    public void testFriendlyPrBodyMigrateToJUnit5() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn("io.jenkins.tools.pluginmodernizer.MigrateToJUnit5")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestBody(plugin, recipe);
+
+        // Just ensure it's using some key overall text
+        assertTrue(
+                result.contains("This PR aims to migrate all tests to JUnit 5. Changes include:"),
+                "Missing This PR aims to migrate all tests to JUnit 5. Changes include: section");
     }
 }
