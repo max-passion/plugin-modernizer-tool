@@ -585,3 +585,11 @@ description: Jenkins tooling [requires](https://github.com/jenkinsci/maven-hpi-p
 tags: ['chore']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureIndexJelly
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.MigrateTomakehurstToWiremock
+displayName: Migrate from `com.github.tomakehurst` to `org.wiremock`
+description: This PR migrates the groupId and artifactId to the new artifact and also updates to the latest version.
+tags: ['chore']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
