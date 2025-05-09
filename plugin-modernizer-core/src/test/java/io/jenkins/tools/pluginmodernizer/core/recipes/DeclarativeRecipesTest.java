@@ -1276,9 +1276,16 @@ public class DeclarativeRecipesTest implements RewriteTest {
     @Test
     void upgradeToUpgradeToLatestJava11CoreVersion() {
         rewriteRun(
-                spec -> spec.recipeFromResource(
-                        "/META-INF/rewrite/recipes.yml",
-                        "io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion"),
+                spec -> {
+                    var parser = JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true);
+                    collectRewriteTestDependencies().stream()
+                            .filter(entry -> entry.getFileName().toString().contains("jenkins-core-2.497"))
+                            .forEach(parser::addClasspathEntry);
+                    spec.recipeFromResource(
+                                    "/META-INF/rewrite/recipes.yml",
+                                    "io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion")
+                            .parser(parser);
+                },
                 // language=xml
                 srcMainResources(text(
                         null,
@@ -1418,7 +1425,55 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           </pluginRepositories>
                         </project>
                         """
-                                .formatted(Settings.getRecommendedBomVersion(), Settings.getWiremockVersion())));
+                                .formatted(Settings.getRecommendedBomVersion(), Settings.getWiremockVersion())),
+                srcMainResources(
+                        // language=java
+                        java(
+                                """
+                                import hudson.util.IOException2;
+                                import java.io.File;
+                                import java.io.IOException;
+
+                                public class Foo {
+                                    public static void main(String[] args) {
+                                        try {
+                                            parseFile(new File("invalid.xml"));
+                                        } catch (IOException2 e) {
+                                            System.out.println("Caught custom exception: " + e.getMessage());
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    private static void parseFile(File file) throws IOException2 {
+                                        try {
+                                            throw new IOException("Unable to read file");
+                                        } catch (IOException e) {
+                                            throw new IOException2("Failed to parse file: " + file.getName(), e);
+                                        }
+                                    }
+                                }
+                                """,
+                                """
+                                import java.io.File;
+                                import java.io.IOException;
+
+                                public class Foo {
+                                    public static void main(String[] args) {
+                                        try {
+                                            parseFile(new File("invalid.xml"));
+                                        } catch (IOException e) {
+                                            System.out.println("Caught custom exception: " + e.getMessage());
+                                            e.printStackTrace();
+                                        }
+                                    }
+                                    private static void parseFile(File file) throws IOException {
+                                        try {
+                                            throw new IOException("Unable to read file");
+                                        } catch (IOException e) {
+                                            throw new IOException("Failed to parse file: " + file.getName(), e);
+                                        }
+                                    }
+                                }
+                                """)));
     }
 
     @Test
@@ -1427,7 +1482,8 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> {
                     var parser = JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true);
                     collectRewriteTestDependencies().stream()
-                            .filter(entry -> entry.getFileName().toString().contains("ssh-slaves-1.12"))
+                            .filter(entry -> entry.getFileName().toString().contains("ssh-slaves-1.12")
+                                    || entry.getFileName().toString().contains("jenkins-core-2.497"))
                             .forEach(parser::addClasspathEntry);
                     spec.recipeFromResource(
                                     "/META-INF/rewrite/recipes.yml",
@@ -1793,8 +1849,8 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         public class MatrixProject {}
                         """)),
                 srcMainJava(
+                        // language=java
                         java(
-                                // language=java
                                 """
                         import hudson.maven.MavenModuleSet;
                         import hudson.scm.SubversionSCM;
@@ -1820,6 +1876,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         import org.jenkinsci.main.modules.instance_identity.InstanceIdentity;
                         import hudson.markup.RawHtmlMarkupFormatter;
                         import hudson.matrix.MatrixProject;
+                        import hudson.util.IOException2;
+                        import java.io.File;
+                        import java.io.IOException;
 
                         public class TestDetachedPluginsUsage {
                             public void execute() {
@@ -1847,6 +1906,93 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 new InstanceIdentity();
                                 new RawHtmlMarkupFormatter();
                                 new MatrixProject();
+                            }
+                            private static void parseFile(File file) throws IOException2 {
+                                try {
+                                    throw new IOException("Unable to read file");
+                                } catch (IOException e) {
+                                    throw new IOException2("Failed to parse file: " + file.getName(), e);
+                                }
+                            }
+                            public static void main(String[] args) {
+                                try {
+                                    parseFile(new File("invalid.xml"));
+                                } catch (IOException2 e) {
+                                    System.out.println("Caught custom exception: " + e.getMessage());
+                                    e.printStackTrace();
+                                }
+                            }
+                        }
+                        """,
+                                """
+                        import hudson.maven.MavenModuleSet;
+                        import hudson.scm.SubversionSCM;
+                        import hudson.tasks.Ant;
+                        import hudson.tasks.JavadocArchiver;
+                        import hudson.tasks.Mailer;
+                        import hudson.tasks.junit.JUnitResultArchiver;
+                        import hudson.model.ExternalJob;
+                        import hudson.security.LDAPSecurityRealm;
+                        import hudson.security.PAMSecurityRealm;
+                        import hudson.security.GlobalMatrixAuthorizationStrategy;
+                        import hudson.security.ProjectMatrixAuthorizationStrategy;
+                        import hudson.security.AuthorizationMatrixProperty;
+                        import hudson.slaves.CommandLauncher;
+                        import hudson.tools.JDKInstaller;
+                        import javax.xml.bind.JAXBContext;
+                        import com.trilead.ssh2.Connection;
+                        import org.jenkinsci.main.modules.sshd.SSHD;
+                        import javax.activation.DataHandler;
+                        import jenkins.bouncycastle.api.BouncyCastlePlugin;
+                        import jenkins.plugins.javax.activation.CommandMapInitializer;
+                        import jenkins.plugins.javax.activation.FileTypeMapInitializer;
+                        import org.jenkinsci.main.modules.instance_identity.InstanceIdentity;
+                        import hudson.markup.RawHtmlMarkupFormatter;
+                        import hudson.matrix.MatrixProject;
+                        import java.io.File;
+                        import java.io.IOException;
+
+                        public class TestDetachedPluginsUsage {
+                            public void execute() {
+                                new MavenModuleSet();
+                                new SubversionSCM();
+                                new Ant();
+                                new JavadocArchiver();
+                                new Mailer();
+                                new JUnitResultArchiver();
+                                new ExternalJob();
+                                new LDAPSecurityRealm();
+                                new PAMSecurityRealm();
+                                new GlobalMatrixAuthorizationStrategy();
+                                new ProjectMatrixAuthorizationStrategy();
+                                new AuthorizationMatrixProperty();
+                                new CommandLauncher();
+                                new JDKInstaller();
+                                new JAXBContext();
+                                new Connection();
+                                new SSHD();
+                                new DataHandler();
+                                new BouncyCastlePlugin();
+                                new CommandMapInitializer();
+                                new FileTypeMapInitializer();
+                                new InstanceIdentity();
+                                new RawHtmlMarkupFormatter();
+                                new MatrixProject();
+                            }
+                            private static void parseFile(File file) throws IOException {
+                                try {
+                                    throw new IOException("Unable to read file");
+                                } catch (IOException e) {
+                                    throw new IOException("Failed to parse file: " + file.getName(), e);
+                                }
+                            }
+                            public static void main(String[] args) {
+                                try {
+                                    parseFile(new File("invalid.xml"));
+                                } catch (IOException e) {
+                                    System.out.println("Caught custom exception: " + e.getMessage());
+                                    e.printStackTrace();
+                                }
                             }
                         }
                         """)));
