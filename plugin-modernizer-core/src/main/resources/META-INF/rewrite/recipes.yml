@@ -135,6 +135,7 @@ recipeList:
       methodPattern: org.junit.jupiter.api.Assertions *(..)
   - org.openrewrite.java.testing.junit5.AddMissingTestBeforeAfterAnnotations
   - org.openrewrite.java.testing.cleanup.TestsShouldNotBePublic
+  - io.jenkins.tools.pluginmodernizer.core.recipes.AddThrowsExceptionWhereAssertThrows
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
