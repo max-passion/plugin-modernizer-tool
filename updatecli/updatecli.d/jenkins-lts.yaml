@@ -1,4 +1,3 @@
----
 # This pipeline is used to bump the recommended Jenkins core version in the properties file.
 name: Bump the recommended Jenkins core version in the pom.xml file
 # SCM configuration for GitHub repository
@@ -49,7 +48,7 @@ targets:
       replacePattern: '<jenkins.core.minimum.version>{{ source "JenkinsMinimalLTS" }}</jenkins.core.minimum.version>' # Replacement pattern to update the version
     sourceid: JenkinsMinimalLTS
     scmid: default
-    
+
   update-jenkins-lts-version-in-pr-template:
     name: "Update Jenkins LTS version in PR body template"
     kind: file
@@ -57,46 +56,6 @@ targets:
       file: ./plugin-modernizer-core/src/main/jte/pr-body-UpgradeNextMajorParentVersion.jte # Path to the JTE file
       matchPattern: "Jenkins [0-9]+\\.[0-9]+\\.x" # Pattern to match any Jenkins version (e.g., 2.479.x, 2.500.x, etc.)
       replacePattern: 'Jenkins {{ source "JenkinsRecommendedLTSMajorMinor" }}.x' # Replacement pattern with the new version
-    sourceid: JenkinsRecommendedLTSMajorMinor
-    scmid: default
-    
-  update-jenkins-lts-version-in-recipes-yml:
-    name: "Update Jenkins LTS version in recipes.yml"
-    kind: file
-    spec:
-      file: ./plugin-modernizer-core/src/main/resources/META-INF/rewrite/recipes.yml
-      matchPattern: "minimumVersion: 2\\.492\\.3" # Pattern to match the specific version
-      replacePattern: 'minimumVersion: {{ source "JenkinsRecommendedLTS" }}' # Replacement pattern with the new version
-    sourceid: JenkinsMinimalLTS
-    scmid: default
-    
-  update-jenkins-test-harness-version-in-recipes-yml:
-    name: "Update Jenkins Test Harness version in recipes.yml"
-    kind: file
-    spec:
-      file: ./plugin-modernizer-core/src/main/resources/META-INF/rewrite/recipes.yml
-      matchPattern: "jenkinsVersion: 2\\.492\\.3" # Pattern to match the specific version
-      replacePattern: 'jenkinsVersion: {{ source "JenkinsRecommendedLTS" }}' # Replacement pattern with the new version
-    sourceid: JenkinsMinimalLTS
-    scmid: default
-    
-  update-jenkins-version-in-recipe-displayname:
-    name: "Update Jenkins version in recipe displayName"
-    kind: file
-    spec:
-      file: ./plugin-modernizer-core/src/main/resources/META-INF/rewrite/recipes.yml
-      matchPattern: "displayName: Upgrade to the next major parent version \\(5\\.X\\) requiring Jenkins 2\\.492 and Java 17" # Pattern to match the displayName
-      replacePattern: 'displayName: Upgrade to the next major parent version (5.X) requiring Jenkins {{ source "JenkinsRecommendedLTSMajorMinor" }} and Java 17' # Replacement pattern with the new version
-    sourceid: JenkinsRecommendedLTSMajorMinor
-    scmid: default
-    
-  update-jenkins-version-in-recipe-description:
-    name: "Update Jenkins version in recipe description"
-    kind: file
-    spec:
-      file: ./plugin-modernizer-core/src/main/resources/META-INF/rewrite/recipes.yml
-      matchPattern: "description: Upgrade to the next major parent version \\(5\\.X\\) requiring Jenkins 2\\.492 and Java 17\\." # Pattern to match the description
-      replacePattern: 'description: Upgrade to the next major parent version (5.X) requiring Jenkins {{ source "JenkinsRecommendedLTSMajorMinor" }} and Java 17.' # Replacement pattern with the new version
     sourceid: JenkinsRecommendedLTSMajorMinor
     scmid: default
 
