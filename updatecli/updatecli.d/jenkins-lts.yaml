@@ -64,7 +64,7 @@ actions:
   default:
     kind: github/pullrequest
     scmid: default
-    title: 'chore(properties): Bump the recommended Jenkins core version to {{ source "JenkinsMinimalLTS" }}' # Title of the pull request
+    title: 'chore(properties): Bump the recommended Jenkins core version to {{ source "JenkinsRecommendedLTS" }}'
     spec:
       labels:
         - dependencies
