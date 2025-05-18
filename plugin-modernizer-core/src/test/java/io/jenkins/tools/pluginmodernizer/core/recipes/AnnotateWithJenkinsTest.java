@@ -70,6 +70,83 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
     }
 
     @Test
+    void shouldAddWithJenkinsAnnotationWhenRuleWithJenkinsRuleIsUsedAndPassJenkinsRuleAsParameterInChildAndParent() {
+        rewriteRun(
+                spec -> {
+                    var parser = JavaParser.fromJavaVersion().logCompilationWarningsAndErrors(true);
+                    collectRewriteTestDependencies().forEach(parser::addClasspathEntry);
+                    spec.recipe(new AnnotateWithJenkins())
+                            .parser(parser)
+                            .expectedCyclesThatMakeChanges(1)
+                            .cycles(1);
+                },
+                // language=java
+                java(
+                        """
+                        import org.junit.Rule;
+                        import org.jvnet.hudson.test.JenkinsRule;
+                        import org.junit.Test;
+
+                        public class MyTest {
+                            @Rule
+                            public JenkinsRule jenkinsRule = new JenkinsRule();
+
+                            @Test
+                            public void myTestMethod() {
+                                jenkinsRule.before();
+                            }
+
+                            @Test
+                            public void myTestMethodWithParam(String str) {
+                                jenkinsRule.before();
+                            }
+                        }
+                        class MyTestChild extends MyTest {
+                            @Test
+                            public void myTestMethodChild() {
+                                jenkinsRule.before();
+                            }
+
+                            @Test
+                            public void myTestMethodWithParamChild(String str) {
+                                jenkinsRule.before();
+                            }
+                        }
+                        """,
+                        """
+                        import org.junit.Rule;
+                        import org.jvnet.hudson.test.JenkinsRule;
+                        import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
+                        import org.junit.Test;
+
+                        @WithJenkins
+                        public class MyTest {
+
+                            @Test
+                            public void myTestMethod(JenkinsRule jenkinsRule) {
+                                jenkinsRule.before();
+                            }
+
+                            @Test
+                            public void myTestMethodWithParam(String str, JenkinsRule jenkinsRule) {
+                                jenkinsRule.before();
+                            }
+                        }
+                        class MyTestChild extends MyTest {
+                            @Test
+                            public void myTestMethodChild(JenkinsRule jenkinsRule) {
+                                jenkinsRule.before();
+                            }
+
+                            @Test
+                            public void myTestMethodWithParamChild(String str, JenkinsRule jenkinsRule) {
+                                jenkinsRule.before();
+                            }
+                        }
+                        """));
+    }
+
+    @Test
     void shouldAddWithJenkinsAnnotationWhenRuleWithJenkinsRuleIsUsedButNotPassJenkinsRuleAsParameter() {
         rewriteRun(
                 spec -> {

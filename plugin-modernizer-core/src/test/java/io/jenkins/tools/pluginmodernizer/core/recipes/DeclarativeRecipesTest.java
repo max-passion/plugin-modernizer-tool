@@ -3368,7 +3368,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 import org.junit.rules.TemporaryFolder;
                 import java.io.File;
 
-                public class MyTest {
+                class MyTest {
                     @Rule
                     public JenkinsRule j = new JenkinsRule();
                     private TemporaryFolder tempFolder;
@@ -3429,6 +3429,12 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         Assert.fail("This should not run");
                     }
                 }
+                public class MyTestChild extends MyTest {
+                    @Test
+                    public void myTestMethodChild() {
+                        j.before();
+                    }
+                }
                 """,
                         """
                 import org.junit.jupiter.api.*;
@@ -3441,7 +3447,6 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 import static org.junit.jupiter.api.Assertions.*;
 
                 @WithJenkins
-
                 class MyTest {
                     private File tempFolder;
 
@@ -3498,6 +3503,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     @Test
                     void ignoredTest() {
                         fail("This should not run");
+                    }
+                }
+
+                class MyTestChild extends MyTest {
+                    @Test
+                    public void myTestMethodChild(JenkinsRule j) {
+                        j.before();
                     }
                 }
                 """));
