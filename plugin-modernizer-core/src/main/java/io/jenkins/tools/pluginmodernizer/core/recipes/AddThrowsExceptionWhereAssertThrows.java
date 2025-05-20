@@ -1,6 +1,7 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicBoolean;
 import org.openrewrite.ExecutionContext;
@@ -78,6 +79,7 @@ public class AddThrowsExceptionWhereAssertThrows extends Recipe {
                                                     Tree.randomId(),
                                                     Space.SINGLE_SPACE,
                                                     Markers.EMPTY,
+                                                    Collections.emptyList(),
                                                     "Exception",
                                                     JavaType.buildType("java.lang.Exception"),
                                                     null),

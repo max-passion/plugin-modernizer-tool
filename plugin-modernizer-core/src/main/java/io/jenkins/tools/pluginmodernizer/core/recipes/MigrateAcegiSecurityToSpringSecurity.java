@@ -173,6 +173,7 @@ public class MigrateAcegiSecurityToSpringSecurity extends Recipe {
                                         UUID.randomUUID(),
                                         Space.EMPTY,
                                         Markers.EMPTY,
+                                        Collections.emptyList(),
                                         "GrantedAuthority",
                                         JavaType.buildType("org.springframework.security.core.GrantedAuthority"),
                                         null),
@@ -189,6 +190,7 @@ public class MigrateAcegiSecurityToSpringSecurity extends Recipe {
                                         UUID.randomUUID(),
                                         Space.SINGLE_SPACE,
                                         Markers.EMPTY,
+                                        Collections.emptyList(),
                                         "Collection",
                                         JavaType.buildType("java.util.Collection"),
                                         null),
@@ -233,6 +235,7 @@ public class MigrateAcegiSecurityToSpringSecurity extends Recipe {
                                                         UUID.randomUUID(),
                                                         Space.SINGLE_SPACE,
                                                         Markers.EMPTY,
+                                                        Collections.emptyList(),
                                                         grantedAuthoritiesFieldName,
                                                         JavaType.buildType("java.util.List"),
                                                         null)))));
@@ -269,6 +272,7 @@ public class MigrateAcegiSecurityToSpringSecurity extends Recipe {
                                                                                     UUID.randomUUID(),
                                                                                     Space.SINGLE_SPACE,
                                                                                     Markers.EMPTY,
+                                                                                    Collections.emptyList(),
                                                                                     "List.of()",
                                                                                     JavaType.buildType(
                                                                                             "java.util.List"),

@@ -129,6 +129,7 @@ public class AnnotateWithJenkins extends ScanningRecipe<Map<String, String>> {
                                             Tree.randomId(),
                                             Space.EMPTY,
                                             Markers.EMPTY,
+                                            Collections.emptyList(),
                                             "WithJenkins\n",
                                             JavaType.buildType("org.jvnet.hudson.test.junit.jupiter.WithJenkins"),
                                             null),
@@ -222,6 +223,7 @@ public class AnnotateWithJenkins extends ScanningRecipe<Map<String, String>> {
                                                                 Tree.randomId(),
                                                                 Space.EMPTY,
                                                                 Markers.EMPTY,
+                                                                Collections.emptyList(),
                                                                 "JenkinsRule",
                                                                 JavaType.buildType("org.jvnet.hudson.test.JenkinsRule"),
                                                                 null),
@@ -236,6 +238,7 @@ public class AnnotateWithJenkins extends ScanningRecipe<Map<String, String>> {
                                                                                 Tree.randomId(),
                                                                                 Space.EMPTY,
                                                                                 Markers.EMPTY,
+                                                                                Collections.emptyList(),
                                                                                 jenkinsRuleFieldName,
                                                                                 JavaType.buildType(
                                                                                         "org.jvnet.hudson.test.JenkinsRule"),
