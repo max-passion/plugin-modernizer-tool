@@ -33,9 +33,7 @@ import org.slf4j.LoggerFactory;
 /**
  * Test for declarative recipes from recipes.yml.
  */
-// ConcurrentModification on rewriteRun (need fix upstream?
-// This only occur on recipeFromResource
-@Execution(ExecutionMode.SAME_THREAD)
+@Execution(ExecutionMode.CONCURRENT)
 public class DeclarativeRecipesTest implements RewriteTest {
 
     @Language("xml")
