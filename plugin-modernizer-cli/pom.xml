@@ -275,7 +275,7 @@
           <plugin>
             <artifactId>maven-failsafe-plugin</artifactId>
             <configuration>
-              <groups>Always,Slow</groups>
+              <groups>CI</groups>
             </configuration>
           </plugin>
         </plugins>

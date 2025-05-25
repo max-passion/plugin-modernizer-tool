@@ -157,7 +157,7 @@ public class CommandLineITCase {
     }
 
     @Test
-    @Tag("Always")
+    @Tag("Slow")
     @Execution(ExecutionMode.CONCURRENT)
     public void testHelp() throws Exception {
         Path logFile = setupLogs("testHelp");
@@ -555,7 +555,7 @@ public class CommandLineITCase {
     }
 
     @Test
-    @Tag("Slow")
+    @Tag("CI")
     public void testComplexRecipeOnLocalPlugin(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
 
         Path logFile = setupLogs("testComplexRecipeOnLocalPlugin");
