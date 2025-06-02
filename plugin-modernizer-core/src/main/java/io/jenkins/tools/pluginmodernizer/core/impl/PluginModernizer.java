@@ -3,6 +3,7 @@ package io.jenkins.tools.pluginmodernizer.core.impl;
 import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
+import io.jenkins.tools.pluginmodernizer.core.extractor.ModernizationMetadata;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.github.GHService;
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
@@ -238,6 +239,19 @@ public class PluginModernizer {
             } else {
                 LOG.debug("Metadata already computed for plugin {}. Using cached metadata.", plugin.getName());
             }
+
+            ModernizationMetadata modernizationMetadata = new ModernizationMetadata(cacheManager, plugin);
+            modernizationMetadata.setPluginName(plugin.getMetadata().getPluginName());
+            modernizationMetadata.setRpuBaseline(
+                    plugin.getMetadata().getJenkinsVersion().replaceAll("(\\d+\\.\\d+)\\.\\d+", "$1"));
+            modernizationMetadata.setPluginRepository(
+                    ghService.getRepository(plugin).getHttpTransportUrl());
+            modernizationMetadata.setPluginName(plugin.getName());
+            modernizationMetadata.save();
+            LOG.info(
+                    "Modernization metadata for plugin {}: {}",
+                    plugin.getName(),
+                    modernizationMetadata.getLocation().toAbsolutePath());
 
             // Try to remediate precondition errors
             if (plugin.hasPreconditionErrors()) {
