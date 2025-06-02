@@ -3,6 +3,7 @@ package io.jenkins.tools.pluginmodernizer.core.model;
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.MetadataFlag;
+import io.jenkins.tools.pluginmodernizer.core.extractor.ModernizationMetadata;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.github.GHService;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
@@ -73,6 +74,11 @@ public class Plugin {
      * The metadata of the plugin
      */
     private PluginMetadata metadata;
+
+    /**
+     * The modernization-metadata of the plugin
+     */
+    private ModernizationMetadata modernizationMetadata;
 
     /**
      * Flag to indicate if the plugin has any commits to be pushed
@@ -819,6 +825,22 @@ public class Plugin {
      */
     public void loadMetadata(CacheManager cacheManager) {
         setMetadata(cacheManager.get(Path.of(getName()), CacheManager.PLUGIN_METADATA_CACHE_KEY, PluginMetadata.class));
+    }
+
+    /**
+     * Get the modernization metadata of the plugin
+     * @return Modernization metadata
+     */
+    public ModernizationMetadata getModernizationMetadata() {
+        return modernizationMetadata;
+    }
+
+    /**
+     * Set the metadata of the plugin
+     * @param modernizationMetadata Modernization metadata
+     */
+    public void setModernizationMetadata(ModernizationMetadata modernizationMetadata) {
+        this.modernizationMetadata = modernizationMetadata;
     }
 
     /**
