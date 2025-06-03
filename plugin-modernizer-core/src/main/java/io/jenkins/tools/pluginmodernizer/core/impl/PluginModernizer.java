@@ -246,7 +246,15 @@ public class PluginModernizer {
                     plugin.getMetadata().getJenkinsVersion().replaceAll("(\\d+\\.\\d+)\\.\\d+", "$1"));
             modernizationMetadata.setPluginRepository(
                     ghService.getRepository(plugin).getHttpTransportUrl());
+            modernizationMetadata.setPluginVersion(pluginService.extractVersion(plugin));
+            modernizationMetadata.setMigrationName(
+                    plugin.getConfig().getRecipe().getDisplayName());
+            modernizationMetadata.setMigrationDescription(
+                    plugin.getConfig().getRecipe().getDescription());
             modernizationMetadata.setPluginName(plugin.getName());
+            modernizationMetadata.setTags(plugin.getConfig().getRecipe().getTags());
+            modernizationMetadata.setMigrationId(plugin.getConfig().getRecipe().getName());
+            plugin.setModernizationMetadata(modernizationMetadata);
             modernizationMetadata.save();
             LOG.info(
                     "Modernization metadata for plugin {}: {}",

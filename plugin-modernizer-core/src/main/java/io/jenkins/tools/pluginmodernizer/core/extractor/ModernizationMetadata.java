@@ -6,6 +6,7 @@ import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.model.CacheEntry;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import java.nio.file.Path;
+import java.util.Set;
 
 /**
  * Modernization metadata for a plugin extracted after executing the recipes
@@ -32,6 +33,11 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
      */
     private String rpuBaseline;
 
+    private String migrationName;
+    private String migrationDescription;
+    private Set<String> tags;
+    private String migrationId;
+    private Integer removedDeprecatedApis;
     /**
      * Create a new modernization metadata
      * Store the metadata in the relative target directory of current folder
@@ -92,6 +98,46 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
 
     public void setPluginName(String pluginName) {
         this.pluginName = pluginName;
+    }
+
+    public String getMigrationName() {
+        return migrationName;
+    }
+
+    public void setMigrationName(String migrationName) {
+        this.migrationName = migrationName;
+    }
+
+    public String getMigrationDescription() {
+        return migrationDescription;
+    }
+
+    public void setMigrationDescription(String migrationDescription) {
+        this.migrationDescription = migrationDescription;
+    }
+
+    public Integer getRemovedDeprecatedApis() {
+        return removedDeprecatedApis;
+    }
+
+    public void setRemovedDeprecatedApis(Integer removedDeprecatedApis) {
+        this.removedDeprecatedApis = removedDeprecatedApis;
+    }
+
+    public Set<String> getTags() {
+        return tags;
+    }
+
+    public void setTags(Set<String> tags) {
+        this.tags = tags;
+    }
+
+    public String getMigrationId() {
+        return migrationId;
+    }
+
+    public void setMigrationId(String migrationId) {
+        this.migrationId = migrationId;
     }
 
     public String getRpuBaseline() {
