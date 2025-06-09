@@ -652,7 +652,7 @@ public class CommandLineITCase {
         String mavenHomeEnv = System.getenv("MAVEN_HOME");
         assertNotNull(mavenHomeEnv, "MAVEN_HOME is not set");
         Path mavenHome = Path.of(mavenHomeEnv);
-        assertTrue(Files.exists(mavenHome), "MAVEN_HOME does not exist");
+        assertTrue(Files.exists(mavenHome), "MAVEN_HOME does not exist at %s".formatted(mavenHome));
         Invoker invoker = new DefaultInvoker();
         invoker.setMavenHome(mavenHome.toFile());
         return invoker;
@@ -726,10 +726,11 @@ public class CommandLineITCase {
 
     /**
      * Get the modernizer maven home
+     * Keep in sync  with maven.version from the pom.xml
      * @return Use version from the target directory
      */
     private Path getModernizerMavenHome() {
-        return Path.of("target/apache-maven-3.9.9").toAbsolutePath();
+        return Path.of("target/apache-maven-3.9.10").toAbsolutePath();
     }
 
     /**
