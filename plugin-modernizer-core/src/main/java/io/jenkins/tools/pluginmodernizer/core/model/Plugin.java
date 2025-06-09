@@ -816,6 +816,14 @@ public class Plugin {
     }
 
     /**
+     * Return if the metadata is forked
+     * @param service The GitHub service
+     */
+    public boolean isForkedMetadata(GHService service) {
+        return service.isForkedMetadata(this);
+    }
+
+    /**
      * Return if this plugin is archived
      * @param service The GitHub service
      * @return True if the plugin is archived
@@ -872,6 +880,14 @@ public class Plugin {
      */
     public void checkoutBranch(GHService service) {
         service.checkoutBranch(this);
+    }
+
+    /**
+     * Checkout the metadata branch
+     * @param service The GitHub service
+     */
+    public void checkoutMetadataBranch(GHService service) {
+        service.checkoutMetadataBranch(this);
     }
 
     /**
@@ -963,6 +979,15 @@ public class Plugin {
      */
     public GHRepository getRemoteForkRepository(GHService service) {
         return service.getRepositoryFork(this);
+    }
+
+    /**
+     * Get the associated fork repository for the metadata
+     * @param service The GitHub service
+     * @return The repository object
+     */
+    public GHRepository getRemoteMetadataForkRepository(GHService service) {
+        return service.getMetadataRepositoryFork(this);
     }
 
     /**

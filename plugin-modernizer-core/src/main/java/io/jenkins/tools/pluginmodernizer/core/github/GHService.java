@@ -1469,7 +1469,7 @@ public class GHService {
                 return;
             }
             // Check if existing PR exists
-            GHRepository repository = getMetadataRepository(plugin);
+            GHRepository repository = plugin.getRemoteMetadataRepository(this);
             Optional<GHPullRequest> existingPR = checkIfMetadataPullRequestExists(plugin);
             if (existingPR.isPresent()) {
                 LOG.info("Pull request already exists: {}", existingPR.get().getHtmlUrl());
@@ -1579,7 +1579,7 @@ public class GHService {
      * @return The pull request if it exists
      */
     private Optional<GHPullRequest> checkIfMetadataPullRequestExists(Plugin plugin) {
-        GHRepository repository = getMetadataRepository(plugin);
+        GHRepository repository = plugin.getRemoteMetadataRepository(this);
         String branchName = plugin.getName() + "-" + "modernization-metadata";
         try {
             List<GHPullRequest> pullRequests = repository

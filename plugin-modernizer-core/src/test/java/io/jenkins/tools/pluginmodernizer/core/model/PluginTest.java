@@ -93,6 +93,16 @@ public class PluginTest {
     }
 
     @Test
+    public void testHasMetadataCommits() {
+        Plugin plugin = Plugin.build("example");
+        assertFalse(plugin.hasMetadataCommits());
+        plugin.withMetadataCommits();
+        assertTrue(plugin.hasMetadataCommits());
+        plugin.withoutMetadataCommits();
+        assertFalse(plugin.hasMetadataCommits());
+    }
+
+    @Test
     public void testClean() {
         Plugin plugin = Plugin.build("example");
         plugin.clean(mavenInvoker);
@@ -175,6 +185,16 @@ public class PluginTest {
     }
 
     @Test
+    public void testForkMetadata() {
+        Plugin plugin = Plugin.build("example");
+        plugin.withConfig(config);
+        doReturn(false).when(config).isFetchMetadataOnly();
+        plugin.forkMetadata(ghService);
+        verify(ghService).forkMetadata(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
     public void shouldNotForkInFetchMetadataMode() {
         Plugin plugin = Plugin.build("example");
         plugin.withConfig(config);
@@ -194,6 +214,16 @@ public class PluginTest {
     }
 
     @Test
+    public void testSyncMetadata() {
+        Plugin plugin = Plugin.build("example");
+        plugin.withConfig(config);
+        doReturn(false).when(config).isFetchMetadataOnly();
+        plugin.syncMetadata(ghService);
+        verify(ghService).syncMetadata(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
     public void shouldNotSyncInFetchMetadataMode() {
         Plugin plugin = Plugin.build("example");
         plugin.withConfig(config);
@@ -207,6 +237,14 @@ public class PluginTest {
         Plugin plugin = Plugin.build("example");
         plugin.isForked(ghService);
         verify(ghService).isForked(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
+    public void testIsMetadataFork() {
+        Plugin plugin = Plugin.build("example");
+        plugin.isForkedMetadata(ghService);
+        verify(ghService).isForkedMetadata(plugin);
         verifyNoMoreInteractions(ghService);
     }
 
@@ -235,10 +273,26 @@ public class PluginTest {
     }
 
     @Test
+    public void testMetadataCheckoutBranch() {
+        Plugin plugin = Plugin.build("example");
+        plugin.checkoutMetadataBranch(ghService);
+        verify(ghService).checkoutMetadataBranch(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
     public void testCommit() {
         Plugin plugin = Plugin.build("example");
         plugin.commit(ghService);
         verify(ghService).commitChanges(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
+    public void testMetadataCommit() {
+        Plugin plugin = Plugin.build("example");
+        plugin.commitMetadata(ghService);
+        verify(ghService).commitMetadataChanges(plugin);
         verifyNoMoreInteractions(ghService);
     }
 
@@ -251,10 +305,26 @@ public class PluginTest {
     }
 
     @Test
+    public void testMetadataPush() {
+        Plugin plugin = Plugin.build("example");
+        plugin.pushMetadata(ghService);
+        verify(ghService).pushMetadataChanges(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
     public void testOpenPullRequest() {
         Plugin plugin = Plugin.build("example");
         plugin.openPullRequest(ghService);
         verify(ghService).openPullRequest(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
+    public void testOpenMetadataPullRequest() {
+        Plugin plugin = Plugin.build("example");
+        plugin.openMetadataPullRequest(ghService);
+        verify(ghService).openMetadataPullRequest(plugin);
         verifyNoMoreInteractions(ghService);
     }
 
@@ -267,6 +337,14 @@ public class PluginTest {
     }
 
     @Test
+    public void testFetchMetadata() {
+        Plugin plugin = Plugin.build("example");
+        plugin.fetchMetadata(ghService);
+        verify(ghService).fetchMetadata(plugin);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
     public void testGetRemoteRepository() {
         Plugin plugin = Plugin.build("example");
         plugin.withRepositoryName("repo-name");
@@ -275,11 +353,25 @@ public class PluginTest {
     }
 
     @Test
+    public void testGetRemoteMetadataRepository() {
+        Plugin plugin = Plugin.build("example");
+        plugin.getRemoteMetadataRepository(ghService);
+        verify(ghService).getMetadataRepository(plugin);
+    }
+
+    @Test
     public void testGetRemoteForkRepository() {
         Plugin plugin = Plugin.build("example");
         plugin.withRepositoryName("repo-name");
         plugin.getRemoteForkRepository(ghService);
         verify(ghService).getRepositoryFork(plugin);
+    }
+
+    @Test
+    public void testGetRemoteMetadataForkRepository() {
+        Plugin plugin = Plugin.build("example");
+        plugin.getRemoteMetadataForkRepository(ghService);
+        verify(ghService).getMetadataRepositoryFork(plugin);
     }
 
     @Test
