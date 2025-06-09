@@ -8,6 +8,7 @@ import io.jenkins.tools.pluginmodernizer.core.model.PluginProcessingException;
 import io.jenkins.tools.pluginmodernizer.core.utils.JWTUtils;
 import io.jenkins.tools.pluginmodernizer.core.utils.TemplateUtils;
 import jakarta.inject.Inject;
+import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
 import java.nio.file.Files;
@@ -240,28 +241,9 @@ public class GHService {
      */
     public GHRepository getMetadataRepository(Plugin plugin) {
         try {
-            return github.getRepository(getGithubOwner() + "/" + Settings.GITHUB_METADATA_REPOSITORY);
+            return github.getRepository(Settings.METADATA_ORGANISATION + "/" + Settings.GITHUB_METADATA_REPOSITORY);
         } catch (IOException e) {
             throw new PluginProcessingException("Failed to get metadata repository", e, plugin);
-        }
-    }
-
-    /**
-     * Initialize Git for the plugin directory
-     *
-     * @param plugin The plugin to initialize the directory for
-     */
-    public void initializePluginDirectory(Plugin plugin) {
-        try (Git git = Git.init()
-                .setDirectory(Settings.getPluginsDirectory(plugin).toFile())
-                .call()) {
-            LOG.info(
-                    "Successfully initialized git repository for plugin {} at {}",
-                    plugin.getName(),
-                    Settings.getPluginsDirectory(plugin).toAbsolutePath());
-        } catch (PluginProcessingException | GitAPIException e) {
-            throw new PluginProcessingException(
-                    "Unable to initialize git for plugin directory " + plugin.getName(), plugin);
         }
     }
 
@@ -306,6 +288,20 @@ public class GHService {
     }
 
     /**
+     * Get a metadata repository to the organization or personal account
+     *
+     * @param plugin The plugin
+     * @return The GHRepository object
+     */
+    public GHRepository getMetadataRepositoryFork(Plugin plugin) {
+        try {
+            return github.getRepository(getGithubOwner() + "/" + Settings.GITHUB_METADATA_REPOSITORY);
+        } catch (IOException e) {
+            throw new PluginProcessingException("Failed to get repository", e, plugin);
+        }
+    }
+
+    /**
      * Check if the plugin repository is forked to the organization or personal account
      *
      * @param plugin The plugin to check
@@ -321,6 +317,24 @@ public class GHService {
                 return isRepositoryForked(organization, plugin.getRepositoryName());
             }
             return isRepositoryForked(plugin.getRepositoryName());
+        } catch (IOException e) {
+            throw new PluginProcessingException("Failed to check if repository is forked", e, plugin);
+        }
+    }
+
+    /**
+     * Check if the metadata repository is forked to the organization or personal account
+     *
+     * @param plugin The plugin to extract the metadata of
+     * @return True if the repository is forked
+     */
+    public boolean isForkedMetadata(Plugin plugin) {
+        try {
+            GHOrganization organization = getOrganization();
+            if (organization != null) {
+                return isRepositoryForked(organization, Plugin.METADATA_REPOSITORY_NAME);
+            }
+            return isRepositoryForked(Plugin.METADATA_REPOSITORY_NAME);
         } catch (IOException e) {
             throw new PluginProcessingException("Failed to check if repository is forked", e, plugin);
         }
@@ -379,6 +393,30 @@ public class GHService {
     }
 
     /**
+     * Fork a metadata repository to the organization or personal account
+     *
+     * @param plugin The plugin to fork
+     */
+    public void forkMetadata(Plugin plugin) {
+        if (config.isFetchMetadataOnly()) {
+            LOG.info("Skipping forking plugin {} in fetch-metadata-only mode", plugin);
+            return;
+        }
+        if (plugin.isArchived(this)) {
+            LOG.info("Plugin {} is archived. Not forking", plugin);
+            return;
+        }
+        LOG.info("Forking metadata of {} locally from repo {}...", plugin, Plugin.METADATA_REPOSITORY_NAME);
+        try {
+            GHRepository fork = forkMetadataRepository(plugin);
+            LOG.debug("Forked repository: {}", fork.getHtmlUrl());
+        } catch (IOException | InterruptedException e) {
+            plugin.addError("Failed to fork the repository", e);
+            plugin.raiseLastError();
+        }
+    }
+
+    /**
      * Fork a plugin repository to the organization or personal account
      *
      * @param plugin The plugin to fork
@@ -388,6 +426,43 @@ public class GHService {
     private GHRepository forkPlugin(Plugin plugin) throws IOException, InterruptedException {
         GHOrganization organization = getOrganization();
         GHRepository originalRepo = plugin.getRemoteRepository(this);
+        if (organization != null) {
+            if (isRepositoryForked(organization, originalRepo.getName())) {
+                LOG.debug("Repository already forked to organization {}", organization.getLogin());
+                GHRepository fork = getRepositoryFork(organization, originalRepo.getName());
+                checkSameParentRepository(plugin, originalRepo, fork);
+                return fork;
+            } else {
+                GHRepository fork = forkRepository(originalRepo, organization);
+                Thread.sleep(5000); // Wait for the fork to be ready
+                return fork;
+            }
+        } else {
+            if (isRepositoryForked(originalRepo.getName())) {
+                LOG.debug(
+                        "Repository already forked to personal account {}",
+                        getCurrentUser().getLogin());
+                GHRepository fork = getRepositoryFork(originalRepo.getName());
+                checkSameParentRepository(plugin, originalRepo, fork);
+                return fork;
+            } else {
+                GHRepository fork = forkRepository(originalRepo);
+                Thread.sleep(5000); // Wait for the fork to be ready
+                return fork;
+            }
+        }
+    }
+
+    /**
+     * Fork metadata repository to the organization or personal account
+     *
+     * @param plugin The plugin
+     * @throws IOException          Forking the repository failed due to I/O error
+     * @throws InterruptedException Forking the repository failed due to interruption
+     */
+    private GHRepository forkMetadataRepository(Plugin plugin) throws IOException, InterruptedException {
+        GHOrganization organization = getOrganization();
+        GHRepository originalRepo = plugin.getRemoteMetadataRepository(this);
         if (organization != null) {
             if (isRepositoryForked(organization, originalRepo.getName())) {
                 LOG.debug("Repository already forked to organization {}", organization.getLogin());
@@ -564,6 +639,29 @@ public class GHService {
     }
 
     /**
+     * Sync a fork metadata repository from its original upstream. Only the main branch is synced in case multiple branches exist.
+     *
+     * @param plugin The plugin to sync
+     */
+    public void syncMetadata(Plugin plugin) {
+        if (config.isFetchMetadataOnly()) {
+            LOG.info("Skipping sync metadata {} in fetch-metadata-only mode", plugin);
+            return;
+        }
+        if (!isForkedMetadata(plugin)) {
+            LOG.info("Metadata repo is not forked. Not attempting sync");
+            return;
+        }
+        try {
+            syncRepository(getMetadataRepositoryFork(plugin));
+            LOG.info("Synced the forked metadata repository for plugin {}", plugin);
+        } catch (IOException e) {
+            plugin.addError("Failed to sync the metadata repository", e);
+            plugin.raiseLastError();
+        }
+    }
+
+    /**
      * Sync a fork repository from its original upstream. Only the main branch is synced in case multiple branches exist.
      *
      * @param forkedRepo Forked repository
@@ -660,6 +758,36 @@ public class GHService {
     }
 
     /**
+     * Fetch a metadata repository code from the original repo
+     *
+     * @param plugin The plugin to fork
+     */
+    public void fetchMetadata(Plugin plugin) {
+        // We always fetch from original repo to avoid forking when not necessary
+        GHRepository repository = getMetadataRepository(plugin);
+
+        if (config.isDebug()) {
+            LOG.debug(
+                    "Fetch metadata repo {} from {} into directory {}...",
+                    plugin,
+                    repository.getHtmlUrl(),
+                    plugin.getLocalMetadataRepository());
+        } else {
+            LOG.info("Fetching metadata repo locally {}...", plugin);
+        }
+        try {
+            fetchMetadataRepository(plugin);
+            LOG.debug(
+                    "Fetched metadata repository from {}",
+                    sshKeyAuth ? repository.getSshUrl() : repository.getHttpTransportUrl());
+        } catch (GitAPIException | URISyntaxException e) {
+            LOG.error("Failed to fetch the metadata repository", e);
+            plugin.addError("Failed to fetch the metadata repository", e);
+            plugin.raiseLastError();
+        }
+    }
+
+    /**
      * Fetch the repository code into local directory of the plugin
      *
      * @param plugin The plugin to fetch
@@ -718,13 +846,92 @@ public class GHService {
         // Clone the repository
         else {
             try {
-                cloneRepository(plugin, remoteUri);
+                cloneRepository(plugin, remoteUri, plugin.getLocalRepository().toFile());
             } catch (GitAPIException e) {
                 if (e.getCause() instanceof org.apache.sshd.common.SshException) {
                     LOG.warn("SSH authentication failed. Retrying with HTTPS...");
                     remoteUri = new URIish(repository.getHttpTransportUrl());
                     try {
-                        cloneRepository(plugin, remoteUri);
+                        cloneRepository(
+                                plugin, remoteUri, plugin.getLocalRepository().toFile());
+                    } catch (GitAPIException ex) {
+                        LOG.error("HTTPS clone failed: {}", ex.getMessage());
+                        plugin.addError("Failed to fetch the repository using HTTPS", ex);
+                        plugin.raiseLastError();
+                    }
+                } else {
+                    throw e;
+                }
+            }
+        }
+    }
+
+    /**
+     * Fetch the metadata repository code at the root of cache
+     *
+     * @param plugin The plugin to be stored metadata for
+     * @throws GitAPIException If the fetch operation failed
+     */
+    private void fetchMetadataRepository(Plugin plugin) throws GitAPIException, URISyntaxException {
+        LOG.debug("Fetching metadata repo for {}", plugin.getName());
+        GHRepository repository = getMetadataRepository(plugin);
+        URIish remoteUri = getRemoteUri(repository);
+
+        // Fetch latest changes
+        if (Files.isDirectory(plugin.getLocalMetadataRepository())) {
+            String defaultBranch = plugin.getRemoteMetadataRepository(this).getDefaultBranch();
+            // Ensure to set the correct remote, reset changes and pull
+            try (Git git = Git.open(plugin.getLocalMetadataRepository().toFile())) {
+                git.remoteSetUrl()
+                        .setRemoteName("origin")
+                        .setRemoteUri(remoteUri)
+                        .call();
+                git.fetch()
+                        .setCredentialsProvider(getCredentialProvider())
+                        .setRemote("origin")
+                        .call();
+                LOG.debug("Resetting changes and pulling latest changes from {}", remoteUri);
+                git.reset()
+                        .setMode(ResetCommand.ResetType.HARD)
+                        .setRef("origin/" + defaultBranch)
+                        .call();
+                git.clean().setCleanDirectories(true).setDryRun(false).call();
+                Ref ref = git.checkout()
+                        .setCreateBranch(false)
+                        .setName(defaultBranch)
+                        .call();
+                git.pull()
+                        .setCredentialsProvider(getCredentialProvider())
+                        .setRemote("origin")
+                        .setRemoteBranchName(defaultBranch)
+                        .call();
+                LOG.info("Fetched metadata repository from {} to branch {}", remoteUri, ref.getName());
+            } catch (RefNotFoundException e) {
+                String message =
+                        "Unable to find branch %s in repository. Probably the default branch was renamed. You can remove the local repository at %s and try again."
+                                .formatted(defaultBranch, plugin.getLocalMetadataRepository());
+                LOG.error(message);
+                plugin.addError(message);
+                plugin.raiseLastError();
+            } catch (IOException e) {
+                plugin.addError("Failed fetch repository", e);
+                plugin.raiseLastError();
+            }
+        }
+        // Clone the repository
+        else {
+            try {
+                cloneRepository(
+                        plugin, remoteUri, plugin.getLocalMetadataRepository().toFile());
+            } catch (GitAPIException e) {
+                if (e.getCause() instanceof org.apache.sshd.common.SshException) {
+                    LOG.warn("SSH authentication failed. Retrying with HTTPS...");
+                    remoteUri = new URIish(repository.getHttpTransportUrl());
+                    try {
+                        cloneRepository(
+                                plugin,
+                                remoteUri,
+                                plugin.getLocalMetadataRepository().toFile());
                     } catch (GitAPIException ex) {
                         LOG.error("HTTPS clone failed: {}", ex.getMessage());
                         plugin.addError("Failed to fetch the repository using HTTPS", ex);
@@ -762,12 +969,20 @@ public class GHService {
         return remoteUri;
     }
 
-    private void cloneRepository(Plugin plugin, URIish remoteUri) throws GitAPIException {
+    /**
+     * Clone the repository to the given directory
+     *
+     * @param plugin The plugin
+     * @param remoteUri The remote URI of the repository
+     * @param directory The directory to clone the repository to
+     * @throws GitAPIException If the clone operation failed
+     */
+    private void cloneRepository(Plugin plugin, URIish remoteUri, File directory) throws GitAPIException {
         try (Git git = Git.cloneRepository()
                 .setCredentialsProvider(getCredentialProvider())
                 .setRemote("origin")
                 .setURI(remoteUri.toString())
-                .setDirectory(plugin.getLocalRepository().toFile())
+                .setDirectory(directory)
                 .call()) {
             LOG.debug("Clone successfully from {}", remoteUri);
         }
@@ -812,12 +1027,8 @@ public class GHService {
      * @param plugin The plugin to checkout branch for
      */
     public void checkoutMetadataBranch(Plugin plugin) {
-        //        if (plugin.isLocal()) {
-        //            LOG.info("Plugin {} is local. Not checking out branch", plugin);
-        //            return;
-        //        }
         String branchName = plugin.getName() + "-" + "modernization-metadata";
-        try (Git git = Git.open(Settings.getPluginsDirectory(plugin).toFile())) {
+        try (Git git = Git.open(plugin.getLocalMetadataRepository().toFile())) {
             try {
                 git.checkout().setCreateBranch(true).setName(branchName).call();
             } catch (RefAlreadyExistsException e) {
@@ -919,24 +1130,31 @@ public class GHService {
     }
 
     /**
-     * Commit metadata changes in the plugin directory
+     * Commit metadata changes in local metadata repository
      *
      * @param plugin The plugin to commit changes for
      */
     public void commitMetadataChanges(Plugin plugin) {
-        try (Git git = Git.open(Settings.getPluginsDirectory(plugin).toFile())) {
+        try (Git git = Git.open(plugin.getLocalMetadataRepository().toFile())) {
+            // change the remote origin back to fork
             setRemoteURL(git, "https://github.com/" + getGithubOwner() + "/" + Settings.GITHUB_METADATA_REPOSITORY);
-            addFilesToStaging(git, "modernization-metadata");
             checkoutMetadataBranch(plugin);
-            GHUser user = getCurrentUser();
-            String email = getPrimaryEmail(user);
-            String commitMessage = "Add Modernization metadata for plugin " + plugin.getName();
-            CommitCommand commit = git.commit()
-                    .setAuthor(user.getName() != null ? user.getName() : String.valueOf(user.getId()), email)
-                    .setMessage(commitMessage);
-            signCommit(commit).call();
-            plugin.withMetadataCommits();
-            LOG.info("Changes committed successfully with message: {}", commitMessage);
+            addFilesToStaging(git, ".");
+            Status status = git.status().call();
+            // don't commit empty changes
+            if (status.hasUncommittedChanges()) {
+                GHUser user = getCurrentUser();
+                String email = getPrimaryEmail(user);
+                String commitMessage = "Add Modernization metadata for plugin " + plugin.getName();
+                CommitCommand commit = git.commit()
+                        .setAuthor(user.getName() != null ? user.getName() : String.valueOf(user.getId()), email)
+                        .setMessage(commitMessage);
+                signCommit(commit).call();
+                plugin.withMetadataCommits();
+                LOG.info("Changes committed successfully with message: {}", commitMessage);
+            } else {
+                LOG.info("No metadata changes to commit for plugin {}", plugin.getName());
+            }
         } catch (IOException | GitAPIException | URISyntaxException e) {
             plugin.addError("Failed to commit changes", e);
             plugin.raiseLastError();
@@ -1095,10 +1313,6 @@ public class GHService {
      * @param plugin The plugin that have been modernized
      */
     public void pushMetadataChanges(Plugin plugin) {
-        //        if (config.isDryRun()) {
-        //            LOG.info("Skipping push changes for modernization metadata {} in dry-run mode", plugin);
-        //            return;
-        //        }
         if (config.isFetchMetadataOnly()) {
             LOG.info("Skipping push changes for modernization metadata {} in fetch-metadata-only mode", plugin);
             return;
@@ -1112,7 +1326,7 @@ public class GHService {
             return;
         }
         String branchName = plugin.getName() + "-" + "modernization-metadata";
-        try (Git git = Git.open(Settings.getPluginsDirectory(plugin).toFile())) {
+        try (Git git = Git.open(plugin.getLocalMetadataRepository().toFile())) {
             List<PushResult> results = StreamSupport.stream(
                             git.push()
                                     .setForce(true)
@@ -1254,8 +1468,7 @@ public class GHService {
                         plugin.getName());
                 return;
             }
-
-            // get my fork
+            // Check if existing PR exists
             GHRepository repository = getMetadataRepository(plugin);
             Optional<GHPullRequest> existingPR = checkIfMetadataPullRequestExists(plugin);
             if (existingPR.isPresent()) {
@@ -1284,18 +1497,6 @@ public class GHService {
 
             plugin.withMetadataPullRequest();
             LOG.info("Pull request created: {}", pr.getHtmlUrl());
-            // Optionally, add labels (tags) to the PR if available
-            //            try {
-            //                String[] tags = plugin.getTags().stream()
-            //                        .filter(ALLOWED_METADATA_TAGS::contains)
-            //                        .sorted()
-            //                        .toArray(String[]::new);
-            //                if (tags.length > 0) {
-            //                    pr.addLabels(tags);
-            //                }
-            //            } catch (Exception e) {
-            //                LOG.debug("Failed to add labels to PR: {}", e.getMessage());
-            //            }
         } catch (IOException e) {
             plugin.addError("Failed to create pull request", e);
             plugin.raiseLastError();

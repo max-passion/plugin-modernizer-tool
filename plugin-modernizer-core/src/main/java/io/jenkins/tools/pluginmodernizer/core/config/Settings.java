@@ -54,9 +54,11 @@ public class Settings {
 
     public static final Path GITHUB_APP_PRIVATE_KEY_FILE;
 
-    public static final String GITHUB_METADATA_REPOSITORY = "metadata-plugin-modernizer-tool";
+    public static final String GITHUB_METADATA_REPOSITORY = "metadata-plugin-modernizer";
 
     public static final String ORGANIZATION = getTargetOrganisation();
+
+    public static final String METADATA_ORGANISATION = "Raunak80Madan";
 
     public static final String RECIPE_DATA_YAML_PATH = "META-INF/rewrite/recipes.yml";
 

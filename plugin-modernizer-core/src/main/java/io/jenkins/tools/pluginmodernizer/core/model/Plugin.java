@@ -13,6 +13,9 @@ import java.io.IOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,6 +42,7 @@ import org.w3c.dom.Document;
 public class Plugin {
 
     private static final Logger LOG = LoggerFactory.getLogger(Plugin.class);
+    public static final String METADATA_REPOSITORY_NAME = Settings.GITHUB_METADATA_REPOSITORY;
 
     /**
      * The configuration to use
@@ -554,20 +558,20 @@ public class Plugin {
     }
 
     /**
+     * Get the local metadata repository path
+     * @return Local metadata repository path
+     */
+    public Path getLocalMetadataRepository() {
+        return Settings.DEFAULT_CACHE_PATH.resolve(Settings.GITHUB_METADATA_REPOSITORY);
+    }
+
+    /**
      * Get the URI of the repository on the given organization
      * @param organization Organization name (e.g. jenkinsci)
      * @return URI of the repository
      */
     public URI getGitRepositoryURI(String organization) {
         return URI.create("https://github.com/" + organization + "/" + repositoryName + ".git");
-    }
-
-    /**
-     * Initialize the plugin directory on the given service
-     * @param service The GitHub service
-     */
-    public void initializePluginDirectory(GHService service) {
-        service.initializePluginDirectory(this);
     }
 
     /**
@@ -768,6 +772,18 @@ public class Plugin {
     }
 
     /**
+     * Fork the metadata
+     * @param service The GitHub service
+     */
+    public void forkMetadata(GHService service) {
+        if (config.isFetchMetadataOnly()) {
+            LOG.debug("Skipping fork for plugin {} as only metadata is required", name);
+            return;
+        }
+        service.forkMetadata(this);
+    }
+
+    /**
      * Fork sync this plugin
      * @param service The GitHub service
      */
@@ -777,6 +793,18 @@ public class Plugin {
             return;
         }
         service.sync(this);
+    }
+
+    /**
+     * Fork sync the metadata
+     * @param service The GitHub service
+     */
+    public void syncMetadata(GHService service) {
+        if (config.isFetchMetadataOnly()) {
+            LOG.debug("Skipping sync for plugin {} as only metadata is required", name);
+            return;
+        }
+        service.syncMetadata(this);
     }
 
     /**
@@ -903,12 +931,29 @@ public class Plugin {
     }
 
     /**
+     * Fetch the metadata into local directory
+     * @param service The GitHub service
+     */
+    public void fetchMetadata(GHService service) {
+        service.fetchMetadata(this);
+    }
+
+    /**
      * Get the associated repository for this plugin
      * @param service The GitHub service
      * @return The repository object
      */
     public GHRepository getRemoteRepository(GHService service) {
         return service.getRepository(this);
+    }
+
+    /**
+     * Get the metadata repository
+     * @param service The GitHub service
+     * @return The repository object
+     */
+    public GHRepository getRemoteMetadataRepository(GHService service) {
+        return service.getMetadataRepository(this);
     }
 
     /**
@@ -986,6 +1031,26 @@ public class Plugin {
     }
 
     /**
+     * Copy metadata from plugin directory to local metadata repo
+     * @param cacheManager The cache manager
+     */
+    public void copyMetadataToLocalMetadataRepo(CacheManager cacheManager) {
+        CacheManager pluginCacheManager = buildPluginDirectoryCacheManager();
+        String safeTimestamp =
+                ZonedDateTime.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss"));
+        String metadataKey = CacheManager.MODERNIZATION_METADATA_CACHE_KEY + "-" + safeTimestamp;
+        setModernizationMetadata(pluginCacheManager.copy(
+                cacheManager,
+                Path.of(Plugin.METADATA_REPOSITORY_NAME).resolve(getName()),
+                metadataKey,
+                new ModernizationMetadata(pluginCacheManager)));
+        LOG.info(
+                "Copied plugin {} modernization metadata to cache: {}",
+                getName(),
+                getModernizationMetadata().getLocation().toAbsolutePath());
+    }
+
+    /**
      * Add a modified file to the plugin
      * @param files The files to add
      */
@@ -1013,6 +1078,15 @@ public class Plugin {
         // This is a relative path to the cache manager root
         return new CacheManager(
                 Settings.getPluginsDirectory(this).resolve(getLocalRepository().resolve("target")));
+    }
+
+    /**
+     * Build cache manager at plugin's directory for this plugin
+     * @return Cache manager
+     */
+    private CacheManager buildPluginDirectoryCacheManager() {
+        // This is a relative path to the cache manager root
+        return new CacheManager(Settings.getPluginsDirectory(this));
     }
 
     /**
