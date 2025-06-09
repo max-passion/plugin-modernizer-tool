@@ -318,7 +318,10 @@ public class PluginModernizer {
             // collect the modernziation metadata and push it to metadata repository
             if (!config.isFetchMetadataOnly()) {
                 collectModernizationMetadata(plugin);
-                plugin.initializePluginDirectory(ghService);
+                plugin.fetchMetadata(ghService);
+                plugin.forkMetadata(ghService);
+                plugin.syncMetadata(ghService);
+                plugin.copyMetadataToLocalMetadataRepo(cacheManager);
                 plugin.commitMetadata(ghService);
                 plugin.pushMetadata(ghService);
                 plugin.openMetadataPullRequest(ghService);
