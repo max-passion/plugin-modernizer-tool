@@ -10,6 +10,7 @@ import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.impl.MavenInvoker;
 import io.jenkins.tools.pluginmodernizer.core.utils.PluginService;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
@@ -1063,12 +1064,18 @@ public class Plugin {
         CacheManager pluginCacheManager = buildPluginDirectoryCacheManager();
         String safeTimestamp =
                 ZonedDateTime.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss"));
-        String metadataKey = CacheManager.MODERNIZATION_METADATA_CACHE_KEY + "-" + safeTimestamp;
+        Path targetDir =
+                Path.of(Plugin.METADATA_REPOSITORY_NAME).resolve(getName()).resolve("modernization-metadata");
+
+        // Ensure the directory exists
+        try {
+            Files.createDirectories(targetDir);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to create directory for metadata copy: " + targetDir, e);
+        }
+
         setModernizationMetadata(pluginCacheManager.copy(
-                cacheManager,
-                Path.of(Plugin.METADATA_REPOSITORY_NAME).resolve(getName()),
-                metadataKey,
-                new ModernizationMetadata(pluginCacheManager)));
+                cacheManager, targetDir, safeTimestamp + ".json", new ModernizationMetadata(pluginCacheManager)));
         LOG.info(
                 "Copied plugin {} modernization metadata to cache: {}",
                 getName(),
