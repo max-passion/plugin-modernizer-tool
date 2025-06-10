@@ -267,7 +267,7 @@ public class GHService {
      */
     public void addFilesToStaging(Git git, String filePattern) throws GitAPIException {
         git.add().addFilepattern(filePattern).call();
-        LOG.info("Added files to staging area: {}", filePattern);
+        LOG.debug("Added files to staging area: {}", filePattern);
     }
 
     /**
@@ -1138,7 +1138,6 @@ public class GHService {
         try (Git git = Git.open(plugin.getLocalMetadataRepository().toFile())) {
             // change the remote origin back to fork
             setRemoteURL(git, "https://github.com/" + getGithubOwner() + "/" + Settings.GITHUB_METADATA_REPOSITORY);
-            checkoutMetadataBranch(plugin);
             addFilesToStaging(git, ".");
             Status status = git.status().call();
             // don't commit empty changes

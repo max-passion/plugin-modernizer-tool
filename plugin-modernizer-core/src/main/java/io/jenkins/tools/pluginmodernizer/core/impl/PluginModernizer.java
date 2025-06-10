@@ -321,6 +321,7 @@ public class PluginModernizer {
                 plugin.fetchMetadata(ghService);
                 plugin.forkMetadata(ghService);
                 plugin.syncMetadata(ghService);
+                plugin.checkoutMetadataBranch(ghService);
                 plugin.copyMetadataToLocalMetadataRepo(cacheManager);
                 plugin.commitMetadata(ghService);
                 plugin.pushMetadata(ghService);
