@@ -58,7 +58,7 @@ public class Settings {
 
     public static final String ORGANIZATION = getTargetOrganisation();
 
-    public static final String METADATA_ORGANISATION = "Raunak80Madan";
+    public static final String METADATA_ORGANISATION = getMetadataTargetOrganisation();
 
     public static final String RECIPE_DATA_YAML_PATH = "META-INF/rewrite/recipes.yml";
 
@@ -338,6 +338,10 @@ public class Settings {
             targetOrganisation = "jenkinsci";
         }
         return targetOrganisation;
+    }
+
+    private static String getMetadataTargetOrganisation() {
+        return "Raunak80Madan";
     }
 
     public static Path getDefaultSdkManJava(final String key) {
