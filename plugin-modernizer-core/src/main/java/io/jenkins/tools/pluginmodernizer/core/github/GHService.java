@@ -760,9 +760,14 @@ public class GHService {
     /**
      * Fetch a metadata repository code from the original repo
      *
-     * @param plugin The plugin to fork
+     * @param plugin The plugin
      */
     public void fetchMetadata(Plugin plugin) {
+        if (config.isDryRun() || plugin.isLocal()) {
+            LOG.info("Skipping metadata fetch for plugin {} in dry-run or local mode", plugin);
+            return;
+        }
+
         // We always fetch from original repo to avoid forking when not necessary
         GHRepository repository = getMetadataRepository(plugin);
 
@@ -1027,6 +1032,10 @@ public class GHService {
      * @param plugin The plugin to checkout branch for
      */
     public void checkoutMetadataBranch(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not checking out metadata branch", plugin);
+            return;
+        }
         String branchName = plugin.getName() + "-" + "modernization-metadata";
         try (Git git = Git.open(plugin.getLocalMetadataRepository().toFile())) {
             try {
@@ -1135,6 +1144,10 @@ public class GHService {
      * @param plugin The plugin to commit changes for
      */
     public void commitMetadataChanges(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not committing metadata changes", plugin);
+            return;
+        }
         try (Git git = Git.open(plugin.getLocalMetadataRepository().toFile())) {
             // change the remote origin back to fork
             setRemoteURL(git, "https://github.com/" + getGithubOwner() + "/" + Settings.GITHUB_METADATA_REPOSITORY);
