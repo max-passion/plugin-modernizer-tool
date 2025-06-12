@@ -341,7 +341,11 @@ public class Settings {
     }
 
     private static String getMetadataTargetOrganisation() {
-        return "Raunak80Madan";
+        String metadataTargetOrganisation = System.getenv("GH_METADATA_TARGET_ORGANISATION");
+        if (metadataTargetOrganisation == null) {
+            metadataTargetOrganisation = "Raunak80Madan";
+        }
+        return metadataTargetOrganisation;
     }
 
     public static Path getDefaultSdkManJava(final String key) {
