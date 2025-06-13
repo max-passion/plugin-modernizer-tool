@@ -59,6 +59,16 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
     private Integer removedDeprecatedApis;
 
     /**
+     * The pull request URL to the modernized plugin if any
+     */
+    private String pullRequestUrl = "";
+
+    /**
+     * The pull request status to the modernized plugin if any
+     */
+    private String pullRequestStatus = "";
+
+    /**
      * Create a new modernization metadata
      * Store the metadata in the relative target directory of current folder
      */
@@ -174,5 +184,21 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
 
     public void setPluginVersion(String pluginVersion) {
         this.pluginVersion = pluginVersion;
+    }
+
+    public String getPullRequestUrl() {
+        return pullRequestUrl;
+    }
+
+    public void setPullRequestUrl(String pullRequestUrl) {
+        this.pullRequestUrl = pullRequestUrl;
+    }
+
+    public String getPullRequestStatus() {
+        return pullRequestStatus;
+    }
+
+    public void setPullRequestStatus(String pullRequestStatus) {
+        this.pullRequestStatus = pullRequestStatus;
     }
 }

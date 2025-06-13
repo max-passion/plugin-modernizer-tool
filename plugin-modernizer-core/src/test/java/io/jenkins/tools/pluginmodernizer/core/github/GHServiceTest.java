@@ -1106,6 +1106,8 @@ public class GHServiceTest {
                 .when(repository)
                 .createPullRequest(anyString(), anyString(), isNull(), anyString(), eq(true), eq(false));
 
+        doReturn(new URL("https://github.com/owner/repo/pull/123")).when(pr).getHtmlUrl();
+
         // Test
         service.openPullRequest(plugin);
 
@@ -1137,6 +1139,7 @@ public class GHServiceTest {
         doReturn(prQueryList).when(prQuery).list();
 
         doReturn(pr).when(repository).createPullRequest(anyString(), anyString(), isNull(), anyString(), eq(true));
+        doReturn(new URL("https://github.com/owner/repo/pull/123")).when(pr).getHtmlUrl();
 
         // Test
         service.openMetadataPullRequest(plugin);
@@ -1174,6 +1177,10 @@ public class GHServiceTest {
         doReturn(prQuery).when(prQuery).state(eq(GHIssueState.OPEN));
         doReturn(prQueryList).when(prQuery).list();
         doReturn(List.of(existingPr, toDeletePr)).when(prQueryList).toList();
+
+        doReturn(new URL("https://github.com/owner/repo/pull/123"))
+                .when(existingPr)
+                .getHtmlUrl();
 
         // Test
         service.openPullRequest(plugin);
@@ -1216,6 +1223,10 @@ public class GHServiceTest {
         doReturn(prQueryList).when(prQuery).list();
         doReturn(List.of(existingPr, toDeletePr)).when(prQueryList).toList();
 
+        doReturn(new URL("https://github.com/owner/repo/pull/123"))
+                .when(existingPr)
+                .getHtmlUrl();
+
         // Test
         service.openMetadataPullRequest(plugin);
 
@@ -1254,6 +1265,8 @@ public class GHServiceTest {
         doReturn(pr)
                 .when(repository)
                 .createPullRequest(anyString(), anyString(), isNull(), anyString(), eq(true), eq(true));
+
+        doReturn(new URL("https://github.com/owner/repo/pull/123")).when(pr).getHtmlUrl();
 
         // Test
         service.openPullRequest(plugin);
