@@ -22,7 +22,7 @@ public class CacheManager {
     public static final String HEALTH_SCORE_KEY = "health-score";
     public static final String INSTALLATION_STATS_KEY = "plugin-installation-stats";
     public static final String PLUGIN_METADATA_CACHE_KEY = "plugin-metadata";
-    public static final String MODERNIZATION_METADATA_CACHE_KEY = "modernization-metadata";
+    public static final String MODERNIZATION_METADATA_CACHE_KEY = "modernization-metadata.json";
     private static final Logger LOG = LoggerFactory.getLogger(CacheManager.class);
 
     private final Path location;

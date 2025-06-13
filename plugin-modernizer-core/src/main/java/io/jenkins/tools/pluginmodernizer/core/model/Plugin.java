@@ -10,9 +10,13 @@ import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.impl.MavenInvoker;
 import io.jenkins.tools.pluginmodernizer.core.utils.PluginService;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 import java.net.URI;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -39,6 +43,7 @@ import org.w3c.dom.Document;
 public class Plugin {
 
     private static final Logger LOG = LoggerFactory.getLogger(Plugin.class);
+    public static final String METADATA_REPOSITORY_NAME = Settings.GITHUB_METADATA_REPOSITORY;
 
     /**
      * The configuration to use
@@ -94,6 +99,21 @@ public class Plugin {
      * Flag to indicate if the plugin has any pull request open
      */
     private boolean hasPullRequest;
+
+    /**
+     * Flag to indicate if the modernization-metadata has any commits to be pushed
+     */
+    private boolean hasMetadataCommits;
+
+    /**
+     * Flag to indicate if the modernization-metadata has any changes pushed and ready to be merged
+     */
+    private boolean hasMetadataChangesPushed;
+
+    /**
+     * Flag to indicate if the modernization-metadata has any pull request open
+     */
+    private boolean hasMetadataPullRequest;
 
     /**
      * Return if the plugin has any error
@@ -267,6 +287,84 @@ public class Plugin {
      */
     public boolean hasPullRequest() {
         return hasPullRequest;
+    }
+
+    /**
+     * Indicate that the plugin has metadata commits to be pushed
+     * @return Plugin object
+     */
+    public Plugin withMetadataCommits() {
+        this.hasMetadataCommits = true;
+        return this;
+    }
+
+    /**
+     * Indicate that the plugin has no metadata commits to be pushed
+     * @return Plugin object
+     */
+    public Plugin withoutMetadataCommits() {
+        this.hasMetadataCommits = false;
+        return this;
+    }
+
+    /**
+     * Indicate that the plugin has metadata changes pushed and ready to be merged
+     * @return Plugin object
+     */
+    public Plugin withMetadataChangesPushed() {
+        this.hasMetadataChangesPushed = true;
+        return this;
+    }
+
+    /**
+     * Indicate that the plugin has no metadata changes pushed and ready to be merged
+     * @return Plugin object
+     */
+    public Plugin withoutMetadataChangesPushed() {
+        this.hasMetadataChangesPushed = false;
+        return this;
+    }
+
+    /**
+     * Indicate that the plugin has a metadata pull request open
+     * @return Plugin object
+     */
+    public Plugin withMetadataPullRequest() {
+        this.hasMetadataPullRequest = true;
+        return this;
+    }
+
+    /**
+     * Indicate that the plugin has no metadata pull request open
+     * @return Plugin object
+     */
+    public Plugin withoutMetadataPullRequest() {
+        this.hasMetadataPullRequest = false;
+        return this;
+    }
+
+    /**
+     * Return if the plugin has any metadata commits
+     * @return True if the plugin has commits
+     */
+    public boolean hasMetadataCommits() {
+        return hasMetadataCommits;
+    }
+
+    /**
+     * Return if the plugin has any metadata changes pushed and ready to be merged
+     * @return True if the plugin has changes pushed
+     */
+    public boolean hasMetadataChangesPushed() {
+        return hasMetadataChangesPushed;
+    }
+
+    /**
+     * Return if the plugin has any metadata changes pushed and ready to be merged
+     * @return True if the plugin has changes pushed
+     */
+    public boolean hasMetadataPullRequest() {
+        return hasMetadataPullRequest;
     }
 
     /**
@@ -458,6 +556,14 @@ public class Plugin {
             return localRepository;
         }
         return Settings.getPluginsDirectory(this).resolve("sources");
+    }
+
+    /**
+     * Get the local metadata repository path
+     * @return Local metadata repository path
+     */
+    public Path getLocalMetadataRepository() {
+        return Settings.DEFAULT_CACHE_PATH.resolve(Settings.GITHUB_METADATA_REPOSITORY);
     }
 
     /**
@@ -667,6 +773,18 @@ public class Plugin {
     }
 
     /**
+     * Fork the metadata
+     * @param service The GitHub service
+     */
+    public void forkMetadata(GHService service) {
+        if (config.isFetchMetadataOnly()) {
+            LOG.debug("Skipping fork for plugin {} as only metadata is required", name);
+            return;
+        }
+        service.forkMetadata(this);
+    }
+
+    /**
      * Fork sync this plugin
      * @param service The GitHub service
      */
@@ -679,11 +797,31 @@ public class Plugin {
     }
 
     /**
+     * Fork sync the metadata
+     * @param service The GitHub service
+     */
+    public void syncMetadata(GHService service) {
+        if (config.isFetchMetadataOnly()) {
+            LOG.debug("Skipping sync for plugin {} as only metadata is required", name);
+            return;
+        }
+        service.syncMetadata(this);
+    }
+
+    /**
      * Return if this plugin is forked
      * @param service The GitHub service
      */
     public boolean isForked(GHService service) {
         return service.isForked(this);
+    }
+
+    /**
+     * Return if the metadata is forked
+     * @param service The GitHub service
+     */
+    public boolean isForkedMetadata(GHService service) {
+        return service.isForkedMetadata(this);
     }
 
     /**
@@ -746,11 +884,27 @@ public class Plugin {
     }
 
     /**
+     * Checkout the metadata branch
+     * @param service The GitHub service
+     */
+    public void checkoutMetadataBranch(GHService service) {
+        service.checkoutMetadataBranch(this);
+    }
+
+    /**
      * Commit the changes to the plugin repository
      * @param service The GitHub service
      */
     public void commit(GHService service) {
         service.commitChanges(this);
+    }
+
+    /**
+     * Commit the metadata changes to the metadata repository
+     * @param service The GitHub service
+     */
+    public void commitMetadata(GHService service) {
+        service.commitMetadataChanges(this);
     }
 
     /**
@@ -762,6 +916,14 @@ public class Plugin {
     }
 
     /**
+     * Push the metadata changes to the metadata repository
+     * @param service The GitHub service
+     */
+    public void pushMetadata(GHService service) {
+        service.pushMetadataChanges(this);
+    }
+
+    /**
      * Open a pull request for the plugin
      * @param service The GitHub service
      */
@@ -770,11 +932,27 @@ public class Plugin {
     }
 
     /**
+     * Open a pull request for the metadata changes
+     * @param service The GitHub service
+     */
+    public void openMetadataPullRequest(GHService service) {
+        service.openMetadataPullRequest(this);
+    }
+
+    /**
      * Fetch the plugin code into local directory
      * @param service The GitHub service
      */
     public void fetch(GHService service) {
         service.fetch(this);
+    }
+
+    /**
+     * Fetch the metadata into local directory
+     * @param service The GitHub service
+     */
+    public void fetchMetadata(GHService service) {
+        service.fetchMetadata(this);
     }
 
     /**
@@ -787,12 +965,30 @@ public class Plugin {
     }
 
     /**
+     * Get the metadata repository
+     * @param service The GitHub service
+     * @return The repository object
+     */
+    public GHRepository getRemoteMetadataRepository(GHService service) {
+        return service.getMetadataRepository(this);
+    }
+
+    /**
      * Get the associated fork repository for this plugin
      * @param service The GitHub service
      * @return The repository object
      */
     public GHRepository getRemoteForkRepository(GHService service) {
         return service.getRepositoryFork(this);
+    }
+
+    /**
+     * Get the associated fork repository for the metadata
+     * @param service The GitHub service
+     * @return The repository object
+     */
+    public GHRepository getRemoteMetadataForkRepository(GHService service) {
+        return service.getMetadataRepositoryFork(this);
     }
 
     /**
@@ -861,6 +1057,32 @@ public class Plugin {
     }
 
     /**
+     * Copy metadata from plugin directory to local metadata repo
+     * @param cacheManager The cache manager
+     */
+    public void copyMetadataToLocalMetadataRepo(CacheManager cacheManager) {
+        CacheManager pluginCacheManager = buildPluginDirectoryCacheManager();
+        String safeTimestamp =
+                ZonedDateTime.now(ZoneId.of("UTC")).format(DateTimeFormatter.ofPattern("yyyy-MM-dd'T'HH-mm-ss"));
+        Path targetDir =
+                Path.of(Plugin.METADATA_REPOSITORY_NAME).resolve(getName()).resolve("modernization-metadata");
+
+        // Ensure the directory exists
+        try {
+            Files.createDirectories(targetDir);
+        } catch (IOException e) {
+            throw new UncheckedIOException("Failed to create directory for metadata copy: " + targetDir, e);
+        }
+
+        setModernizationMetadata(pluginCacheManager.copy(
+                cacheManager, targetDir, safeTimestamp + ".json", new ModernizationMetadata(pluginCacheManager)));
+        LOG.info(
+                "Copied plugin {} modernization metadata to cache: {}",
+                getName(),
+                getModernizationMetadata().getLocation().toAbsolutePath());
+    }
+
+    /**
      * Add a modified file to the plugin
      * @param files The files to add
      */
@@ -888,6 +1110,15 @@ public class Plugin {
         // This is a relative path to the cache manager root
         return new CacheManager(
                 Settings.getPluginsDirectory(this).resolve(getLocalRepository().resolve("target")));
+    }
+
+    /**
+     * Build cache manager at plugin's directory for this plugin
+     * @return Cache manager
+     */
+    private CacheManager buildPluginDirectoryCacheManager() {
+        // This is a relative path to the cache manager root
+        return new CacheManager(Settings.getPluginsDirectory(this));
     }
 
     /**
