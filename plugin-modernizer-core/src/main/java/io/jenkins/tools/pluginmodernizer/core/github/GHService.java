@@ -398,6 +398,10 @@ public class GHService {
      * @param plugin The plugin to fork
      */
     public void forkMetadata(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not forking metadata repo", plugin);
+            return;
+        }
         if (config.isFetchMetadataOnly()) {
             LOG.info("Skipping forking plugin {} in fetch-metadata-only mode", plugin);
             return;
@@ -644,6 +648,10 @@ public class GHService {
      * @param plugin The plugin to sync
      */
     public void syncMetadata(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.info("Plugin {} is local. Not syncing metadata repo", plugin);
+            return;
+        }
         if (config.isFetchMetadataOnly()) {
             LOG.info("Skipping sync metadata {} in fetch-metadata-only mode", plugin);
             return;
@@ -763,8 +771,8 @@ public class GHService {
      * @param plugin The plugin
      */
     public void fetchMetadata(Plugin plugin) {
-        if (config.isDryRun() || plugin.isLocal()) {
-            LOG.info("Skipping metadata fetch for plugin {} in dry-run or local mode", plugin);
+        if (plugin.isLocal()) {
+            LOG.info("Skipping metadata fetch for plugin {} as its local", plugin);
             return;
         }
 
@@ -1410,6 +1418,7 @@ public class GHService {
                 existing.setBody(prBody);
                 plugin.withPullRequest();
                 LOG.info("Pull request update: {}", existing.getHtmlUrl());
+                plugin.setPullRequestUrl(existing.getHtmlUrl().toString());
                 deleteLegacyPrs(plugin);
                 return;
             } catch (Exception e) {
@@ -1428,6 +1437,7 @@ public class GHService {
                     true,
                     config.isDraft());
             LOG.info("Pull request created: {}", pr.getHtmlUrl());
+            plugin.setPullRequestUrl(pr.getHtmlUrl().toString());
             plugin.withPullRequest();
             deleteLegacyPrs(plugin);
             try {
@@ -1459,7 +1469,7 @@ public class GHService {
 
         String prTitle = "Modernization-metadata for" + " " + plugin.getName();
         String prBody = "Modernization metadata for `" + plugin.getName() + "` at `"
-                + ZonedDateTime.now(ZoneId.of("UTC")) + "`";
+                + ZonedDateTime.now(ZoneId.of("UTC")) + "`" + "\n" + "PR: " + plugin.getPullRequestUrl();
         try {
             // Render PR title and body
             LOG.debug("Pull request title: {}", prTitle);
