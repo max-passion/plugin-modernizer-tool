@@ -314,19 +314,6 @@ public class PluginModernizer {
 
             // Run OpenRewrite
             plugin.runOpenRewrite(mavenInvoker);
-
-            // collect the modernziation metadata and push it to metadata repository
-            if (!config.isFetchMetadataOnly()) {
-                collectModernizationMetadata(plugin);
-                plugin.fetchMetadata(ghService);
-                plugin.forkMetadata(ghService);
-                plugin.syncMetadata(ghService);
-                plugin.checkoutMetadataBranch(ghService);
-                plugin.copyMetadataToLocalMetadataRepo(cacheManager);
-                plugin.commitMetadata(ghService);
-                plugin.pushMetadata(ghService);
-                plugin.openMetadataPullRequest(ghService);
-            }
             if (plugin.hasErrors()) {
                 LOG.warn(
                         "Skipping plugin {} due to openrewrite recipes errors. Check logs for more details.",
@@ -376,6 +363,16 @@ public class PluginModernizer {
                 if (config.isRemoveForks()) {
                     plugin.deleteFork(ghService);
                 }
+                // collect the modernization metadata and push it to metadata repository
+                collectModernizationMetadata(plugin);
+                plugin.fetchMetadata(ghService);
+                plugin.forkMetadata(ghService);
+                plugin.syncMetadata(ghService);
+                plugin.checkoutMetadataBranch(ghService);
+                plugin.copyMetadataToLocalMetadataRepo(cacheManager);
+                plugin.commitMetadata(ghService);
+                plugin.pushMetadata(ghService);
+                plugin.openMetadataPullRequest(ghService);
             }
 
         }
@@ -453,6 +450,11 @@ public class PluginModernizer {
         modernizationMetadata.setTags(plugin.getConfig().getRecipe().getTags());
         modernizationMetadata.setMigrationId(plugin.getConfig().getRecipe().getName());
         plugin.setModernizationMetadata(modernizationMetadata);
+        modernizationMetadata.setPullRequestUrl(plugin.getPullRequestUrl());
+        // if the there is any PR created, set the status to open by default
+        if (plugin.getPullRequestUrl() != null && !plugin.getPullRequestUrl().isEmpty()) {
+            modernizationMetadata.setPullRequestStatus("open");
+        }
         modernizationMetadata.save();
         LOG.info(
                 "Modernization metadata for plugin {}: {}",

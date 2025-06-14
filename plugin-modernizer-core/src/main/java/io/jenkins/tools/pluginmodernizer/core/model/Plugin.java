@@ -100,6 +100,8 @@ public class Plugin {
      */
     private boolean hasPullRequest;
 
+    private String pullRequestUrl;
+
     /**
      * Flag to indicate if the modernization-metadata has any commits to be pushed
      */
@@ -287,6 +289,14 @@ public class Plugin {
      */
     public boolean hasPullRequest() {
         return hasPullRequest;
+    }
+
+    public String getPullRequestUrl() {
+        return pullRequestUrl;
+    }
+
+    public void setPullRequestUrl(String pullRequestUrl) {
+        this.pullRequestUrl = pullRequestUrl;
     }
 
     /**
