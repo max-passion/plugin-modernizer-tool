@@ -83,6 +83,21 @@ public class PluginTest {
     }
 
     @Test
+    public void testGetDiffStats() {
+        Plugin plugin = Plugin.build("example");
+        plugin.withConfig(config);
+        // dry-run true
+        doReturn(true).when(config).isDryRun();
+        plugin.getDiffStats(ghService, config.isDryRun());
+        verify(ghService).getDiffStats(plugin, true);
+        // dry-run false
+        doReturn(false).when(config).isDryRun();
+        plugin.getDiffStats(ghService, config.isDryRun());
+        verify(ghService).getDiffStats(plugin, false);
+        verifyNoMoreInteractions(ghService);
+    }
+
+    @Test
     public void testHasCommits() {
         Plugin plugin = Plugin.build("example");
         assertFalse(plugin.hasCommits());

@@ -586,6 +586,16 @@ public class Plugin {
     }
 
     /**
+     * Get the diff statistics after modernization
+     * @param service The GitHub service
+     * @param dryRun The state of the cli tool
+     * @return DiffStats (no. of additions, deletions and changed files)
+     */
+    public DiffStats getDiffStats(GHService service, boolean dryRun) {
+        return service.getDiffStats(this, dryRun);
+    }
+
+    /**
      * Get the path of the JDK directory
      * @return Path of the JDK directory
      */

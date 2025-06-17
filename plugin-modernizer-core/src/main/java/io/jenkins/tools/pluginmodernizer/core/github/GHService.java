@@ -2,12 +2,14 @@ package io.jenkins.tools.pluginmodernizer.core.github;
 
 import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
+import io.jenkins.tools.pluginmodernizer.core.model.DiffStats;
 import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PluginProcessingException;
 import io.jenkins.tools.pluginmodernizer.core.utils.JWTUtils;
 import io.jenkins.tools.pluginmodernizer.core.utils.TemplateUtils;
 import jakarta.inject.Inject;
+import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.net.URISyntaxException;
@@ -30,9 +32,20 @@ import org.eclipse.jgit.api.Status;
 import org.eclipse.jgit.api.errors.GitAPIException;
 import org.eclipse.jgit.api.errors.RefAlreadyExistsException;
 import org.eclipse.jgit.api.errors.RefNotFoundException;
+import org.eclipse.jgit.diff.DiffEntry;
+import org.eclipse.jgit.diff.DiffFormatter;
+import org.eclipse.jgit.diff.Edit;
+import org.eclipse.jgit.diff.EditList;
+import org.eclipse.jgit.diff.RawTextComparator;
+import org.eclipse.jgit.dircache.DirCacheIterator;
 import org.eclipse.jgit.errors.UnsupportedCredentialItem;
 import org.eclipse.jgit.internal.signing.ssh.SshSigner;
+import org.eclipse.jgit.lib.ObjectId;
+import org.eclipse.jgit.lib.ObjectReader;
 import org.eclipse.jgit.lib.Ref;
+import org.eclipse.jgit.lib.Repository;
+import org.eclipse.jgit.revwalk.RevWalk;
+import org.eclipse.jgit.storage.file.FileRepositoryBuilder;
 import org.eclipse.jgit.transport.CredentialItem;
 import org.eclipse.jgit.transport.CredentialsProvider;
 import org.eclipse.jgit.transport.PushResult;
@@ -40,6 +53,8 @@ import org.eclipse.jgit.transport.RefSpec;
 import org.eclipse.jgit.transport.SshSessionFactory;
 import org.eclipse.jgit.transport.URIish;
 import org.eclipse.jgit.transport.UsernamePasswordCredentialsProvider;
+import org.eclipse.jgit.treewalk.CanonicalTreeParser;
+import org.eclipse.jgit.treewalk.FileTreeIterator;
 import org.kohsuke.github.GHApp;
 import org.kohsuke.github.GHAppInstallationToken;
 import org.kohsuke.github.GHBranchSync;
@@ -1640,6 +1655,95 @@ public class GHService {
         } catch (IOException e) {
             LOG.warn("Failed to check if legacy pull request exists", e);
         }
+    }
+
+    /**
+     * Get the diff statistics after modernization
+     * @param plugin The plugin after modernization
+     * @param dryRun The state of the cli tool
+     * @return DiffStats (no. of additions, deletions and changed files)
+     */
+    public DiffStats getDiffStats(Plugin plugin, boolean dryRun) {
+        Path gitDirPath = Settings.DEFAULT_CACHE_PATH
+                .resolve(plugin.getName())
+                .resolve("sources")
+                .resolve(".git")
+                .normalize();
+        File gitDir = gitDirPath.toFile();
+
+        try (Repository repository = new FileRepositoryBuilder()
+                        .setGitDir(gitDir)
+                        .readEnvironment()
+                        .findGitDir()
+                        .build();
+                Git git = new Git(repository)) {
+
+            ObjectReader reader = repository.newObjectReader();
+            DiffFormatter formatter = new DiffFormatter(new ByteArrayOutputStream());
+            formatter.setRepository(repository);
+            formatter.setDiffComparator(RawTextComparator.DEFAULT);
+            formatter.setDetectRenames(true);
+
+            int additions = 0;
+            int deletions = 0;
+            int changedFiles = 0;
+            if (dryRun) {
+                // UNSTAGED: Working Directory vs Index
+                DirCacheIterator indexTree = new DirCacheIterator(repository.readDirCache());
+                FileTreeIterator workingTree = new FileTreeIterator(repository);
+
+                List<DiffEntry> unstagedDiffs = git.diff()
+                        .setOldTree(indexTree)
+                        .setNewTree(workingTree)
+                        .setShowNameAndStatusOnly(false)
+                        .call();
+
+                for (DiffEntry diff : unstagedDiffs) {
+                    EditList edits = formatter.toFileHeader(diff).toEditList();
+                    for (Edit edit : edits) {
+                        additions += edit.getEndB() - edit.getBeginB();
+                        deletions += edit.getEndA() - edit.getBeginA();
+                    }
+                    changedFiles++;
+                }
+                return new DiffStats(additions, deletions, changedFiles);
+            }
+            // COMMITTED: HEAD vs default branch or previous commit
+            ObjectId head = repository.resolve("HEAD");
+            String defaultBranchName = plugin.getRemoteRepository(this).getDefaultBranch();
+            ObjectId defaultBranch = repository.resolve("refs/heads/" + defaultBranchName);
+
+            if (defaultBranch == null) {
+                throw new IOException("Could not resolve default branch.");
+            }
+
+            CanonicalTreeParser oldTree = new CanonicalTreeParser();
+            CanonicalTreeParser newTree = new CanonicalTreeParser();
+            oldTree.reset(reader, new RevWalk(repository).parseTree(defaultBranch));
+            newTree.reset(reader, new RevWalk(repository).parseTree(head));
+
+            List<DiffEntry> committedDiffs = git.diff()
+                    .setOldTree(oldTree)
+                    .setNewTree(newTree)
+                    .setShowNameAndStatusOnly(false)
+                    .call();
+
+            for (DiffEntry diff : committedDiffs) {
+                EditList edits = formatter.toFileHeader(diff).toEditList();
+                for (Edit edit : edits) {
+                    additions += edit.getEndB() - edit.getBeginB();
+                    deletions += edit.getEndA() - edit.getBeginA();
+                }
+                changedFiles++;
+            }
+            reader.close();
+            return new DiffStats(additions, deletions, changedFiles);
+
+        } catch (IOException | GitAPIException e) {
+            plugin.addError("Failed to get diff stats", e);
+            plugin.raiseLastError();
+        }
+        return null;
     }
 
     /**
