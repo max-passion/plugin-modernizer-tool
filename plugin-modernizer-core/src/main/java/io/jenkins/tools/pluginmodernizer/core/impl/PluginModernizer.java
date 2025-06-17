@@ -6,6 +6,7 @@ import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ModernizationMetadata;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.github.GHService;
+import io.jenkins.tools.pluginmodernizer.core.model.DiffStats;
 import io.jenkins.tools.pluginmodernizer.core.model.JDK;
 import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
@@ -449,12 +450,18 @@ public class PluginModernizer {
         modernizationMetadata.setPluginName(plugin.getName());
         modernizationMetadata.setTags(plugin.getConfig().getRecipe().getTags());
         modernizationMetadata.setMigrationId(plugin.getConfig().getRecipe().getName());
-        plugin.setModernizationMetadata(modernizationMetadata);
         modernizationMetadata.setPullRequestUrl(plugin.getPullRequestUrl());
         // if the there is any PR created, set the status to open by default
         if (plugin.getPullRequestUrl() != null && !plugin.getPullRequestUrl().isEmpty()) {
             modernizationMetadata.setPullRequestStatus("open");
         }
+        modernizationMetadata.setDryRun(config.isDryRun());
+        // get the diff stats for the plugin
+        DiffStats diffStats = plugin.getDiffStats(ghService, config.isDryRun());
+        modernizationMetadata.setAdditions(diffStats.additions());
+        modernizationMetadata.setDeletions(diffStats.deletions());
+        modernizationMetadata.setChangedFiles(diffStats.changedFiles());
+        plugin.setModernizationMetadata(modernizationMetadata);
         modernizationMetadata.save();
         LOG.info(
                 "Modernization metadata for plugin {}: {}",
