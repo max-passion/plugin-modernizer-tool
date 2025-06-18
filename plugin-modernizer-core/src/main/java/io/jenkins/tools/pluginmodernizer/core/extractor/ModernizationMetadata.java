@@ -69,6 +69,26 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
     private String pullRequestStatus = "";
 
     /**
+     * The tool state when performing the modernization
+     */
+    private boolean dryRun;
+
+    /**
+     * Number of additions
+     */
+    private Integer additions;
+
+    /**
+     * Number of deletions
+     */
+    private Integer deletions;
+
+    /**
+     * Number of changes files
+     */
+    private Integer changedFiles;
+
+    /**
      * Create a new modernization metadata
      * Store the metadata in the relative target directory of current folder
      */
@@ -200,5 +220,37 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
 
     public void setPullRequestStatus(String pullRequestStatus) {
         this.pullRequestStatus = pullRequestStatus;
+    }
+
+    public boolean getDryRun() {
+        return dryRun;
+    }
+
+    public void setDryRun(boolean dryRun) {
+        this.dryRun = dryRun;
+    }
+
+    public Integer getAdditions() {
+        return additions;
+    }
+
+    public void setAdditions(Integer additions) {
+        this.additions = additions;
+    }
+
+    public Integer getDeletions() {
+        return deletions;
+    }
+
+    public void setDeletions(Integer deletions) {
+        this.deletions = deletions;
+    }
+
+    public Integer getChangedFiles() {
+        return changedFiles;
+    }
+
+    public void setChangedFiles(Integer changedFiles) {
+        this.changedFiles = changedFiles;
     }
 }
