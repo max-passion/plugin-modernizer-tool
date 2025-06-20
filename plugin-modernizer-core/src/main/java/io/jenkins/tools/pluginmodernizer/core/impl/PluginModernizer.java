@@ -364,8 +364,9 @@ public class PluginModernizer {
                 if (config.isRemoveForks()) {
                     plugin.deleteFork(ghService);
                 }
-                // collect the modernization metadata and push it to metadata repository
+                // collect the modernization metadata and push it to metadata repository if valid
                 collectModernizationMetadata(plugin);
+                validateModernizationMetadata(plugin);
                 plugin.fetchMetadata(ghService);
                 plugin.forkMetadata(ghService);
                 plugin.syncMetadata(ghService);
@@ -467,6 +468,25 @@ public class PluginModernizer {
                 "Modernization metadata for plugin {}: {}",
                 plugin.getName(),
                 modernizationMetadata.getLocation().toAbsolutePath());
+    }
+
+    /**
+     * Validate modernization metadata for a plugin
+     * @param plugin The plugin
+     */
+    public void validateModernizationMetadata(Plugin plugin) {
+        if (plugin.isLocal()) {
+            LOG.warn("Skipping modernization metadata validation for local plugin {}.", plugin.getName());
+            return;
+        }
+        if (plugin.getModernizationMetadata() == null) {
+            LOG.warn("Plugin {} has no modernization metadata. Skipping validation.", plugin.getName());
+        }
+        if (plugin.getModernizationMetadata().validate()) {
+            LOG.info("Plugin {} modernization metadata is valid.", plugin.getName());
+        } else {
+            throw new ModernizerException("Plugin " + plugin.getName() + " has invalid modernization metadata.");
+        }
     }
 
     /**
