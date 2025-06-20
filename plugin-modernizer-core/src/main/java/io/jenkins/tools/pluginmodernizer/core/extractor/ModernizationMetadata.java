@@ -6,12 +6,19 @@ import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.model.CacheEntry;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Set;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Modernization metadata for a plugin extracted after executing the recipes
  */
 public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
+
+    private static final Logger LOG = LoggerFactory.getLogger(ModernizationMetadata.class);
 
     /**
      * Name of the plugin
@@ -132,6 +139,38 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
                 ModernizationMetadata.class,
                 CacheManager.MODERNIZATION_METADATA_CACHE_KEY,
                 Path.of(plugin.getName()));
+    }
+
+    /**
+     * Validate the fields of modernization metadata
+     * @return true if all required fields are present, else false
+     */
+    public boolean validate() {
+        Map<String, Object> requiredFields = new HashMap<>();
+        requiredFields.put("pluginName", pluginName);
+        requiredFields.put("pluginRepository", pluginRepository);
+        requiredFields.put("pluginVersion", pluginVersion);
+        requiredFields.put("rpuBaseline", rpuBaseline);
+        requiredFields.put("migrationName", migrationName);
+        requiredFields.put("migrationDescription", migrationDescription);
+        requiredFields.put("tags", (tags != null && !tags.isEmpty()) ? tags : null);
+        requiredFields.put("migrationId", migrationId);
+        requiredFields.put("dryRun", dryRun);
+        requiredFields.put("additions", additions);
+        requiredFields.put("deletions", deletions);
+        requiredFields.put("changedFiles", changedFiles);
+
+        List<String> missingFields = requiredFields.entrySet().stream()
+                .filter(entry -> entry.getValue() == null)
+                .map(Map.Entry::getKey)
+                .toList();
+
+        if (!missingFields.isEmpty()) {
+            LOG.info("Missing required fields: {}", String.join(", ", missingFields));
+            return false;
+        }
+
+        return true;
     }
 
     public String getPluginRepository() {
