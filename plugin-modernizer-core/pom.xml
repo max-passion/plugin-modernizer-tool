@@ -248,7 +248,7 @@
                 <artifactItem>
                   <groupId>org.kohsuke.stapler</groupId>
                   <artifactId>stapler</artifactId>
-                  <version>1990.v99d303a_82457</version>
+                  <version>1994.vd86361073b_15</version>
                 </artifactItem>
                 <dependency>
                   <groupId>jakarta.servlet</groupId>
