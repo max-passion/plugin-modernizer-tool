@@ -61,6 +61,11 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
     private String migrationId;
 
     /**
+     * Status of migration (success or fail)
+     */
+    private String migrationStatus;
+
+    /**
      * Number of deprecated APIs removed by the migration
      */
     private Integer removedDeprecatedApis;
@@ -153,6 +158,7 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
         requiredFields.put("rpuBaseline", rpuBaseline);
         requiredFields.put("migrationName", migrationName);
         requiredFields.put("migrationDescription", migrationDescription);
+        requiredFields.put("migrationStatus", migrationStatus);
         requiredFields.put("tags", (tags != null && !tags.isEmpty()) ? tags : null);
         requiredFields.put("migrationId", migrationId);
         requiredFields.put("dryRun", dryRun);
@@ -227,6 +233,14 @@ public class ModernizationMetadata extends CacheEntry<ModernizationMetadata> {
 
     public void setMigrationId(String migrationId) {
         this.migrationId = migrationId;
+    }
+
+    public String getMigrationStatus() {
+        return migrationStatus;
+    }
+
+    public void setMigrationStatus(String migrationStatus) {
+        this.migrationStatus = migrationStatus;
     }
 
     public String getRpuBaseline() {
