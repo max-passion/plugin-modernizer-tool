@@ -364,17 +364,6 @@ public class PluginModernizer {
                 if (config.isRemoveForks()) {
                     plugin.deleteFork(ghService);
                 }
-                // collect the modernization metadata and push it to metadata repository if valid
-                collectModernizationMetadata(plugin);
-                validateModernizationMetadata(plugin);
-                plugin.fetchMetadata(ghService);
-                plugin.forkMetadata(ghService);
-                plugin.syncMetadata(ghService);
-                plugin.checkoutMetadataBranch(ghService);
-                plugin.copyMetadataToLocalMetadataRepo(cacheManager);
-                plugin.commitMetadata(ghService);
-                plugin.pushMetadata(ghService);
-                plugin.openMetadataPullRequest(ghService);
             }
 
         }
@@ -388,6 +377,22 @@ public class PluginModernizer {
         catch (Exception e) {
             if (!plugin.hasErrors()) {
                 plugin.addError("Unexpected processing error. Check the logs at " + plugin.getLogFile(), e);
+            }
+        } finally {
+            try {
+                // collect the modernization metadata and push it to metadata repository if valid
+                collectModernizationMetadata(plugin);
+                validateModernizationMetadata(plugin);
+                plugin.fetchMetadata(ghService);
+                plugin.forkMetadata(ghService);
+                plugin.syncMetadata(ghService);
+                plugin.checkoutMetadataBranch(ghService);
+                plugin.copyMetadataToLocalMetadataRepo(cacheManager);
+                plugin.commitMetadata(ghService);
+                plugin.pushMetadata(ghService);
+                plugin.openMetadataPullRequest(ghService);
+            } catch (Exception e) {
+                plugin.addError("Failed to collect modernization metadata for plugin " + plugin.getName(), e);
             }
         }
     }
@@ -462,6 +467,11 @@ public class PluginModernizer {
         modernizationMetadata.setAdditions(diffStats.additions());
         modernizationMetadata.setDeletions(diffStats.deletions());
         modernizationMetadata.setChangedFiles(diffStats.changedFiles());
+        if (plugin.hasErrors() || plugin.hasPreconditionErrors()) {
+            modernizationMetadata.setMigrationStatus("fail");
+        } else {
+            modernizationMetadata.setMigrationStatus("success");
+        }
         plugin.setModernizationMetadata(modernizationMetadata);
         modernizationMetadata.save();
         LOG.info(
