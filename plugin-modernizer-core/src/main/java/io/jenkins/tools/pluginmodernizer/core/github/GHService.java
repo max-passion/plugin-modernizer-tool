@@ -401,6 +401,10 @@ public class GHService {
      * @param plugin The plugin to fork
      */
     public void forkMetadata(Plugin plugin) {
+        if (config.isDryRun()) {
+            LOG.info("Skipping forking metadata {} in dry-run mode", plugin);
+            return;
+        }
         if (plugin.isLocal()) {
             LOG.info("Plugin {} is local. Not forking metadata repo", plugin);
             return;
@@ -661,6 +665,10 @@ public class GHService {
      * @param plugin The plugin to sync
      */
     public void syncMetadata(Plugin plugin) {
+        if (config.isDryRun()) {
+            LOG.info("Skipping sync metadata {} in dry-run mode", plugin);
+            return;
+        }
         if (plugin.isLocal()) {
             LOG.info("Plugin {} is local. Not syncing metadata repo", plugin);
             return;
@@ -784,6 +792,10 @@ public class GHService {
      * @param plugin The plugin
      */
     public void fetchMetadata(Plugin plugin) {
+        if (config.isDryRun()) {
+            LOG.info("Skipping metadata fetch for plugin {} in dry-run mode", plugin);
+            return;
+        }
         if (plugin.isLocal()) {
             LOG.info("Skipping metadata fetch for plugin {} as its local", plugin);
             return;
@@ -1165,6 +1177,10 @@ public class GHService {
      * @param plugin The plugin to commit changes for
      */
     public void commitMetadataChanges(Plugin plugin) {
+        if (config.isDryRun()) {
+            LOG.info("Skipping commits changes for metadata {} in dry-run mode", plugin);
+            return;
+        }
         if (plugin.isLocal()) {
             LOG.info("Plugin {} is local. Not committing metadata changes", plugin);
             return;
@@ -1344,6 +1360,10 @@ public class GHService {
      * @param plugin The plugin that have been modernized
      */
     public void pushMetadataChanges(Plugin plugin) {
+        if (config.isDryRun()) {
+            LOG.info("Skipping push changes for metadata {} in dry-run mode", plugin);
+            return;
+        }
         if (config.isFetchMetadataOnly()) {
             LOG.info("Skipping push changes for modernization metadata {} in fetch-metadata-only mode", plugin);
             return;
@@ -1485,6 +1505,11 @@ public class GHService {
             // Render PR title and body
             LOG.debug("Pull request title: {}", prTitle);
             LOG.debug("Pull request body: {}", prBody);
+
+            if (config.isDryRun()) {
+                LOG.info("Skipping pull request changes for metadata {} in dry-run mode", plugin);
+                return;
+            }
 
             if (config.isFetchMetadataOnly()) {
                 LOG.info("Skipping pull request for modernization-metadata {} in fetch-metadata-only mode", plugin);
