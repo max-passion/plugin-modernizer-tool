@@ -2,16 +2,6 @@ name: Validate Metadata
 
 on:
   workflow_call:
-    inputs:
-      pr_number:
-        required: true
-        type: string
-    secrets:
-      GH_TOKEN:
-        required: true
-
-permissions:
-  pull-requests: write
 
 jobs:
   validate-metadata:
@@ -30,6 +20,6 @@ jobs:
 
       - name: Validate metadata
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
-          PR_NUMBER: ${{ inputs.pr_number }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
         run: python scripts/validate_metadata.py

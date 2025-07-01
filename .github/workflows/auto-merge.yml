@@ -2,13 +2,6 @@ name: Auto-Merge PR After Checks
 
 on:
   workflow_call:
-    secrets:
-      GH_TOKEN:
-        required: true
-
-permissions:
-  pull-requests: write
-  contents: write
 
 jobs:
   auto-merge:
@@ -18,4 +11,4 @@ jobs:
       - name: Enable GitHub Auto-Merge
         run: gh pr merge ${{ github.event.pull_request.html_url }} --merge --auto --delete-branch
         env:
-          GH_TOKEN: ${{ secrets.GH_TOKEN }}
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
