@@ -130,7 +130,7 @@ public enum PreconditionError {
                     int nonHttpsCount = 0;
                     for (int i = 0; i < repositoryUrls.getLength(); i++) {
                         String url = repositoryUrls.item(i).getTextContent().trim();
-                        if (!url.startsWith("https") && !url.startsWith("${")) {
+                        if (!url.startsWith("https") && !url.startsWith("${") && !url.startsWith("file://")) {
                             nonHttpsCount++;
                         }
                     }
