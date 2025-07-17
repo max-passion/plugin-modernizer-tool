@@ -18,6 +18,11 @@ jobs:
       - name: Install dependencies
         run: pip install pandas
 
+      - name: Download generate_reports.py script
+        run: |
+          mkdir scripts
+          curl -sSL https://raw.githubusercontent.com/jenkins-infra/plugin-modernizer-tool/main/scripts/generate_reports.py -o scripts/generate_reports.py
+
       - name: Generate report script
         run: python scripts/generate_reports.py
 
@@ -30,7 +35,7 @@ jobs:
 
           BRANCH_NAME="automation/reports"
           git checkout -b "$BRANCH_NAME"
-          git add .
+          git add --all ":!scripts"
           git commit -m "Update modernization reports" || echo "No changes to commit"
           git push origin "$BRANCH_NAME" --force
           gh pr create --title "chore(reports): update plugin migration reports" \

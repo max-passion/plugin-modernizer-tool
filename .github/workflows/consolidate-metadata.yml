@@ -15,6 +15,12 @@ jobs:
         with:
           python-version: '3.13'
 
+      - name: Download consolidate_metadata.py script
+        run: |
+          mkdir scripts
+          curl -sSL https://raw.githubusercontent.com/jenkins-infra/plugin-modernizer-tool/main/scripts/consolidate_metadata.py -o scripts/consolidate_metadata.py
+
+
       - name: Run consolidation script
         run: python scripts/consolidate_metadata.py
 
@@ -27,7 +33,7 @@ jobs:
 
           BRANCH_NAME="automation/consolidate-metadata"
           git checkout -b "$BRANCH_NAME"
-          git add .
+          git add --all ":!scripts"
           git commit -m "Update aggregated metadata for each plugin" || echo "No changes to commit"
           git push origin "$BRANCH_NAME" --force
           gh pr create --title "chore(consolidate): Update aggregated metadata for each plugin" \

@@ -18,6 +18,11 @@ jobs:
       - name: Install dependencies
         run: pip install requests PyGithub jsonschema
 
+      - name: Download validate_metadata.py script
+        run: |
+          mkdir scripts
+          curl -sSL https://raw.githubusercontent.com/jenkins-infra/plugin-modernizer-tool/main/scripts/validate_metadata.py -o scripts/validate_metadata.py
+
       - name: Validate metadata
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
