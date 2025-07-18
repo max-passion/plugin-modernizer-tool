@@ -18,6 +18,11 @@ jobs:
       - name: Install dependencies
         run: pip install -r requirements.txt
 
+      - name: Download update_metadata.py script
+        run: |
+          mkdir scripts
+          curl -sSL https://raw.githubusercontent.com/jenkins-infra/plugin-modernizer-tool/main/scripts/update_metadata.py -o scripts/update_metadata.py
+
       - name: Run updation script
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
@@ -35,7 +40,7 @@ jobs:
           # Create new branch
           git checkout -b "$BRANCH_NAME"
 
-          git add .
+          git add --all ":!scripts" 
           git commit -m "Update PR statuses and branch info in metadata files" || exit 0
 
           # Push to branch (force needed if branch already exists)
