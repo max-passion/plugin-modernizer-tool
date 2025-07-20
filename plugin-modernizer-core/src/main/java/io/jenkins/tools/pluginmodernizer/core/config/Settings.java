@@ -202,6 +202,10 @@ public class Settings {
         return readProperty("bom.recommended.version", "versions.properties");
     }
 
+    public static String getMavenVersion() {
+        return readProperty("maven.version", "versions.properties");
+    }
+
     /**
      * Return a plugin version from versions.properties
      * @param plugin The plugin name (for example commons-compress-api)

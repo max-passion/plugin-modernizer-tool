@@ -7,6 +7,7 @@ import com.github.tomakehurst.wiremock.junit5.WireMockRuntimeInfo;
 import com.github.tomakehurst.wiremock.junit5.WireMockTest;
 import io.jenkins.tools.pluginmodernizer.cli.utils.GitHubServerContainer;
 import io.jenkins.tools.pluginmodernizer.cli.utils.ModernizerTestWatcher;
+import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import io.jenkins.tools.pluginmodernizer.core.extractor.PluginMetadata;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
@@ -730,7 +731,8 @@ public class CommandLineITCase {
      * @return Use version from the target directory
      */
     private Path getModernizerMavenHome() {
-        return Path.of("target/apache-maven-3.9.10").toAbsolutePath();
+        return Path.of("target/apache-maven-%s".formatted(Settings.getMavenVersion()))
+                .toAbsolutePath();
     }
 
     /**
