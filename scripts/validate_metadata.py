@@ -17,7 +17,7 @@ pr = repo.get_pull(int(pr_number))
 # JSON schema for metadata validation
 schema = {
     "type": "object",
-    "required": ["pluginName", "pluginRepository", "pluginVersion", "rpuBaseline", "migrationName", "migrationDescription", "tags", "migrationId", "migrationStatus", "pullRequestUrl", "pullRequestStatus", "dryRun", "additions", "deletions", "changedFiles", "key", "path"],
+    "required": ["pluginName", "pluginRepository", "pluginVersion", "effectiveBaseline", "targetBaseline", "jenkinsVersion", "migrationName", "migrationDescription", "tags", "migrationId", "migrationStatus", "pullRequestUrl", "pullRequestStatus", "dryRun", "additions", "deletions", "changedFiles", "key", "path"],
     "properties": {
         "pluginName": {"type": "string", "pattern": "^[a-zA-Z0-9-]+$"},
         "pluginRepository": {"type": "string", "format": "uri", "pattern": "^https://github.com/[^/]+/.+\\.git$"},
