@@ -326,7 +326,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: asm-api
-      pluginVersion: 9.8-135.vb_2239d08ee90
+      pluginVersion: 9.8-163.vb_2a_96d3f9c3c
       replaces:
         - groupId: org.ow2.asm
           artifactId: asm
