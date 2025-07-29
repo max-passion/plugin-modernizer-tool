@@ -62,6 +62,22 @@ public class DeclarativeRecipesTest implements RewriteTest {
             )""";
 
     @Language("groovy")
+    private static final String EXPECTED_UPCOMING_MODERN_JENKINSFILE =
+            """
+            /*
+            See the documentation for more options:
+            https://github.com/jenkins-infra/pipeline-library/
+            */
+            buildPlugin(
+                forkCount: '1C', // Run a JVM per core in tests
+                useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
+                configurations: [
+                    [platform: 'linux', jdk: 25],
+                    [platform: 'windows', jdk: 21]
+                ]
+            )""";
+
+    @Language("groovy")
     private static final String JAVA_8_JENKINS_FILE =
             """
             /*
@@ -652,7 +668,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 // language=groovy
                 groovy(
                         null,
-                        EXPECTED_MODERN_JENKINSFILE,
+                        EXPECTED_UPCOMING_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
                 pomXml(
@@ -1091,7 +1107,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 // language=groovy
                 groovy(
                         null,
-                        EXPECTED_MODERN_JENKINSFILE,
+                        EXPECTED_UPCOMING_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
                 pomXml(
@@ -3607,6 +3623,39 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   </pluginRepositories>
                 </project>
                 """));
+    }
+
+    @Test
+    void migrateToJava25JenkinsFile() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.MigrateToJava25"),
+                // language=groovy
+                groovy(
+                        """
+                        buildPlugin(
+                          useContainerAgent: true,
+                          configurations: [
+                            [platform: 'linux', jdk: 17],
+                            [platform: 'windows', jdk: 17]
+                          ]
+                        )
+                        """,
+                        """
+                        /*
+                         See the documentation for more options:
+                         https://github.com/jenkins-infra/pipeline-library/
+                        */
+                        buildPlugin(
+                          useContainerAgent: true,
+                          forkCount: '1C', // Set to `false` if you need to use Docker for containerized tests
+                          configurations: [
+                            [platform: 'linux', jdk: 17],
+                            [platform: 'windows', jdk: 17],
+                            [platform: 'linux', jdk: 25],
+                        ])
+                        """,
+                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
 
     @Test

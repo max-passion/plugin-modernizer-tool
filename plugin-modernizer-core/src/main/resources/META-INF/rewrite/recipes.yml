@@ -138,6 +138,19 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.AddThrowsExceptionWhereAssertThrows
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.MigrateToJava25
+displayName: Migrate plugins to Java 25
+description: Migrate plugins to Java 25 LTS.
+tags: ['migration', 'dependencies']
+recipeList:
+#  - org.openrewrite.java.migrate.UpgradeToJava21
+#  - org.openrewrite.java.migrate.RemoveSecurityPolicy
+#  - org.openrewrite.java.migrate.RemoveSecurityManager
+#  - org.openrewrite.java.migrate.SystemGetSecurityManagerToNull
+  - io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJava25
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 displayName: Migrate pom to using jenkins.baseline property if bom is present
 description: Migrate pom to using jenkins.baseline property if bom is present.
