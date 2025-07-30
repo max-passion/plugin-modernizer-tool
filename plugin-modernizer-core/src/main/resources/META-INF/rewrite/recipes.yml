@@ -462,7 +462,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: commons-text-api
-      pluginVersion: 1.13.1-176.v74d88f22034b_
+      pluginVersion: 1.14.0-194.v804a_dc3a_1b_d8
       replaces:
         - groupId: org.apache.commons
           artifactId: commons-text
