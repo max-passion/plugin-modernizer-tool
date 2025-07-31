@@ -8,6 +8,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 import org.openrewrite.ExecutionContext;
+import org.openrewrite.Option;
 import org.openrewrite.Recipe;
 import org.openrewrite.TreeVisitor;
 import org.openrewrite.groovy.GroovyVisitor;
@@ -17,18 +18,32 @@ import org.openrewrite.java.tree.J;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public class UpdateJenkinsfileForJava25 extends Recipe {
+public class UpdateJenkinsfileForJavaVersion extends Recipe {
 
-    private static final Logger LOG = LoggerFactory.getLogger(UpdateJenkinsfileForJava25.class);
+    private static final Logger LOG = LoggerFactory.getLogger(UpdateJenkinsfileForJavaVersion.class);
+
+    /**
+     * The java version.
+     */
+    @Option(displayName = "Version", description = "Java version.", example = "25")
+    Integer javaVersion;
+
+    /**
+     * Constructor.
+     * @param javaVersion The java version.
+     */
+    public UpdateJenkinsfileForJavaVersion(Integer javaVersion) {
+        this.javaVersion = javaVersion;
+    }
 
     @Override
     public String getDisplayName() {
-        return "Update Jenkinsfile for Java 25 Testing";
+        return "Update Jenkinsfile for specefied Java Version";
     }
 
     @Override
     public String getDescription() {
-        return "Adds Java 25 to the buildPlugin configurations in Jenkinsfile for runtime testing on ci.jenkins.io.";
+        return "Adds Java version to the buildPlugin configurations in Jenkinsfile for runtime testing on ci.jenkins.io.";
     }
 
     @Override
@@ -41,21 +56,27 @@ public class UpdateJenkinsfileForJava25 extends Recipe {
                     return method;
                 }
 
-                // extract all existing arguments into a simple data model.
-                JenkinsfileModel model = new JenkinsfileModel(method);
-
-                // see if java 25 is already present
-                boolean hasJava25 = model.platformConfigs.stream()
-                        .anyMatch(p -> "linux".equalsIgnoreCase(p.name().toString())
-                                && p.jdk().getMajor() == 25);
-
-                if (hasJava25) {
-                    LOG.info("Java 25 configuration already exists. No update needed.");
+                JDK jdkVersion = JDK.get(javaVersion);
+                if (jdkVersion == null) {
+                    LOG.warn("Unsupported Java version: {}, probably not an LTS. No update will be made.", javaVersion);
                     return method;
                 }
 
-                // add the new java 25 configuration to the model.
-                model.platformConfigs.add(PlatformConfig.build(Platform.LINUX, JDK.JAVA_25));
+                // extract all existing arguments into a simple data model.
+                JenkinsfileModel model = new JenkinsfileModel(method);
+
+                // see if java version is already present
+                boolean hasJavaVersion = model.platformConfigs.stream()
+                        .anyMatch(p -> "linux".equalsIgnoreCase(p.name().toString())
+                                && p.jdk().getMajor() == javaVersion);
+
+                if (hasJavaVersion) {
+                    LOG.info("Java {} configuration already exists. No update needed.", javaVersion);
+                    return method;
+                }
+
+                // add the java version configuration to the model.
+                model.platformConfigs.add(PlatformConfig.build(Platform.LINUX, jdkVersion));
 
                 // We pass it the complete, updated configuration, and it will overwrite the old method call.
                 // in future at some point remove jdk 17 from the configurations

@@ -9,15 +9,15 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.openrewrite.test.RewriteTest;
 
 /**
- * Test for {@link UpdateJenkinsfileForJava25}.
+ * Test for {@link UpdateJenkinsfileForJavaVersion}.
  */
 @Execution(ExecutionMode.CONCURRENT)
-public class UpdateJenkinsfileForJava25Test implements RewriteTest {
+public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
 
     @Test
     void shouldUpgradeLegacyConfigAndAddJava25() {
         rewriteRun(
-                spec -> spec.recipe(new UpdateJenkinsfileForJava25()),
+                spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(25)),
                 // language=groovy
                 groovy(
                         """
@@ -51,7 +51,7 @@ public class UpdateJenkinsfileForJava25Test implements RewriteTest {
     @Test
     void shouldAddJava25ToModernConfigurations() {
         rewriteRun(
-                spec -> spec.recipe(new UpdateJenkinsfileForJava25()),
+                spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(25)),
                 // language=groovy
                 groovy(
                         """
@@ -81,9 +81,59 @@ public class UpdateJenkinsfileForJava25Test implements RewriteTest {
     }
 
     @Test
-    void shouldNotAddJava25WhenAlreadyPresent() {
+    void shouldAddJava21ToModernConfigurations() {
         rewriteRun(
-                spec -> spec.recipe(new UpdateJenkinsfileForJava25()),
+                spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(21)),
+                // language=groovy
+                groovy(
+                        """
+                        buildPlugin(
+                          useContainerAgent: true,
+                          configurations: [
+                            [platform: 'linux', jdk: 17],
+                            [platform: 'windows', jdk: 17]
+                          ]
+                        )
+                        """,
+                        """
+                        /*
+                         See the documentation for more options:
+                         https://github.com/jenkins-infra/pipeline-library/
+                        */
+                        buildPlugin(
+                          useContainerAgent: true,
+                          forkCount: '1C', // Set to `false` if you need to use Docker for containerized tests
+                          configurations: [
+                            [platform: 'linux', jdk: 17],
+                            [platform: 'windows', jdk: 17],
+                            [platform: 'linux', jdk: 21],
+                        ])
+                        """,
+                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+    }
+
+    @Test
+    void shouldNotAddJavaVersionToModernConfigurationsAsNotLTS() {
+        rewriteRun(
+                spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(18)),
+                // language=groovy
+                groovy(
+                        """
+                        buildPlugin(
+                          useContainerAgent: true,
+                          configurations: [
+                            [platform: 'linux', jdk: 17],
+                            [platform: 'windows', jdk: 17]
+                          ]
+                        )
+                        """,
+                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+    }
+
+    @Test
+    void shouldNotAddJavaVersionWhenAlreadyPresent() {
+        rewriteRun(
+                spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(25)),
                 // language=groovy
                 groovy(
                         """
@@ -98,9 +148,9 @@ public class UpdateJenkinsfileForJava25Test implements RewriteTest {
     }
 
     @Test
-    void shouldAddConfigurationsBlockWhenMissing() {
+    void shouldAddConfigurationsBlockForJavaVersionWhenMissing() {
         rewriteRun(
-                spec -> spec.recipe(new UpdateJenkinsfileForJava25()),
+                spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(25)),
                 // language=groovy
                 groovy(
                         """
