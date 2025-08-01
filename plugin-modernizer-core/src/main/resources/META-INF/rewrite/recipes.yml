@@ -148,7 +148,8 @@ recipeList:
 #  - org.openrewrite.java.migrate.RemoveSecurityManager
 #  - org.openrewrite.java.migrate.SystemGetSecurityManagerToNull
   - io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
-  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJava25
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJavaVersion:
+      javaVersion: 25
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
