@@ -51,6 +51,7 @@ valid_migration_ids = [
     "io.jenkins.tools.pluginmodernizer.SetupSecurityScan",
     "io.jenkins.tools.pluginmodernizer.AddPluginsBom",
     "io.jenkins.tools.pluginmodernizer.MigrateToJUnit5",
+    "io.jenkins.tools.pluginmodernizer.MigrateToJava25",
     "io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty",
     "io.jenkins.tools.pluginmodernizer.AddCodeOwner",
     "io.jenkins.tools.pluginmodernizer.UpgradeParentVersion",
