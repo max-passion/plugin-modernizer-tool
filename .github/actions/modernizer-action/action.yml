@@ -28,7 +28,7 @@ runs:
       uses: s4u/setup-maven-action@v1.18.0
       with:
         java-distribution: 'temurin'
-        java-version: 17
+        java-version: 21
         maven-version: 3.9.9
         cache-enabled: true
 
