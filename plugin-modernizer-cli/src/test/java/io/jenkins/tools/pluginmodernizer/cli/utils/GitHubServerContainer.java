@@ -79,7 +79,7 @@ public class GitHubServerContainer extends GitServerContainer {
     private void setupMock() {
 
         String metadataPlugin = "metadata-plugin-modernizer";
-        OwnerObject ownerRaunak = new OwnerObject("Raunak80Madan");
+        OwnerObject ownerRaunak = new OwnerObject("jenkins-infra");
 
         // Setup responses
         PluginStatsApiResponse pluginStatsApiResponse = new PluginStatsApiResponse(Map.of(plugin, 1));
@@ -159,18 +159,18 @@ public class GitHubServerContainer extends GitServerContainer {
 
         RepoApiResponse metadataRepoApi = new RepoApiResponse(
                 metadataPlugin,
-                "Raunak80Madan/" + metadataPlugin,
+                "jenkins-infra/" + metadataPlugin,
                 "main",
-                "%s/Raunak80Madan/%s".formatted(wmRuntimeInfo.getHttpBaseUrl(), metadataPlugin),
+                "%s/jenkins-infra/%s".formatted(wmRuntimeInfo.getHttpBaseUrl(), metadataPlugin),
                 this.getGitRepoURIAsSSH().toString(),
                 ownerRaunak);
 
-        // GET /api/repos/Raunak80Madan/metadata-plugin-modernizer
-        wireMock.register(WireMock.get(WireMock.urlEqualTo("/api/repos/Raunak80Madan/" + metadataPlugin))
+        // GET /api/repos/jenkins-infra/metadata-plugin-modernizer
+        wireMock.register(WireMock.get(WireMock.urlEqualTo("/api/repos/jenkins-infra/" + metadataPlugin))
                 .willReturn(WireMock.jsonResponse(metadataRepoApi, 200)));
 
         ParentForkObject parentFork =
-                new ParentForkObject(metadataPlugin, "Raunak80Madan/" + metadataPlugin, ownerRaunak);
+                new ParentForkObject(metadataPlugin, "jenkins-infra/" + metadataPlugin, ownerRaunak);
 
         // GET /api/repos/fake-owner/metadata-plugin-modernizer
         wireMock.register(WireMock.get(WireMock.urlEqualTo("/api/repos/fake-owner/" + metadataPlugin))
@@ -197,18 +197,18 @@ public class GitHubServerContainer extends GitServerContainer {
                                         parentFork),
                                 200)));
 
-        // POST /api/repos/Raunak80Madan/metadata-plugin-modernizer/issues/0/labels
+        // POST /api/repos/jenkins-infra/metadata-plugin-modernizer/issues/0/labels
         wireMock.register(
-                WireMock.post(WireMock.urlEqualTo("/api/repos/Raunak80Madan/" + metadataPlugin + "/issues/0/labels"))
+                WireMock.post(WireMock.urlEqualTo("/api/repos/jenkins-infra/" + metadataPlugin + "/issues/0/labels"))
                         .willReturn(WireMock.jsonResponse("[]", 200)));
 
-        // GET /api/repos/Raunak80Madan/metadata-plugin-modernizer/pulls?state=open
+        // GET /api/repos/jenkins-infra/metadata-plugin-modernizer/pulls?state=open
         wireMock.register(
-                WireMock.get(WireMock.urlEqualTo("/api/repos/Raunak80Madan/" + metadataPlugin + "/pulls?state=open"))
+                WireMock.get(WireMock.urlEqualTo("/api/repos/jenkins-infra/" + metadataPlugin + "/pulls?state=open"))
                         .willReturn(WireMock.jsonResponse(Collections.emptyList(), 200)));
 
-        // POST /api/repos/Raunak80Madan/metadata-plugin-modernizer/pulls
-        wireMock.register(WireMock.post(WireMock.urlEqualTo("/api/repos/Raunak80Madan/" + metadataPlugin + "/pulls"))
+        // POST /api/repos/jenkins-infra/metadata-plugin-modernizer/pulls
+        wireMock.register(WireMock.post(WireMock.urlEqualTo("/api/repos/jenkins-infra/" + metadataPlugin + "/pulls"))
                 .willReturn(WireMock.jsonResponse(new PullRequestsResponse("PR"), 200)));
 
         wireMock.register(WireMock.get(WireMock.urlEqualTo("/update-center.json"))

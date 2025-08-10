@@ -347,7 +347,7 @@ public class Settings {
     private static String getMetadataTargetOrganisation() {
         String metadataTargetOrganisation = System.getenv("GH_METADATA_TARGET_ORGANISATION");
         if (metadataTargetOrganisation == null) {
-            metadataTargetOrganisation = "Raunak80Madan";
+            metadataTargetOrganisation = "jenkins-infra";
         }
         return metadataTargetOrganisation;
     }

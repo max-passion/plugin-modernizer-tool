@@ -120,7 +120,7 @@ public class GHServiceTest {
 
         // Mock
         GHRepository mock = Mockito.mock(GHRepository.class);
-        doReturn(mock).when(github).getRepository(eq("Raunak80Madan/metadata-plugin-modernizer"));
+        doReturn(mock).when(github).getRepository(eq("jenkins-infra/metadata-plugin-modernizer"));
 
         // Test
         GHRepository repository = service.getRepository(plugin, RepoType.METADATA);
@@ -146,7 +146,7 @@ public class GHServiceTest {
     public void shouldFailToGetMetadataRepository() throws Exception {
 
         // Mock
-        doThrow(new IOException()).when(github).getRepository(eq("Raunak80Madan/metadata-plugin-modernizer"));
+        doThrow(new IOException()).when(github).getRepository(eq("jenkins-infra/metadata-plugin-modernizer"));
 
         // Test
         assertThrows(PluginProcessingException.class, () -> {
