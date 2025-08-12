@@ -157,6 +157,41 @@ recipeList:
       javaVersion: 25
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
+displayName: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons Text
+description: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons Text.
+tags: ['dependencies', 'migration']
+recipeList:
+  # upgrade Commons Lang from 2 to 3
+  - org.openrewrite.maven.AddDependency:
+      groupId: io.jenkins.plugins
+      artifactId: commons-lang3-api
+      version: LATEST
+      onlyIfUsing: org.apache.commons.lang.*
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: org.apache.commons.lang
+      newPackageName: org.apache.commons.lang3
+      recursive: true
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: org.apache.commons.lang3.exception.ExceptionUtils getFullStackTrace(..)
+      newMethodName: getStackTrace
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.lang3.NullArgumentException
+      newFullyQualifiedTypeName: java.lang.NullPointerException
+  # migrate StringEscapeUtils to Commons Text
+  - org.openrewrite.maven.AddDependency:
+        groupId: io.jenkins.plugins
+        artifactId: commons-text-api
+        version: LATEST
+        onlyIfUsing: org.apache.commons.lang.StringEscapeUtils
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.lang3.StringEscapeUtils
+      newFullyQualifiedTypeName: org.apache.commons.text.StringEscapeUtils
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: "*..StringEscapeUtils escapeHtml(java.lang.String)"
+      newMethodName: escapeHtml4
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
 displayName: Migrate pom to using jenkins.baseline property if bom is present
 description: Migrate pom to using jenkins.baseline property if bom is present.
