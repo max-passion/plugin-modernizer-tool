@@ -253,6 +253,7 @@ recipeList:
       recursive: true
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateStaplerAndJavaxToJakarta
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateAcegiSecurityToSpringSecurity
+  - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
   - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
@@ -537,6 +538,7 @@ recipeList:
       recursive: true
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateStaplerAndJavaxToJakarta
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateAcegiSecurityToSpringSecurity
+  - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
   - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
@@ -564,6 +566,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
+  - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
@@ -599,6 +602,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.code.ReplaceRemovedSSHLauncherConstructor
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
+  - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.java.RemoveUnusedImports
