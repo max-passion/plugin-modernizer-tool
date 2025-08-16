@@ -2617,7 +2617,60 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 .formatted(
                                         Settings.getJenkinsParentVersion(),
                                         Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getBomVersion())));
+                                        Settings.getBomVersion())),
+
+                // language=java
+                java(
+                        """
+                package org.apache.commons.lang;
+                public class StringEscapeUtils {
+                    public static String escapeHtml(String input) {
+                        return input;
+                    }
+                }
+                """,
+                        """
+                package org.apache.commons.text;
+                public class StringEscapeUtils {
+                    public static String escapeHtml4(String input) {
+                        return input;
+                    }
+                }
+                """),
+                // language=java
+                java(
+                        """
+                package org.apache.commons.lang;
+                public class StringUtils {}
+                """,
+                        """
+                package org.apache.commons.lang3;
+                public class StringUtils {}
+                """),
+                // language=java
+                java(
+                        """
+                import org.apache.commons.lang.StringEscapeUtils;
+                import org.apache.commons.lang.StringUtils;
+
+                class MyComponent {
+                    public String getHtml() {
+                        String unsafeInput = "<script>alert('xss')</script>";
+                        return StringEscapeUtils.escapeHtml(unsafeInput);
+                    }
+                }
+                """,
+                        """
+                import org.apache.commons.lang3.StringUtils;
+                import org.apache.commons.text.StringEscapeUtils;
+
+                class MyComponent {
+                    public String getHtml() {
+                        String unsafeInput = "<script>alert('xss')</script>";
+                        return StringEscapeUtils.escapeHtml4(unsafeInput);
+                    }
+                }
+                """));
     }
 
     @Test
@@ -3349,6 +3402,66 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 </project>
                 """
                                 .formatted(Settings.getPluginVersion("commons-compress-api"))));
+    }
+
+    @Test
+    void migrateCommonsLang2ToLang3AndCommonText() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml",
+                        "io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText"),
+                // language=java
+                java(
+                        """
+                package org.apache.commons.lang;
+                public class StringEscapeUtils {
+                    public static String escapeHtml(String input) {
+                        return input;
+                    }
+                }
+                """,
+                        """
+                package org.apache.commons.text;
+                public class StringEscapeUtils {
+                    public static String escapeHtml4(String input) {
+                        return input;
+                    }
+                }
+                """),
+                // language=java
+                java(
+                        """
+                package org.apache.commons.lang;
+                public class StringUtils {}
+                """,
+                        """
+                package org.apache.commons.lang3;
+                public class StringUtils {}
+                """),
+                // language=java
+                java(
+                        """
+                import org.apache.commons.lang.StringEscapeUtils;
+                import org.apache.commons.lang.StringUtils;
+
+                class MyComponent {
+                    public String getHtml() {
+                        String unsafeInput = "<script>alert('xss')</script>";
+                        return StringEscapeUtils.escapeHtml(unsafeInput);
+                    }
+                }
+                """,
+                        """
+                import org.apache.commons.lang3.StringUtils;
+                import org.apache.commons.text.StringEscapeUtils;
+
+                class MyComponent {
+                    public String getHtml() {
+                        String unsafeInput = "<script>alert('xss')</script>";
+                        return StringEscapeUtils.escapeHtml4(unsafeInput);
+                    }
+                }
+                """));
     }
 
     @Test
