@@ -5,6 +5,7 @@ import io.jenkins.tools.pluginmodernizer.core.model.Platform;
 import io.jenkins.tools.pluginmodernizer.core.model.PlatformConfig;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Locale;
 import java.util.Objects;
 import java.util.stream.Collectors;
 import org.openrewrite.ExecutionContext;
@@ -380,7 +381,7 @@ public class UpdateJenkinsFileVisitor extends GroovyIsoVisitor<ExecutionContext>
 
             String valueSource = serializable.stream()
                     .map(platformConfig -> {
-                        String platform = platformConfig.name().toString().toLowerCase();
+                        String platform = platformConfig.name().toString().toLowerCase(Locale.ROOT);
                         int major = platformConfig.jdk().getMajor();
                         String jenkinsVersion = platformConfig.jenkins();
                         if (jenkinsVersion == null) {
