@@ -204,7 +204,8 @@ public class AnnotateWithJenkins extends ScanningRecipe<Map<String, String>> {
                                         J.MethodDeclaration finalMethodDecl = methodDecl;
                                         boolean emptyParams = finalMethodDecl.getParameters().stream()
                                                 .anyMatch(param -> param instanceof J.Empty);
-                                        java.util.List<org.openrewrite.java.tree.Statement> newParams = new java.util.ArrayList<>();
+                                        java.util.List<org.openrewrite.java.tree.Statement> newParams =
+                                                new java.util.ArrayList<>();
                                         if (!emptyParams) {
                                             newParams.addAll(finalMethodDecl.getParameters());
                                         }
@@ -235,7 +236,8 @@ public class AnnotateWithJenkins extends ScanningRecipe<Map<String, String>> {
                                                                         Markers.EMPTY,
                                                                         java.util.Collections.emptyList(),
                                                                         jenkinsRuleFieldName,
-                                                                        JavaType.buildType("org.jvnet.hudson.test.JenkinsRule"),
+                                                                        JavaType.buildType(
+                                                                                "org.jvnet.hudson.test.JenkinsRule"),
                                                                         null),
                                                                 java.util.Collections.emptyList(),
                                                                 null,
