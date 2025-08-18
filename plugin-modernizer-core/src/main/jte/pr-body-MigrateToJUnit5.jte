@@ -17,6 +17,8 @@ This is an automated pull request created by the [Jenkins Plugin Modernizer](htt
 
 **Note:** Some changes listed below may not apply if the plugin does not use certain features (e.g., Hamcrest assertions or TemporaryFolder).
 
+- Upgrade to the latest parent version
+- Set property `ban-junit4-imports.skip` to `false` to ensure `JUnit 4` imports are not used
 - Migrating annotations and imports
 - Migrating assertions
 - Removing public visibility for test classes and methods
