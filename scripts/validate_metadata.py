@@ -10,14 +10,14 @@ token = os.getenv('GH_TOKEN')
 if not token:
     raise EnvironmentError("GITHUB TOKEN is not found.")
 g = Github(token)
-repo = g.get_repo('Raunak80Madan/metadata-plugin-modernizer')
+repo = g.get_repo('jenkins-infra/metadata-plugin-modernizer')
 pr_number = os.getenv("PR_NUMBER")
 pr = repo.get_pull(int(pr_number))
 
 # JSON schema for metadata validation
 schema = {
     "type": "object",
-    "required": ["pluginName", "pluginRepository", "pluginVersion", "targetBaseline", "jenkinsVersion", "migrationName", "migrationDescription", "tags", "migrationId", "migrationStatus", "pullRequestUrl", "pullRequestStatus", "dryRun", "additions", "deletions", "changedFiles", "key", "path"],
+    "required": ["pluginName", "pluginRepository", "pluginVersion", "migrationName", "migrationDescription", "tags", "migrationId", "migrationStatus", "pullRequestUrl", "pullRequestStatus", "dryRun", "additions", "deletions", "changedFiles", "key", "path"],
     "properties": {
         "pluginName": {"type": "string", "pattern": "^[a-zA-Z0-9-]+$"},
         "pluginRepository": {"type": "string", "format": "uri", "pattern": "^https://github.com/[^/]+/.+\\.git$"},
@@ -41,7 +41,7 @@ schema = {
         "path": {"type": "string", "pattern": "^metadata-plugin-modernizer/[^/]+/modernization-metadata$"}
     },
     "anyOf": [
-        { "required": ["effectiveBaseline"] },
+        { "required": ["targetBaseline", "jenkinsVersion", "effectiveBaseline"] },
         { "required": ["rpuBaseline"] }
     ]
 }
