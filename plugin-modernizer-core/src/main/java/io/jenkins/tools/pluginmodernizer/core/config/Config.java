@@ -22,11 +22,13 @@ public class Config {
     private final URL jenkinsPluginVersions;
     private final URL pluginHealthScore;
     private final URL pluginStatsInstallations;
+    private final URL optOutPlugins;
     private final URL githubApiUrl;
     private final Path cachePath;
     private final Path mavenHome;
     private final Path mavenLocalRepo;
     private final boolean skipMetadata;
+    private final boolean overrideOptOutPlugins;
     private final boolean dryRun;
     private final boolean draft;
     private final boolean removeForks;
@@ -49,11 +51,13 @@ public class Config {
             URL jenkinsPluginVersions,
             URL pluginHealthScore,
             URL pluginStatsInstallations,
+            URL optOutPlugins,
             URL githubApiUrl,
             Path cachePath,
             Path mavenHome,
             Path mavenLocalRepo,
             boolean skipMetadata,
+            boolean overrideOptOutPlugins,
             boolean dryRun,
             boolean draft,
             boolean removeForks,
@@ -70,11 +74,13 @@ public class Config {
         this.jenkinsPluginVersions = jenkinsPluginVersions;
         this.pluginHealthScore = pluginHealthScore;
         this.pluginStatsInstallations = pluginStatsInstallations;
+        this.optOutPlugins = optOutPlugins;
         this.githubApiUrl = githubApiUrl;
         this.cachePath = cachePath;
         this.mavenHome = mavenHome;
         this.mavenLocalRepo = mavenLocalRepo;
         this.skipMetadata = skipMetadata;
+        this.overrideOptOutPlugins = overrideOptOutPlugins;
         this.dryRun = dryRun;
         this.draft = draft;
         this.removeForks = removeForks;
@@ -145,6 +151,10 @@ public class Config {
         return pluginStatsInstallations;
     }
 
+    public URL getOptOutPlugins() {
+        return optOutPlugins;
+    }
+
     public URL getGithubApiUrl() {
         return githubApiUrl;
     }
@@ -169,6 +179,10 @@ public class Config {
 
     public boolean isSkipMetadata() {
         return skipMetadata;
+    }
+
+    public boolean isOverrideOptOutPlugins() {
+        return overrideOptOutPlugins;
     }
 
     public boolean isDryRun() {
@@ -208,11 +222,13 @@ public class Config {
         private URL jenkinsPluginVersions = Settings.DEFAULT_PLUGIN_VERSIONS;
         private URL pluginStatsInstallations = Settings.DEFAULT_PLUGINS_STATS_INSTALLATIONS_URL;
         private URL pluginHealthScore = Settings.DEFAULT_HEALTH_SCORE_URL;
+        private URL optOutPlugins = Settings.OPT_OUT_PLUGINS_URL;
         private URL githubApiUrl = Settings.GITHUB_API_URL;
         private Path cachePath = Settings.DEFAULT_CACHE_PATH;
         private Path mavenHome = Settings.DEFAULT_MAVEN_HOME;
         private Path mavenLocalRepo = Settings.DEFAULT_MAVEN_LOCAL_REPO;
         private boolean skipMetadata = false;
+        private boolean overrideOptOutPlugins = false;
         private boolean dryRun = false;
         private boolean draft = false;
         public boolean removeForks = false;
@@ -286,6 +302,13 @@ public class Config {
             return this;
         }
 
+        public Builder withOptOutPlugins(URL optOutPlugins) {
+            if (optOutPlugins != null) {
+                this.optOutPlugins = optOutPlugins;
+            }
+            return this;
+        }
+
         public Builder withGithubApiUrl(URL githubApiUrl) {
             if (githubApiUrl != null) {
                 this.githubApiUrl = githubApiUrl;
@@ -316,6 +339,11 @@ public class Config {
 
         public Builder withSkipMetadata(boolean skipMetadata) {
             this.skipMetadata = skipMetadata;
+            return this;
+        }
+
+        public Builder withOverrideOptOutPlugins(boolean overrideOptOutPlugins) {
+            this.overrideOptOutPlugins = overrideOptOutPlugins;
             return this;
         }
 
@@ -353,11 +381,13 @@ public class Config {
                     jenkinsPluginVersions,
                     pluginHealthScore,
                     pluginStatsInstallations,
+                    optOutPlugins,
                     githubApiUrl,
                     cachePath,
                     mavenHome,
                     mavenLocalRepo,
                     skipMetadata,
+                    overrideOptOutPlugins,
                     dryRun,
                     draft,
                     removeForks,

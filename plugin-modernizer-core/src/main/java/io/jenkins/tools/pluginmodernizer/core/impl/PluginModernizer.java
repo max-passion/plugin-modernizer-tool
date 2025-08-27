@@ -363,14 +363,25 @@ public class PluginModernizer {
                 }
                 plugin.commit(ghService);
 
-                // Only fork/push/PR if we have any changes
-                if (!plugin.getModifiedFiles().isEmpty()) {
+                boolean isOptOutPlugin = pluginService
+                        .getOptOutPluginsData()
+                        .getOptedOutPlugins()
+                        .contains(plugin.getName());
+                // Only fork/push/PR if we have any changes and the plugin hasn't opted out for receiving PRs or
+                // override the default behaviour
+                if (!plugin.getModifiedFiles().isEmpty() && (!isOptOutPlugin || config.isOverrideOptOutPlugins())) {
                     plugin.fork(ghService);
                     plugin.sync(ghService);
                     plugin.push(ghService);
                     plugin.openPullRequest(ghService);
                 } else {
-                    LOG.info("No changes were made for plugin {}", plugin.getName());
+                    if (isOptOutPlugin) {
+                        LOG.info(
+                                "Plugin {} has opted out for receiving PRs. See https://github.com/jenkins-infra/metadata-plugin-modernizer/blob/main/opt-out-plugins.json, Use the --override-opt-out-plugins to override the default behaviour",
+                                plugin.getName());
+                    } else {
+                        LOG.info("No changes were made for plugin {}", plugin.getName());
+                    }
                 }
 
                 if (config.isRemoveForks()) {
