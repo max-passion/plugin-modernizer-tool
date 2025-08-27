@@ -41,6 +41,12 @@ public class EnvOptions implements IOption {
     private URL jenkinsPluginsStatsInstallationsUrl = Settings.DEFAULT_PLUGINS_STATS_INSTALLATIONS_URL;
 
     @CommandLine.Option(
+            names = {"--opt-out-plugins-url"},
+            description =
+                    "Sets the opt out plugins URL; will override OPT_OUT_PLUGINS_URL environment variable. If not set via CLI option or environment variable, will use default opt out plugins url.")
+    private URL optOutPluginsUrl = Settings.OPT_OUT_PLUGINS_URL;
+
+    @CommandLine.Option(
             names = {"--github-api-url"},
             description = "GitHub API URL. Default to https://api.github.com")
     private URL githubApiUrl = Settings.GITHUB_API_URL;
@@ -51,6 +57,7 @@ public class EnvOptions implements IOption {
                 .withJenkinsPluginVersions(jenkinsPluginVersions)
                 .withPluginHealthScore(pluginHealthScore)
                 .withPluginStatsInstallations(jenkinsPluginsStatsInstallationsUrl)
+                .withOptOutPlugins(optOutPluginsUrl)
                 .withGithubApiUrl(githubApiUrl);
     }
 }

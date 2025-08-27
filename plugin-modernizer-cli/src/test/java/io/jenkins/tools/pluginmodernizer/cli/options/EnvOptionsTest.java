@@ -36,6 +36,8 @@ public class EnvOptionsTest {
                 config.getPluginStatsInstallations(),
                 "Jenkins stats top plugins URL should be the default");
         assertEquals(Settings.GITHUB_API_URL, config.getGithubApiUrl(), "GitHub API URL should be the default");
+        assertEquals(
+                Settings.OPT_OUT_PLUGINS_URL, config.getOptOutPlugins(), "Opt out plugins URL should be the default");
     }
 
     @Test
@@ -86,6 +88,17 @@ public class EnvOptionsTest {
         githubApiField.set(
                 envOptions, URI.create("http://localhost:8080/github-api").toURL());
 
+        // Set opt out plugins URL
+        Field optOutPluginsField = ReflectionUtils.findFields(
+                        EnvOptions.class,
+                        f -> f.getName().equals("optOutPluginsUrl"),
+                        ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                .get(0);
+        optOutPluginsField.setAccessible(true);
+        optOutPluginsField.set(
+                envOptions,
+                URI.create("http://localhost:8080/opt-out-plugins.json").toURL());
+
         // Assertions
         envOptions.config(builder);
         Config config = builder.build();
@@ -105,5 +118,9 @@ public class EnvOptionsTest {
                 URI.create("http://localhost:8080/github-api").toURL(),
                 config.getGithubApiUrl(),
                 "Different GitHub API URL");
+        assertEquals(
+                URI.create("http://localhost:8080/opt-out-plugins.json").toURL(),
+                config.getOptOutPlugins(),
+                "Different Opt out plugins URL");
     }
 }
