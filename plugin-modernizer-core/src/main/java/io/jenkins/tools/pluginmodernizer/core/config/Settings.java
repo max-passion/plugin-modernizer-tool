@@ -35,6 +35,8 @@ public class Settings {
 
     public static final URL DEFAULT_HEALTH_SCORE_URL;
 
+    public static final URL OPT_OUT_PLUGINS_URL;
+
     public static final URL GITHUB_API_URL;
 
     public static final Path DEFAULT_CACHE_PATH;
@@ -123,6 +125,11 @@ public class Settings {
         }
         try {
             DEFAULT_PLUGINS_STATS_INSTALLATIONS_URL = getPluginsStatsInstallationsUrl();
+        } catch (MalformedURLException e) {
+            throw new ModernizerException("Invalid URL format", e);
+        }
+        try {
+            OPT_OUT_PLUGINS_URL = getOptOutPluginsUrl();
         } catch (MalformedURLException e) {
             throw new ModernizerException("Invalid URL format", e);
         }
@@ -310,6 +317,14 @@ public class Settings {
             return new URL(url);
         }
         return new URL(readProperty("plugin.stats.installations.plugin.url", "urls.properties"));
+    }
+
+    private static URL getOptOutPluginsUrl() throws MalformedURLException {
+        String url = System.getenv("OPT_OUT_PLUGINS_URL");
+        if (url != null) {
+            return new URL(url);
+        }
+        return new URL(readProperty("opt.out.plugins.url", "urls.properties"));
     }
 
     private static String getGithubToken() {

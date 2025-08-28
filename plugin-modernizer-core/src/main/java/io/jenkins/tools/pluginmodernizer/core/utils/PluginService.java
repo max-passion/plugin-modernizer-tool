@@ -6,6 +6,7 @@ import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.model.HealthScoreData;
 import io.jenkins.tools.pluginmodernizer.core.model.ModernizerException;
+import io.jenkins.tools.pluginmodernizer.core.model.OptOutPluginsData;
 import io.jenkins.tools.pluginmodernizer.core.model.Plugin;
 import io.jenkins.tools.pluginmodernizer.core.model.PluginInstallationStatsData;
 import io.jenkins.tools.pluginmodernizer.core.model.PluginVersionData;
@@ -152,7 +153,7 @@ public class PluginService {
     }
 
     /**
-     * Retrieve update center data from the given URL of from cache if it exists
+     * Retrieve update center data from the given URL or from cache if it exists
      * @return Update center data
      */
     public UpdateCenterData getUpdateCenterData() {
@@ -169,7 +170,7 @@ public class PluginService {
     }
 
     /**
-     * Retrieve health score data from the given URL of from cache if it exists
+     * Retrieve health score data from the given URL or from cache if it exists
      * @return Health score data
      */
     public HealthScoreData getHealthScoreData() {
@@ -186,6 +187,23 @@ public class PluginService {
     }
 
     /**
+     * Retrieve opt out plugins data from the given URL or from cache if it exists
+     * @return Opt out plugins data
+     */
+    public OptOutPluginsData getOptOutPluginsData() {
+        OptOutPluginsData optOutPluginsData =
+                cacheManager.get(cacheManager.root(), CacheManager.OPT_OUT_PLUGINS_CACHE_KEY, OptOutPluginsData.class);
+        // Download and update cache
+        if (optOutPluginsData == null) {
+            optOutPluginsData = downloadOptOutPluginsData();
+            optOutPluginsData.setKey(CacheManager.OPT_OUT_PLUGINS_CACHE_KEY);
+            optOutPluginsData.setPath(cacheManager.root());
+            cacheManager.put(optOutPluginsData);
+        }
+        return optOutPluginsData;
+    }
+
+    /**
      * Download refreshed update center data from the remote service
      * @return Update center data
      */
@@ -199,6 +217,14 @@ public class PluginService {
      */
     public HealthScoreData downloadHealthScoreData() {
         return JsonUtils.fromUrl(config.getPluginHealthScore(), HealthScoreData.class);
+    }
+
+    /**
+     * Download refreshed opt out plugins data from the metadata repository
+     * @return Opt out plugins data
+     */
+    public OptOutPluginsData downloadOptOutPluginsData() {
+        return JsonUtils.fromUrl(config.getOptOutPlugins(), OptOutPluginsData.class);
     }
 
     /**
@@ -270,7 +296,7 @@ public class PluginService {
     }
 
     /**
-     * Retrieve plugin version data from the given URL of from cache if it exists
+     * Retrieve plugin version data from the given URL or from cache if it exists
      * @return Plugin version data
      */
     public PluginVersionData getPluginVersionData() {
@@ -287,7 +313,7 @@ public class PluginService {
     }
 
     /**
-     * Retrieve plugin installation stats data from the given URL of from cache if it exists
+     * Retrieve plugin installation stats data from the given URL or from cache if it exists
      * @return Plugin installation stats data
      */
     public PluginInstallationStatsData getPluginInstallationStatsData() {
