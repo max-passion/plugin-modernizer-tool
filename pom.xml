@@ -70,7 +70,7 @@
     <byte-buddy.version>1.17.7</byte-buddy.version>
     <wiremock.version>3.13.1</wiremock.version>
     <jte.version>3.2.1</jte.version>
-    <snakeyaml.version>2.4</snakeyaml.version>
+    <snakeyaml.version>2.5</snakeyaml.version>
     <guice.version>7.0.0</guice.version>
     <error.prone.version>2.41.0</error.prone.version>
     <checker.qual.version>3.50.0</checker.qual.version>
