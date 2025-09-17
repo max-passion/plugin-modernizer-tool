@@ -91,6 +91,7 @@ valid_migration_ids = [
     "io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithCommonsCompressRemoved",
     "io.jenkins.tools.pluginmodernizer.EnsureIndexJelly",
     "io.jenkins.tools.pluginmodernizer.MigrateTomakehurstToWiremock"
+    "io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText"
 ]
 
 def validate_metadata(file_path):
