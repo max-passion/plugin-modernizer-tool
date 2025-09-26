@@ -242,7 +242,7 @@
                 <artifactItem>
                   <groupId>org.kohsuke.stapler</groupId>
                   <artifactId>stapler</artifactId>
-                  <version>2033.va_95221851a_23</version>
+                  <version>2036.v69a_e0454da_b_9</version>
                 </artifactItem>
                 <dependency>
                   <groupId>jakarta.servlet</groupId>
