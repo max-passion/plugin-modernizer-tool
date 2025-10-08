@@ -2102,7 +2102,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                               </scm>
                               <properties>
                                 <jenkins-test-harness.version>%s</jenkins-test-harness.version>
-                                <jenkins.version>2.492.3</jenkins.version>
+                                <jenkins.version>2.504.3</jenkins.version>
                               </properties>
                               <dependencies>
                                 <dependency>
@@ -2360,7 +2360,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins-test-harness.version>%s</jenkins-test-harness.version>
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-                            <jenkins.baseline>2.492</jenkins.baseline>
+                            <jenkins.baseline>2.504</jenkins.baseline>
                             <jenkins.version>${jenkins.baseline}.3</jenkins.version>
                           </properties>
                           <dependencyManagement>
@@ -2580,7 +2580,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <properties>
                     <jenkins-test-harness.version>%s</jenkins-test-harness.version>
                     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-                    <jenkins.baseline>2.492</jenkins.baseline>
+                    <jenkins.baseline>2.504</jenkins.baseline>
                     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
                   </properties>
                   <dependencyManagement>
@@ -2923,7 +2923,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <packaging>hpi</packaging>
                   <name>Empty Plugin</name>
                   <properties>
-                    <jenkins.version>2.492.3</jenkins.version>
+                    <jenkins.version>2.504.3</jenkins.version>
                   </properties>
                   <dependencies>
                     <dependency>
@@ -3007,7 +3007,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <packaging>hpi</packaging>
                   <name>Empty Plugin</name>
                   <properties>
-                    <jenkins.version>2.492.3</jenkins.version>
+                    <jenkins.version>2.504.3</jenkins.version>
                   </properties>
                   <dependencies>
                     <dependency>
@@ -3111,7 +3111,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <packaging>hpi</packaging>
                   <properties>
                     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-                    <jenkins.baseline>2.492</jenkins.baseline>
+                    <jenkins.baseline>2.504</jenkins.baseline>
                     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
                   </properties>
                   <dependencyManagement>
@@ -3169,7 +3169,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <packaging>hpi</packaging>
                   <properties>
                     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
-                    <jenkins.baseline>2.492</jenkins.baseline>
+                    <jenkins.baseline>2.504</jenkins.baseline>
                     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
                   </properties>
                   <dependencyManagement>
