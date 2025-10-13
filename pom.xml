@@ -47,11 +47,11 @@
 
     <!-- Version -->
     <jenkins.core.minimum.version>2.504.3</jenkins.core.minimum.version>
-    <openrewrite.bom.version>3.15.0</openrewrite.bom.version>
-    <openrewrite.maven.plugin.version>6.19.0</openrewrite.maven.plugin.version>
+    <openrewrite.bom.version>3.16.0</openrewrite.bom.version>
+    <openrewrite.maven.plugin.version>6.21.1</openrewrite.maven.plugin.version>
     <micrometer.version>1.15.4</micrometer.version>
     <slf4j.version>2.0.17</slf4j.version>
-    <logback.version>1.5.18</logback.version>
+    <logback.version>1.5.19</logback.version>
     <picocli.version>4.7.6</picocli.version>
     <common.io.version>2.20.0</common.io.version>
     <common.lang3.version>3.19.0</common.lang3.version>
@@ -67,7 +67,7 @@
     <github-api.version>2.0-rc.5</github-api.version>
     <commons-compress.version>1.28.0</commons-compress.version>
     <guava.version>33.5.0-jre</guava.version>
-    <byte-buddy.version>1.17.7</byte-buddy.version>
+    <byte-buddy.version>1.17.8</byte-buddy.version>
     <wiremock.version>3.13.1</wiremock.version>
     <jte.version>3.2.1</jte.version>
     <snakeyaml.version>2.5</snakeyaml.version>
