@@ -76,7 +76,7 @@ With over 2000 plugins in Jenkins, keeping them updated manually is a daunting t
 ## Getting Started
 
 ### Requirements
-- Maven version 3.9.7 or later, or mvnd
+- Maven version 3.9.11 or later, or mvnd
 - Java 21 ([Eclipse Temurin](https://adoptium.net/temurin/releases) recommended)
 
 ### Build
@@ -220,7 +220,7 @@ source <(plugin-modernizer generate-completion)
 - `--cache-path`: (optional) Custom path to the cache directory. Defaults to `${user.home}/.cache/jenkins-plugin-modernizer-cli`.
 
 
-- `--maven-home`: (optional) Path to the Maven home directory. Required if both `MAVEN_HOME` and `M2_HOME` environment variables are not set. The minimum required version is 3.9.7.
+- `--maven-home`: (optional) Path to the Maven home directory. Required if both `MAVEN_HOME` and `M2_HOME` environment variables are not set. The minimum required version is 3.9.11.
 
 
 - `--clean-local-data` (optional) Deletes the local plugin directory before running the tool.
