@@ -770,8 +770,7 @@ public class TemplateUtilsTest {
 
         // Just ensure it's using some key overall text
         assertTrue(
-                result.contains(
-                        "This pull request upgrades `Apache Commons Lang 2` to `Apache Commons Lang 3`"),
+                result.contains("This pull request upgrades `Apache Commons Lang 2` to `Apache Commons Lang 3`"),
                 "Description");
     }
 }
