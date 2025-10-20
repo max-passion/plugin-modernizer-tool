@@ -29,7 +29,7 @@ runs:
       with:
         java-distribution: 'temurin'
         java-version: 21
-        maven-version: 3.9.9
+        maven-version: 3.9.11
         cache-enabled: true
 
     - name: Download Plugin Modernizer JAR
