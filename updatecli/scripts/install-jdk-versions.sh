@@ -24,7 +24,7 @@ fi
 source "$HOME/.sdkman/bin/sdkman-init.sh"
 
 # Declare the JDK versions you're interested in
-declare -a jdk_versions=("8" "11" "17" "21")
+declare -a jdk_versions=("8" "11" "17" "21" "25")
 
 # Loop through each JDK version
 for version in "${jdk_versions[@]}"; do
