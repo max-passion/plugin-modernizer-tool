@@ -45,6 +45,13 @@ sources:
       command: bash updatecli/scripts/get-jdk-versions.sh 21 # Shell command to get JDK 21 version.
       environments:
         - name: HOME
+  JDK25:
+    name: Get the latest JDK25 version from SDKMAN
+    kind: shell
+    spec:
+      command: bash updatecli/scripts/get-jdk-versions.sh 25 # Shell command to get JDK 25 version.
+      environments:
+        - name: HOME
   JAVA_8_HOME:
     name: Get the latest JAVA_HOME for JDK8 version from SDKMAN
     kind: shell
@@ -71,6 +78,13 @@ sources:
     kind: shell
     spec:
       command: bash updatecli/scripts/get-java-home.sh 21 # Shell command to get JAVA_HOME for the JDK 21.
+      environments:
+        - name: HOME
+  JAVA_25_HOME:
+    name: Get the latest JAVA_HOME for JDK25 version from SDKMAN
+    kind: shell
+    spec:
+      command: bash updatecli/scripts/get-java-home.sh 25 # Shell command to get JAVA_HOME for the JDK 25.
       environments:
         - name: HOME
 
@@ -124,6 +138,18 @@ targets:
     name: "[GitPod] Update the JDK21 version for SDKMAN"
     sourceid: JDK21 # Link to the source of JDK 21 version.
     scmid: default # Use the default SCM configuration.
+  setJDK25:
+    kind: dockerfile
+    spec:
+      files: # The Dockerfiles to update.
+        - .gitpod/Dockerfile
+        - Dockerfile
+      instruction:
+        keyword: "ENV" # The Dockerfile instruction to target.
+        matcher: "JDK25_PACKAGE" # The specific ARG to update with the new JDK 25 version.
+    name: "[Dockerfile] Update the JDK25 version for SDKMAN"
+    sourceid: JDK25 # Link to the source of JDK 25 version.
+    scmid: default # Use the default SCM configuration.
   # New target to update JDK 8 version in sdkman.properties
   setJDK8InProperties:
     name: "[sdkman.properties] Update the JDK8 version"
@@ -173,6 +199,18 @@ targets:
         (.*)JDK21_PACKAGE=.*tem(\s?.*)
       replacepattern: >-
         JDK21_PACKAGE={{ source `JDK21` }}${2}
+  setJDK25InProperties:
+    name: "[sdkman.properties] Update the JDK25 version"
+    kind: file
+    sourceid: JDK25
+    scmid: default
+    spec:
+      file: "*/src/main/resources/sdkman.properties"
+      searchpattern: true
+      matchpattern: >-
+        (.*)JDK25_PACKAGE=.*tem(\s?.*)
+      replacepattern: >-
+        JDK25_PACKAGE={{ source `JDK25` }}${2}
   setJavaHomeForJDK8InProperties:
     name: "[sdkman.properties] Update the JDK8 JAVA_HOME"
     kind: file
@@ -221,6 +259,18 @@ targets:
         (.*)JAVA_21_HOME=.*tem(\s?.*)
       replacepattern: >-
         JAVA_21_HOME=${{ source `JAVA_21_HOME` }}${2}
+  setJavaHomeForJDK25InProperties:
+    name: "[sdkman.properties] Update the JDK25 JAVA_HOME"
+    kind: file
+    sourceid: JAVA_25_HOME
+    scmid: default
+    spec:
+      file: "*/src/main/resources/sdkman.properties"
+      searchpattern: true
+      matchpattern: >-
+        (.*)JAVA_25_HOME=.*tem(\s?.*)
+      replacepattern: >-
+        JAVA_25_HOME=${{ source `JAVA_25_HOME` }}${2}
 
 # Define the actions to take after the targets are updated.
 actions:

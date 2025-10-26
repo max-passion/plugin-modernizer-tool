@@ -10,6 +10,7 @@ ENV JDK8_PACKAGE=8.0.462-tem
 ENV JDK11_PACKAGE=11.0.28-tem
 ENV JDK17_PACKAGE=17.0.16-tem
 ENV JDK21_PACKAGE=21.0.8-tem
+ENV JDK25_PACKAGE=25.0.0-tem
 
 # Update the package list and install Maven. Maven is required for building Java projects, including Jenkins plugins.
 # The `apt-get update` command updates the list of available packages and their versions, but it does not install or
@@ -39,4 +40,5 @@ RUN /bin/bash -c "source \"$HOME/.sdkman/bin/sdkman-init.sh\" && \
     yes | sdk install java \"$JDK8_PACKAGE\" \
     && yes | sdk install java \"$JDK11_PACKAGE\" \
     && yes | sdk install java \"$JDK21_PACKAGE\" \
-    && yes | sdk install java \"$JDK17_PACKAGE\""
+    && yes | sdk install java \"$JDK17_PACKAGE\" \
+    && yes | sdk install java \"$JDK25_PACKAGE\""

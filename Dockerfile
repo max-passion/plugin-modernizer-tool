@@ -16,6 +16,7 @@ ENV JDK8_PACKAGE=8.0.462-tem
 ENV JDK11_PACKAGE=11.0.28-tem
 ENV JDK17_PACKAGE=17.0.16-tem
 ENV JDK21_PACKAGE=21.0.8-tem
+ENV JDK25_PACKAGE=25.0.0-tem
 ENV MVN_INSTALL_PLUGIN_VERSION=3.1.4
 
 # Replace the default shell with bash
@@ -27,7 +28,8 @@ RUN source "/root/.sdkman/bin/sdkman-init.sh" && \
     sdk install java $JDK8_PACKAGE && \
     sdk install java $JDK11_PACKAGE && \
     sdk install java $JDK17_PACKAGE && \
-    sdk install java $JDK21_PACKAGE
+    sdk install java $JDK21_PACKAGE && \
+    sdk install java $JDK25_PACKAGE
 
 # Re-define the VERSION argument for the result-image stage
 ARG VERSION
