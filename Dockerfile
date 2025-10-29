@@ -14,9 +14,9 @@ RUN apt-get update && \
 # Set environment variables for JDK versions managed by SDKMAN
 ENV JDK8_PACKAGE=8.0.462-tem
 ENV JDK11_PACKAGE=11.0.28-tem
-ENV JDK17_PACKAGE=17.0.16-tem
+ENV JDK17_PACKAGE=17.0.17-tem
 ENV JDK21_PACKAGE=21.0.8-tem
-ENV JDK25_PACKAGE=25-tem
+ENV JDK25_PACKAGE=25.0.1-tem
 ENV MVN_INSTALL_PLUGIN_VERSION=3.1.4
 
 # Replace the default shell with bash
