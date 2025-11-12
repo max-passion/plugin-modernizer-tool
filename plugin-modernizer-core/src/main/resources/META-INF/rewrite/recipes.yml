@@ -176,6 +176,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJavaVersion:
       javaVersion: 25
+      totalJdk: 2
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText

@@ -23,17 +23,41 @@ public class UpdateJenkinsfileForJavaVersion extends Recipe {
     private static final Logger LOG = LoggerFactory.getLogger(UpdateJenkinsfileForJavaVersion.class);
 
     /**
+     * The default total JDK correspond to the maximum Java version supported at a given time.
+     */
+    public static final Integer DEFAULT_TOTAL_JDK = 3;
+
+    /**
      * The java version.
      */
     @Option(displayName = "Version", description = "Java version.", example = "25")
     Integer javaVersion;
 
     /**
+     * The maximum number of JDK to add. Default to 3
+     */
+    @Option(
+            displayName = "Total JDK",
+            description = "The maximum number of JDK to add on the Jenkinsfile",
+            example = "2",
+            required = false)
+    Integer totalJdk;
+
+    /**
      * Constructor.
      * @param javaVersion The java version.
      */
     public UpdateJenkinsfileForJavaVersion(Integer javaVersion) {
+        this(javaVersion, DEFAULT_TOTAL_JDK);
+    }
+
+    /**
+     * Constructor.
+     * @param javaVersion The java version.
+     */
+    public UpdateJenkinsfileForJavaVersion(Integer javaVersion, Integer totalJdkVersions) {
         this.javaVersion = javaVersion;
+        this.totalJdk = totalJdkVersions;
     }
 
     @Override
@@ -77,6 +101,26 @@ public class UpdateJenkinsfileForJavaVersion extends Recipe {
 
                 // add the java version configuration to the model.
                 model.platformConfigs.add(PlatformConfig.build(Platform.LINUX, jdkVersion));
+
+                // limit the number of JDK configurations to totalJdk
+
+                // If we limit the number of JDK to save build resources
+                if (totalJdk < DEFAULT_TOTAL_JDK) {
+
+                    model.platformConfigs = model.platformConfigs.stream()
+                            .sorted((a, b) ->
+                                    Integer.compare(a.jdk().getMajor(), b.jdk().getMajor()))
+                            .collect(Collectors.toList());
+                    if (model.platformConfigs.size() > totalJdk) {
+                        model.platformConfigs = model.platformConfigs.subList(
+                                model.platformConfigs.size() - totalJdk, model.platformConfigs.size());
+                    }
+
+                    PlatformConfig lowest = model.platformConfigs.get(0);
+                    if (lowest.jdk().getMajor() != javaVersion) {
+                        model.platformConfigs.set(0, PlatformConfig.build(Platform.WINDOWS, lowest.jdk()));
+                    }
+                }
 
                 // We pass it the complete, updated configuration, and it will overwrite the old method call.
                 // in future at some point remove jdk 17 from the configurations
