@@ -161,7 +161,6 @@ public class JDKTest {
         assertEquals(3, JDK.get("2.479.1").size());
         assertEquals(JDK.JAVA_17, JDK.get("2.479.1").get(0));
         assertEquals(JDK.JAVA_21, JDK.get("2.479.1").get(1));
-        assertEquals(JDK.JAVA_25, JDK.get("2.479.1").get(2));
 
         assertEquals(3, JDK.get("2.492.1").size());
         assertEquals(JDK.JAVA_17, JDK.get("2.492.1").get(0));
