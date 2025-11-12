@@ -795,7 +795,7 @@ public class Plugin {
      * @param maven The maven invoker instance
      */
     public void runOpenRewrite(MavenInvoker maven) {
-        withJDK(JDK.JAVA_21);
+        withJDK(JDK.JAVA_25);
         if (config.isFetchMetadataOnly()) {
             LOG.info("Skipping OpenRewrite recipe application for plugin {} as only metadata is required", name);
             return;
