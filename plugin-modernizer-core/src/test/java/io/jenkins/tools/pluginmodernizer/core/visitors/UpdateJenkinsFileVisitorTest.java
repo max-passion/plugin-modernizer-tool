@@ -34,8 +34,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 buildPlugin(
                   dontRemoveMe: 'true',
                   forkCount: '1C', // run this number of tests in parallel for faster feedback.  If the number terminates with a 'C', the value will be multiplied by the number of available CPU cores
@@ -43,8 +42,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   jenkinsVersions: ['2.222.1', '2.249.1'],
                   platforms: ['linux', 'windows']
                 )
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -57,10 +55,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     [platform: 'linux', jdk: 21],
                     [platform: 'windows', jdk: 17],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -76,11 +73,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 buildPlugin()
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -91,10 +86,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   configurations: [
                     [platform: 'linux', jdk: 17],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -114,11 +108,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 buildPlugin()
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -130,10 +122,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     [platform: 'linux', jdk: 17],
                     [platform: 'windows', jdk: 11, jenkins: '2.249.1'],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -149,11 +140,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 buildPlugin()
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -164,10 +153,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   configurations: [
                     [platform: 'linux', jdk: 17, jenkins: '2.492.3'],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -182,11 +170,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 buildPlugin()
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -198,10 +184,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     [platform: 'linux', jdk: 21],
                     [platform: 'windows', jdk: 17],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -216,12 +201,10 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 // This is a comment
                 buildPlugin()
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -233,10 +216,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     [platform: 'linux', jdk: 21],
                     [platform: 'windows', jdk: 17],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -251,8 +233,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 #!/usr/bin/env groovy
                 /* `buildPlugin` step provided by: https://github.com/jenkins-infra/pipeline-library */
                 buildPlugin(
@@ -260,8 +241,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     [platform: 'linux', jdk: 11],
                     [platform: 'windows', jdk: 17],
                 ])
-                """,
-                        """
+                """, """
                 #!/usr/bin/env groovy
                 /*
                  See the documentation for more options:
@@ -274,10 +254,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     [platform: 'linux', jdk: 21],
                     [platform: 'windows', jdk: 17],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -292,11 +271,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 buildPlugin()
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -306,10 +283,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
                   configurations: []
                 )
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -324,11 +300,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 buildPlugin()
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -338,10 +312,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
                   configurations: []
                 )
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -363,8 +336,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                         */
                         """
                         buildPlugin()
-                        """,
-                        """
+                        """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -374,8 +346,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   useContainerAgent: false, // Set to `false` if you need to use Docker for containerized tests
                   configurations: []
                 )
-                """,
-                        sourceSpecs -> {
+                """, sourceSpecs -> {
                             sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
                         }));
     }
@@ -392,8 +363,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                         pipeline {
                             agent any
                             stages {
@@ -404,10 +374,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                                 }
                             }
                         }
-                        """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                        """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -423,8 +392,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                         def versions = [21, 17]
                         def platforms = ['linux', 'windows']
                         def jenkinsVersions = ['2.249.1', '2.222.1']
@@ -433,8 +401,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                             jenkinsVersions: jenkinsVersions,
                             platforms: platforms
                         )
-                        """,
-                        """
+                        """, """
                         /*
                          See the documentation for more options:
                          https://github.com/jenkins-infra/pipeline-library/
@@ -445,10 +412,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                           configurations: [
                             [platform: 'linux', jdk: 17],
                         ])
-                        """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                        """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -464,8 +430,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -478,8 +443,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     [platform: 'windows', jdk: 17],
                     [platform: 'linux', jdk: 21],
                 ])
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -490,10 +454,9 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   configurations: [
                     [platform: 'linux', jdk: 21],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 
     @Test
@@ -509,8 +472,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                     }
                 })),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -527,8 +489,7 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   useContainerAgent: useContainer, // Set to `false` if you need to use Docker for containerized tests
                   configurations: configurations
                 )
-                """,
-                        """
+                """, """
                 /*
                  See the documentation for more options:
                  https://github.com/jenkins-infra/pipeline-library/
@@ -539,9 +500,8 @@ public class UpdateJenkinsFileVisitorTest implements RewriteTest {
                   configurations: [
                     [platform: 'linux', jdk: 21],
                 ])
-                """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
-                        }));
+                """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath());
+                }));
     }
 }

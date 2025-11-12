@@ -21,9 +21,7 @@ public class SetupDependabotTest implements RewriteTest {
                 spec -> spec.recipe(new SetupDependabot()),
                 // language=yaml
                 text(""), // Need one minimum file to trigger the recipe
-                yaml(
-                        null,
-                        """
+                yaml(null, """
                     version: 2
                     updates:
                     - package-ecosystem: maven
@@ -34,10 +32,9 @@ public class SetupDependabotTest implements RewriteTest {
                       directory: /
                       schedule:
                         interval: monthly
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
+                }));
     }
 
     /**
@@ -64,13 +61,11 @@ public class SetupDependabotTest implements RewriteTest {
                 spec -> spec.recipe(new SetupDependabot()),
                 text(""), // Need one minimum file to trigger the recipe
                 // language=yaml
-                yaml(
-                        """
+                yaml("""
                     ---
                     version: 2
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
+                }));
     }
 }

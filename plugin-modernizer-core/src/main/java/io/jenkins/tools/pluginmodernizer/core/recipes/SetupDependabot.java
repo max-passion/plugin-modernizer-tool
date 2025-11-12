@@ -24,8 +24,7 @@ public class SetupDependabot extends ScanningRecipe<AtomicBoolean> {
      * The dependabot file.
      */
     @Language("yml")
-    public static final String DEPENDABOT_FILE =
-            """
+    public static final String DEPENDABOT_FILE = """
         version: 2
         updates:
         - package-ecosystem: maven

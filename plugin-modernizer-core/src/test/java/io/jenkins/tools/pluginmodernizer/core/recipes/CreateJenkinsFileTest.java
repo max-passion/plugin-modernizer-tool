@@ -14,8 +14,7 @@ class CreateJenkinsFileTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new CreateJenkinsFile()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -41,9 +40,7 @@ class CreateJenkinsFileTest implements RewriteTest {
                     </repositories>
                 </project>
                 """),
-                groovy(
-                        null,
-                        """
+                groovy(null, """
             /*
             See the documentation for more options:
             https://github.com/jenkins-infra/pipeline-library/
@@ -55,8 +52,7 @@ class CreateJenkinsFileTest implements RewriteTest {
                     [platform: 'linux', jdk: 21],
                     [platform: 'windows', jdk: 17]
                 ]
-            )""",
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+            )""", spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
 
     @Test
@@ -64,8 +60,7 @@ class CreateJenkinsFileTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new CreateJenkinsFile()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -98,8 +93,7 @@ class CreateJenkinsFileTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new CreateJenkinsFile()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -117,8 +111,7 @@ class CreateJenkinsFileTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new CreateJenkinsFile()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
             <?xml version="1.0" encoding="UTF-8"?>
             <project xmlns="http://maven.apache.org/POM/4.0.0"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -144,9 +137,7 @@ class CreateJenkinsFileTest implements RewriteTest {
                 </repositories>
             </project>
             """),
-                groovy(
-                        null,
-                        """
+                groovy(null, """
             /*
             See the documentation for more options:
             https://github.com/jenkins-infra/pipeline-library/
@@ -158,8 +149,7 @@ class CreateJenkinsFileTest implements RewriteTest {
                     [platform: 'linux', jdk: 17],
                     [platform: 'windows', jdk: 11]
                 ]
-            )""",
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+            )""", spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
 
     @Test
@@ -167,8 +157,7 @@ class CreateJenkinsFileTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new CreateJenkinsFile()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
             <?xml version="1.0" encoding="UTF-8"?>
             <project xmlns="http://maven.apache.org/POM/4.0.0"
                      xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -194,9 +183,7 @@ class CreateJenkinsFileTest implements RewriteTest {
               </repositories>
             </project>
             """),
-                groovy(
-                        null,
-                        """
+                groovy(null, """
             /*
             See the documentation for more options:
             https://github.com/jenkins-infra/pipeline-library/
@@ -208,7 +195,6 @@ class CreateJenkinsFileTest implements RewriteTest {
                     [platform: 'linux', jdk: 11],
                     [platform: 'windows', jdk: 8]
                 ]
-            )""",
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+            )""", spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
 }

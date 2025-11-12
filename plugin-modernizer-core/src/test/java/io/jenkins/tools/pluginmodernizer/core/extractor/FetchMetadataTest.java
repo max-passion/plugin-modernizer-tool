@@ -69,8 +69,7 @@ public class FetchMetadataTest implements RewriteTest {
     }
 
     @Language("xml")
-    private static final String POM_XML =
-            """
+    private static final String POM_XML = """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -208,8 +207,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                  <?xml version="1.0" encoding="UTF-8"?>
                  <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                    <modelVersion>4.0.0</modelVersion>
@@ -288,8 +286,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 pomXml(POM_XML),
-                java(
-                        """
+                java("""
                             package com.uppercase.camelcase;
                             class FooBar {}
                         """));
@@ -322,19 +319,16 @@ public class FetchMetadataTest implements RewriteTest {
                 },
                 pomXml(POM_XML),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          buildPlugin(
                          useContainerAgent: true,
                          configurations: [
                                 [platform: 'linux', jdk: 21],
                                 [platform: 'windows', jdk: 17],
                          ])
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
                 // language=java
-                java(
-                        """
+                java("""
                             package com.uppercase.camelcase;
                             import org.testcontainers.containers.GenericContainer;
                             class FooBar {}
@@ -400,8 +394,7 @@ public class FetchMetadataTest implements RewriteTest {
                     spec.recipe(new FetchMetadata(testInfo.getDisplayName())).parser(parser);
                 },
                 // language=java
-                java(
-                        """
+                java("""
                             package com.uppercase.camelcase;
                             import org.jenkinsci.test.acceptance.docker.DockerClassRule;
                             class FooBar {}
@@ -419,8 +412,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          buildPlugin(
                          useContainerAgent: false,
                          forkCount: '1C',
@@ -428,8 +420,7 @@ public class FetchMetadataTest implements RewriteTest {
                                 [platform: 'linux', jdk: 21],
                                 [platform: 'windows', jdk: 17],
                          ])
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
@@ -457,8 +448,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                         #!/usr/bin/env groovy
                         /* `buildPlugin` step provided by: https://github.com/jenkins-infra/pipeline-library */
                         buildPlugin(
@@ -467,8 +457,7 @@ public class FetchMetadataTest implements RewriteTest {
                                         [platform: 'linux', jdk: 21],
                                         [platform: 'windows', jdk: 17],
                                 ])
-                        """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                        """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         assertNotNull(pluginMetadata, "Plugin metadata was not written by the recipe");
@@ -494,16 +483,14 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          buildPlugin(
                          useContainerAgent: true,
                          configurations: [
                                 [platform: 'linux', jdk: 21],
                                 [platform: 'windows', jdk: 17],
                          ])
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
                 pomXml(POM_XML));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
@@ -530,13 +517,11 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          buildPlugin(
                              jdkVersions: [21, 17]
                          )
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         // Files are present
@@ -560,13 +545,11 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          buildPlugin(
                              platforms: ["linux", "windows"]
                          )
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         // Files are present
@@ -589,14 +572,12 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          buildPlugin(
                              platforms: ['linux'],
                              jdkVersions: [21, 17]
                          )
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         // Files are present
@@ -619,14 +600,12 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          def versions = [21, 17]
                          buildPlugin(
                              jdkVersions: versions
                          )
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         // Files are present
@@ -649,11 +628,9 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                          buildPlugin()
-                         """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                         """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
 
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         // Files are present
@@ -682,8 +659,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                             def configurations = [
                               [ platform: "linux", jdk: "11" ],
                               [ platform: "windows", jdk: "17" ]
@@ -698,8 +674,7 @@ public class FetchMetadataTest implements RewriteTest {
                                 ]
 
                             buildPlugin(params)
-                            """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
+                            """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
@@ -725,8 +700,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                             def useContainerAgent = true
                             def platforms = ["linux", "windows"]
                             def params = [
@@ -736,8 +710,7 @@ public class FetchMetadataTest implements RewriteTest {
                                 useContainerAgent: useContainerAgent,
                             ]
                             buildPlugin(params)
-                            """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
+                            """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
@@ -768,8 +741,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                     if (JENKINS_URL == 'https://ci.jenkins.io/') {
                       buildPlugin(
                         configurations: [
@@ -784,8 +756,7 @@ public class FetchMetadataTest implements RewriteTest {
                     node() {
                       // Not implemented
                     }
-                    """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
+                    """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");
@@ -814,8 +785,7 @@ public class FetchMetadataTest implements RewriteTest {
         rewriteRun(
                 recipeSpec -> recipeSpec.recipe(new FetchMetadata(testInfo.getDisplayName())),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                             def forkCount = '1C'
                             def useContainerAgent = true
                             def configurations = [
@@ -831,8 +801,7 @@ public class FetchMetadataTest implements RewriteTest {
                                 checkstyle: [qualityGates: [[threshold: 1, type: 'NEW', unstable: true]]],
                                 pmd: [qualityGates: [[threshold: 1, type: 'NEW', unstable: true]]],
                                 jacoco: [sourceCodeRetention: 'MODIFIED'])
-                            """,
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
+                            """, spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())),
                 pomXml(POM_XML));
         PluginMetadata pluginMetadata = new PluginMetadata(testInfo.getDisplayName()).refresh();
         assertTrue(pluginMetadata.hasFile(ArchetypeCommonFile.JENKINSFILE), "Jenkinsfile is missing");

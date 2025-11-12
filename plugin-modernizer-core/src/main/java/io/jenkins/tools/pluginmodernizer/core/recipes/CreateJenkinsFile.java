@@ -20,8 +20,7 @@ public class CreateJenkinsFile extends ScanningRecipe<CreateJenkinsFile.ConfigSt
     private static final Logger LOG = LoggerFactory.getLogger(CreateJenkinsFile.class);
 
     @Language("groovy")
-    private static final String JENKINSFILE_TEMPLATE =
-            """
+    private static final String JENKINSFILE_TEMPLATE = """
             /*
             See the documentation for more options:
             https://github.com/jenkins-infra/pipeline-library/

@@ -19,8 +19,7 @@ public class CountDeprecatedMethodUsagesTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(recipe).expectedCyclesThatMakeChanges(1).cycles(1),
                 // language=java
-                java(
-                        """
+                java("""
                         public class Test {
                             @Deprecated
                             void oldMethod() {}
@@ -29,8 +28,7 @@ public class CountDeprecatedMethodUsagesTest implements RewriteTest {
                                 oldMethod();  // Deprecated usage
                             }
                         }
-                        """,
-                        """
+                        """, """
                         public class Test {
                             @Deprecated
                             void oldMethod() {}
@@ -48,9 +46,7 @@ public class CountDeprecatedMethodUsagesTest implements RewriteTest {
         CountDeprecatedMethodUsages recipe = new CountDeprecatedMethodUsages();
         // language=java
         rewriteRun(
-                spec -> spec.recipe(recipe).expectedCyclesThatMakeChanges(1).cycles(1),
-                java(
-                        """
+                spec -> spec.recipe(recipe).expectedCyclesThatMakeChanges(1).cycles(1), java("""
                         public class A {
                             @Deprecated
                             void oldMethodA() {}
@@ -59,8 +55,7 @@ public class CountDeprecatedMethodUsagesTest implements RewriteTest {
                                 oldMethodA();  // Deprecated usage
                             }
                         }
-                        """,
-                        """
+                        """, """
                         public class A {
                             @Deprecated
                             void oldMethodA() {}
@@ -69,9 +64,7 @@ public class CountDeprecatedMethodUsagesTest implements RewriteTest {
                                 /*~~>*/oldMethodA();  // Deprecated usage
                             }
                         }
-                        """),
-                java(
-                        """
+                        """), java("""
                         public class B {
                             @Deprecated
                             void oldMethodB() {}
@@ -84,8 +77,7 @@ public class CountDeprecatedMethodUsagesTest implements RewriteTest {
                                 oldMethodB();  // Deprecated usage
                             }
                         }
-                        """,
-                        """
+                        """, """
                         public class B {
                             @Deprecated
                             void oldMethodB() {}
@@ -109,8 +101,7 @@ public class CountDeprecatedMethodUsagesTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(recipe),
                 // language=java
-                java(
-                        """
+                java("""
                         public class Test {
                             void newMethod() {}
 

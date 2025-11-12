@@ -32,8 +32,7 @@ public class EnsureIndexJelly extends ScanningRecipe<EnsureIndexJelly.ShouldCrea
      * Jelly file
      */
     @Language("xml")
-    public static final String JELLY_FILE =
-            """
+    public static final String JELLY_FILE = """
         <?jelly escape-by-default='true'?>
         <div>
            DESCRIPTION

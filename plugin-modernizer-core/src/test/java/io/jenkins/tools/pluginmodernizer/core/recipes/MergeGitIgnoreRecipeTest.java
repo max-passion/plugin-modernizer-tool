@@ -13,16 +13,14 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new MergeGitIgnoreRecipe()),
                 text(""), // Need one minimum file to trigger the recipe
-                text(
-                        """
+                text("""
                     # Existing entries
                     *.log
                     build
                     .idea
                     # Custom section
                     custom/*.tmp
-                    """,
-                        """
+                    """, """
                     # Existing entries
                     *.log
                     build
@@ -44,8 +42,7 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
                     .settings
                     .classpath
                     .project
-                    """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
+                    """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
     }
 
     @Test
@@ -53,9 +50,7 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new MergeGitIgnoreRecipe()),
                 text(""), // Need one minimum file to trigger the recipe
-                text(
-                        "",
-                        """
+                text("", """
                     # Added from archetype
                     target
 
@@ -72,8 +67,7 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
                     .settings
                     .classpath
                     .project
-                    """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
+                    """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
     }
 
     @Test
@@ -81,15 +75,13 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new MergeGitIgnoreRecipe()),
                 text(""), // Need one minimum file to trigger the recipe
-                text(
-                        """
+                text("""
                     # Existing entries
                     target
                     *.iml
                     .settings
                     .idea
-                    """,
-                        """
+                    """, """
                     # Existing entries
                     target
                     *.iml
@@ -106,8 +98,7 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
                     # Eclipse project files
                     .classpath
                     .project
-                    """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
+                    """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
     }
 
     @Test
@@ -115,15 +106,13 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new MergeGitIgnoreRecipe()),
                 text(""), // Need one minimum file to trigger the recipe
-                text(
-                        """
+                text("""
                     # Existing entries
                     *.log
                     build
                     .idea
                     # Custom section
-                    custom/*.tmp""",
-                        """
+                    custom/*.tmp""", """
                     # Existing entries
                     *.log
                     build
@@ -145,8 +134,7 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
                     .settings
                     .classpath
                     .project
-                    """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
+                    """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
     }
 
     @Test
@@ -154,8 +142,7 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new MergeGitIgnoreRecipe()),
                 text(""), // Need one minimum file to trigger the recipe
-                text(
-                        """
+                text("""
                     target
 
                     # mvn hpi:run
@@ -171,8 +158,7 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
                     .settings
                     .classpath
                     .project
-                    """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
+                    """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
     }
 
     @Test
@@ -180,15 +166,13 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new MergeGitIgnoreRecipe()),
                 text(""), // Need one minimum file to trigger the recipe
-                text(
-                        """
+                text("""
                     # Existing entries
                     target/
                     work/
                     .idea/
                     .settings/
-                    """,
-                        """
+                    """, """
                     # Existing entries
                     target/
                     work/
@@ -205,7 +189,6 @@ public class MergeGitIgnoreRecipeTest implements RewriteTest {
                     # Eclipse project files
                     .classpath
                     .project
-                    """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
+                    """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath())));
     }
 }

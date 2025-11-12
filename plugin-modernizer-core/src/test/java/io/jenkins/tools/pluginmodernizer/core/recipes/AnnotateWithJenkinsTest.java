@@ -26,8 +26,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                             .cycles(1);
                 },
                 // language=java
-                java(
-                        """
+                java("""
                         import org.junit.Rule;
                         import org.jvnet.hudson.test.JenkinsRule;
                         import org.junit.Test;
@@ -46,8 +45,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                                 jr.before();
                             }
                         }
-                        """,
-                        """
+                        """, """
                         import org.junit.Rule;
                         import org.jvnet.hudson.test.JenkinsRule;
                         import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
@@ -81,8 +79,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                             .cycles(1);
                 },
                 // language=java
-                java(
-                        """
+                java("""
                         import org.junit.Rule;
                         import org.jvnet.hudson.test.JenkinsRule;
                         import org.junit.Test;
@@ -112,8 +109,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                                 jenkinsRule.before();
                             }
                         }
-                        """,
-                        """
+                        """, """
                         import org.junit.Rule;
                         import org.jvnet.hudson.test.JenkinsRule;
                         import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
@@ -158,8 +154,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                             .cycles(1);
                 },
                 // language=java
-                java(
-                        """
+                java("""
                         import org.junit.Rule;
                         import org.jvnet.hudson.test.JenkinsRule;
                         import org.junit.Test;
@@ -173,8 +168,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                                 // j.before();
                             }
                         }
-                        """,
-                        """
+                        """, """
                         import org.junit.Rule;
                         import org.jvnet.hudson.test.JenkinsRule;
                         import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
@@ -200,8 +194,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                     spec.recipe(new AnnotateWithJenkins()).parser(parser);
                 },
                 // language=java
-                java(
-                        """
+                java("""
                         import org.junit.Test;
 
                         public class AnotherTest {
@@ -222,8 +215,7 @@ public class AnnotateWithJenkinsTest implements RewriteTest {
                     spec.recipe(new AnnotateWithJenkins()).parser(parser);
                 },
                 // language=java
-                java(
-                        """
+                java("""
                         import org.junit.Rule;
                         import org.junit.rules.TemporaryFolder;
                         import org.junit.Test;
