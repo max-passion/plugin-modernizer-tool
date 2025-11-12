@@ -509,7 +509,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: byte-buddy-api
-      pluginVersion: 1.17.8-195.v20ec6b_32a_e37
+      pluginVersion: 1.18.0-199.vc8831e51d698
       replaces:
         - groupId: net.bytebuddy
           artifactId: byte-buddy
