@@ -29,8 +29,7 @@ public class EnsureIndexJellyTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new EnsureIndexJelly()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                           <project>
                               <parent>
                                   <groupId>org.jenkins-ci.plugins</groupId>
@@ -48,15 +47,12 @@ public class EnsureIndexJellyTest implements RewriteTest {
                               </repositories>
                           </project>
                           """),
-                text(
-                        null,
-                        """
+                text(null, """
                           <?jelly escape-by-default='true'?>
                           <div>
                              The empty plugin
                           </div>
-                          """,
-                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath())));
+                          """, s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath())));
     }
 
     @Test
@@ -64,8 +60,7 @@ public class EnsureIndexJellyTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new EnsureIndexJelly()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                           <project>
                               <artifactId>not-plugin</artifactId>
                               <description>Not a plugin</description>
@@ -80,8 +75,7 @@ public class EnsureIndexJellyTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new EnsureIndexJelly()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                           <project>
                               <parent>
                                   <groupId>org.jenkins-ci.plugins</groupId>
@@ -99,15 +93,12 @@ public class EnsureIndexJellyTest implements RewriteTest {
                               </repositories>
                           </project>
                           """),
-                text(
-                        null,
-                        """
+                text(null, """
                           <?jelly escape-by-default='true'?>
                           <div>
                              empty
                           </div>
-                          """,
-                        s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath())));
+                          """, s -> s.path(ArchetypeCommonFile.INDEX_JELLY.getPath())));
     }
 
     @Test
@@ -115,8 +106,7 @@ public class EnsureIndexJellyTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new EnsureIndexJelly()),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                           <project>
                               <parent>
                                   <groupId>org.jenkins-ci.plugins</groupId>
@@ -133,15 +123,12 @@ public class EnsureIndexJellyTest implements RewriteTest {
                               </repositories>
                           </project>
                           """),
-                text(
-                        null,
-                        """
+                text(null, """
                           <?jelly escape-by-default='true'?>
                           <div>
                              empty
                           </div>
-                          """,
-                        s -> s.path("src/main/resources/index.jelly")));
+                          """, s -> s.path("src/main/resources/index.jelly")));
     }
 
     @Test
@@ -151,8 +138,7 @@ public class EnsureIndexJellyTest implements RewriteTest {
                 mavenProject(
                         "parent",
                         // language=xml
-                        pomXml(
-                                """
+                        pomXml("""
               <project>
                   <groupId>org.example</groupId>
                   <artifactId>my-root</artifactId>
@@ -167,8 +153,7 @@ public class EnsureIndexJellyTest implements RewriteTest {
               """),
                         mavenProject(
                                 "plugin",
-                                pomXml(
-                                        """
+                                pomXml("""
                 <project>
                     <parent>
                         <groupId>org.jenkins-ci.plugins</groupId>
@@ -199,8 +184,7 @@ public class EnsureIndexJellyTest implements RewriteTest {
                                                 .toString())))),
                         mavenProject(
                                 "other-plugin",
-                                pomXml(
-                                        """
+                                pomXml("""
                 <project>
                     <parent>
                         <groupId>org.jenkins-ci.plugins</groupId>
@@ -217,19 +201,13 @@ public class EnsureIndexJellyTest implements RewriteTest {
                     </repositories>
                 </project>
                 """),
-                                srcMainResources(text(
-                                        null,
-                                        """
+                                srcMainResources(text(null, """
                                                   <?jelly escape-by-default='true'?>
                                                   <div>
                                                      other-plugin
                                                   </div>
-                                                  """,
-                                        s -> s.path("index.jelly")))),
-                        mavenProject(
-                                "non-plugin",
-                                pomXml(
-                                        """
+                                                  """, s -> s.path("index.jelly")))),
+                        mavenProject("non-plugin", pomXml("""
                 <project>
                     <groupId>org.example</groupId>
                     <artifactId>not-a-plugin</artifactId>

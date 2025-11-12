@@ -25,15 +25,13 @@ public class IsUsingArchetypeCommonFileTest implements RewriteTest {
                     name: Empty
                     """),
                 // language=java
-                java(
-                        """
+                java("""
                     public class Foo {
                         public void foo() {}
                     }
                     """),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -51,18 +49,15 @@ public class IsUsingArchetypeCommonFileTest implements RewriteTest {
                 spec -> spec.recipe(new IsUsingArchetypeCommonFile(ArchetypeCommonFile.DEPENDABOT)),
                 // For some reason the search marker is not being written to the output
                 // language=yaml
-                yaml(
-                        """
+                yaml("""
                     ---
                     name: Empty
-                    """,
-                        """
+                    """, """
                     ---
                     name: Empty
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(".github/dependabot.yml");
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(".github/dependabot.yml");
+                }));
     }
 
     @Test
@@ -70,17 +65,14 @@ public class IsUsingArchetypeCommonFileTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new IsUsingArchetypeCommonFile(ArchetypeCommonFile.DEPENDABOT)),
                 // language=yml
-                yaml(
-                        """
+                yaml("""
                     ---
                     name: Empty
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path("dependabot.yml");
-                        }),
+                    """, sourceSpecs -> {
+                    sourceSpecs.path("dependabot.yml");
+                }),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>

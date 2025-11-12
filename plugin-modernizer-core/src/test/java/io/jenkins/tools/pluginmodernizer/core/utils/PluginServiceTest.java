@@ -63,8 +63,7 @@ class PluginServiceTest {
         PluginService service = getService(config, cacheManager);
 
         // language=xml
-        String pom =
-                """
+        String pom = """
                     <project>
                         <properties>
                             <gitHubRepo>jenkinsci/foobar</gitHubRepo>
@@ -89,8 +88,7 @@ class PluginServiceTest {
         PluginService service = getService(config, cacheManager);
 
         // language=xml
-        String pom =
-                """
+        String pom = """
                     <project>
                         <properties>
                             <scm>
@@ -117,8 +115,7 @@ class PluginServiceTest {
         PluginService service = getService(config, cacheManager);
 
         // language=xml
-        String pom =
-                """
+        String pom = """
                     <project>
                         <properties/>
                     </project>

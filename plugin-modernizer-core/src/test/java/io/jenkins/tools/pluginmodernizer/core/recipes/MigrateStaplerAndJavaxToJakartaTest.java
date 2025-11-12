@@ -34,8 +34,7 @@ public class MigrateStaplerAndJavaxToJakartaTest implements RewriteTest {
                 },
                 srcMainResources(
                         // language=java
-                        java(
-                                """
+                        java("""
                         import javax.servlet.ServletException;
                         import org.kohsuke.stapler.Stapler;
                         import org.kohsuke.stapler.StaplerRequest;
@@ -47,8 +46,7 @@ public class MigrateStaplerAndJavaxToJakartaTest implements RewriteTest {
                                 StaplerResponse response = Stapler.getCurrentResponse();
                             }
                         }
-                        """,
-                                """
+                        """, """
                         import jakarta.servlet.ServletException;
                         import org.kohsuke.stapler.Stapler;
                         import org.kohsuke.stapler.StaplerRequest2;
@@ -73,15 +71,13 @@ public class MigrateStaplerAndJavaxToJakartaTest implements RewriteTest {
                 },
                 srcTestJava(
                         // language=java
-                        java(
-                                """
+                        java("""
                         package hudson.util;
                         public class ChartUtil {}
                         """)),
                 srcMainResources(
                         // language=java
-                        java(
-                                """
+                        java("""
                         import javax.servlet.ServletException;
                         import org.kohsuke.stapler.Stapler;
                         import org.kohsuke.stapler.StaplerRequest;

@@ -37,8 +37,7 @@ import org.slf4j.LoggerFactory;
 public class DeclarativeRecipesTest implements RewriteTest {
 
     @Language("xml")
-    public static final String EXPECTED_JELLY =
-            """
+    public static final String EXPECTED_JELLY = """
             <?jelly escape-by-default='true'?>
             <div>
                empty
@@ -46,8 +45,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
             """;
 
     @Language("groovy")
-    private static final String EXPECTED_MODERN_JENKINSFILE =
-            """
+    private static final String EXPECTED_MODERN_JENKINSFILE = """
             /*
             See the documentation for more options:
             https://github.com/jenkins-infra/pipeline-library/
@@ -62,8 +60,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
             )""";
 
     @Language("groovy")
-    private static final String EXPECTED_UPCOMING_MODERN_JENKINSFILE =
-            """
+    private static final String EXPECTED_UPCOMING_MODERN_JENKINSFILE = """
             /*
             See the documentation for more options:
             https://github.com/jenkins-infra/pipeline-library/
@@ -78,8 +75,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
             )""";
 
     @Language("groovy")
-    private static final String JAVA_8_JENKINS_FILE =
-            """
+    private static final String JAVA_8_JENKINS_FILE = """
             /*
             See the documentation for more options:
             https://github.com/jenkins-infra/pipeline-library/
@@ -108,8 +104,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.FetchMetadata"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -128,8 +123,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.AddCodeOwner"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -151,8 +145,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.AddCodeOwner"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -174,8 +167,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.AddCodeOwner"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -185,17 +177,14 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <name>Empty pom</name>
                         </project>
                         """),
-                text(
-                        """
+                text("""
                         * @my-custom-team
-                        """,
-                        """
+                        """, """
                         * @jenkinsci/empty-plugin-developers
                         * @my-custom-team
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.CODEOWNERS.getPath());
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.CODEOWNERS.getPath());
+                }));
     }
 
     @Test
@@ -204,8 +193,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.UpgradeParent4Version"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -236,8 +224,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -277,8 +264,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.UpgradeBomVersion"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -320,8 +306,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -363,8 +348,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """
-                                .formatted(Settings.getJenkinsParentVersion(), Settings.getBomVersion())));
+                        """.formatted(Settings.getJenkinsParentVersion(), Settings.getBomVersion())));
     }
 
     @Test
@@ -373,8 +357,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.UpgradeBomVersion"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -416,8 +399,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -469,8 +451,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -519,8 +500,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -568,8 +548,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """
-                                .formatted(Settings.getJenkinsParentVersion(), Settings.getBomVersion())));
+                        """.formatted(Settings.getJenkinsParentVersion(), Settings.getBomVersion())));
     }
 
     @Test
@@ -579,8 +558,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -593,8 +571,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <java.version>11</java.version>
                           </properties>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -612,8 +589,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -629,8 +605,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </developer>
                           </developers>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -671,8 +646,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_UPCOMING_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -731,8 +705,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -796,18 +769,16 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """
-                                .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getJenkinsMinimumBaseline(),
-                                        Settings.getJenkinsMinimumPatchVersion(),
-                                        Settings.getRecommendedBomVersion(),
-                                        Settings.getWiremockVersion())),
+                        """.formatted(
+                                Settings.getJenkinsParentVersion(),
+                                Settings.getJenkinsTestHarnessVersion(),
+                                Settings.getJenkinsMinimumBaseline(),
+                                Settings.getJenkinsMinimumPatchVersion(),
+                                Settings.getRecommendedBomVersion(),
+                                Settings.getWiremockVersion())),
                 srcMainResources(
                         // language=java
-                        java(
-                                """
+                        java("""
                                 import hudson.util.IOException2;
                                 import java.io.File;
                                 import java.io.IOException;
@@ -829,8 +800,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                         }
                                     }
                                 }
-                                """,
-                                """
+                                """, """
                                 import java.io.File;
                                 import java.io.IOException;
 
@@ -871,8 +841,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -916,8 +885,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -952,11 +920,10 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """
-                                .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getJenkinsMinimumVersion(),
-                                        Settings.getJenkinsTestHarnessVersion())));
+                        """.formatted(
+                                Settings.getJenkinsParentVersion(),
+                                Settings.getJenkinsMinimumVersion(),
+                                Settings.getJenkinsTestHarnessVersion())));
     }
 
     @Test
@@ -976,8 +943,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -1034,8 +1000,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -1086,13 +1051,12 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """
-                                .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getJenkinsMinimumBaseline(),
-                                        Settings.getJenkinsMinimumPatchVersion(),
-                                        Settings.getRecommendedBomVersion())));
+                        """.formatted(
+                                Settings.getJenkinsParentVersion(),
+                                Settings.getJenkinsTestHarnessVersion(),
+                                Settings.getJenkinsMinimumBaseline(),
+                                Settings.getJenkinsMinimumPatchVersion(),
+                                Settings.getRecommendedBomVersion())));
     }
 
     @Test
@@ -1115,8 +1079,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_UPCOMING_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                     <?xml version="1.0" encoding="UTF-8"?>
                     <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
                       <modelVersion>4.0.0</modelVersion>
@@ -1195,8 +1158,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         </dependency>
                       </dependencies>
                     </project>
-                    """,
-                        """
+                    """, """
                     <?xml version="1.0" encoding="UTF-8"?>
                     <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
                       <modelVersion>4.0.0</modelVersion>
@@ -1269,14 +1231,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         </dependency>
                       </dependencies>
                     </project>
-                    """
-                                .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getJenkinsMinimumBaseline(),
-                                        Settings.getJenkinsMinimumPatchVersion(),
-                                        Settings.getRecommendedBomVersion(),
-                                        Settings.getWiremockVersion())));
+                    """.formatted(
+                                Settings.getJenkinsParentVersion(),
+                                Settings.getJenkinsTestHarnessVersion(),
+                                Settings.getJenkinsMinimumBaseline(),
+                                Settings.getJenkinsMinimumPatchVersion(),
+                                Settings.getRecommendedBomVersion(),
+                                Settings.getWiremockVersion())));
     }
 
     @Test
@@ -1303,8 +1264,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -1369,8 +1329,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -1430,12 +1389,10 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """
-                                .formatted(Settings.getWiremockVersion())),
+                        """.formatted(Settings.getWiremockVersion())),
                 srcMainResources(
                         // language=java
-                        java(
-                                """
+                        java("""
                                 import hudson.util.IOException2;
                                 import java.io.File;
                                 import java.io.IOException;
@@ -1457,8 +1414,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                         }
                                     }
                                 }
-                                """,
-                                """
+                                """, """
                                 import java.io.File;
                                 import java.io.IOException;
 
@@ -1510,8 +1466,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         JAVA_8_JENKINS_FILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -1571,8 +1526,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -1856,8 +1810,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         """)),
                 srcMainJava(
                         // language=java
-                        java(
-                                """
+                        java("""
                         import hudson.maven.MavenModuleSet;
                         import hudson.scm.SubversionSCM;
                         import hudson.tasks.Ant;
@@ -1929,8 +1882,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 }
                             }
                         }
-                        """,
-                                """
+                        """, """
                         import hudson.maven.MavenModuleSet;
                         import hudson.scm.SubversionSCM;
                         import hudson.tasks.Ant;
@@ -2027,8 +1979,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                             <?xml version="1.0" encoding="UTF-8"?>
                             <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                               <modelVersion>4.0.0</modelVersion>
@@ -2081,8 +2032,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 </pluginRepository>
                               </pluginRepositories>
                             </project>
-                            """,
-                        """
+                            """, """
                             <?xml version="1.0" encoding="UTF-8"?>
                             <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                               <modelVersion>4.0.0</modelVersion>
@@ -2125,15 +2075,13 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 </pluginRepository>
                               </pluginRepositories>
                             </project>
-                            """
-                                .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getWiremockVersion())),
+                            """.formatted(
+                                Settings.getJenkinsParentVersion(),
+                                Settings.getJenkinsTestHarnessVersion(),
+                                Settings.getWiremockVersion())),
                 srcMainResources(
                         // language=java
-                        java(
-                                """
+                        java("""
                                 import javax.servlet.ServletException;
                                 import org.kohsuke.stapler.Stapler;
                                 import org.kohsuke.stapler.StaplerRequest;
@@ -2190,8 +2138,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                         }
                                     }
                                 }
-                                """,
-                                """
+                                """, """
                                 import jakarta.servlet.ServletException;
                                 import org.kohsuke.stapler.Stapler;
                                 import org.kohsuke.stapler.StaplerRequest2;
@@ -2273,8 +2220,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -2341,8 +2287,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
-                        """,
-                        """
+                        """, """
                         <?xml version="1.0" encoding="UTF-8"?>
                         <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                           <modelVersion>4.0.0</modelVersion>
@@ -2399,23 +2344,20 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             </pluginRepository>
                           </pluginRepositories>
                         </project>
+                        """.formatted(
+                                Settings.getJenkinsParentVersion(),
+                                Settings.getJenkinsTestHarnessVersion(),
+                                Settings.getBomVersion(),
+                                Settings.getWiremockVersion())),
+                srcTestJava(java(
+                        // language=java
                         """
-                                .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getBomVersion(),
-                                        Settings.getWiremockVersion())),
-                srcTestJava(
-                        java(
-                                // language=java
-                                """
                         package hudson.util;
                         public class ChartUtil {}
                         """)),
                 srcMainResources(
                         // language=java
-                        java(
-                                """
+                        java("""
                                 import javax.servlet.ServletException;
                                 import com.gargoylesoftware.htmlunit.HttpMethod;
                                 import com.gargoylesoftware.htmlunit.WebRequest;
@@ -2449,8 +2391,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                         }
                                     }
                                 }
-                                """,
-                                """
+                                """, """
                                 import javax.servlet.ServletException;
                                 import org.htmlunit.HttpMethod;
                                 import org.htmlunit.WebRequest;
@@ -2502,8 +2443,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         EXPECTED_MODERN_JENKINSFILE,
                         s -> s.path(ArchetypeCommonFile.JENKINSFILE.getPath().getFileName())),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -2561,8 +2501,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -2613,23 +2552,20 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """
-                                .formatted(
-                                        Settings.getJenkinsParentVersion(),
-                                        Settings.getJenkinsTestHarnessVersion(),
-                                        Settings.getBomVersion())),
+                """.formatted(
+                                Settings.getJenkinsParentVersion(),
+                                Settings.getJenkinsTestHarnessVersion(),
+                                Settings.getBomVersion())),
 
                 // language=java
-                java(
-                        """
+                java("""
                 package org.apache.commons.lang;
                 public class StringEscapeUtils {
                     public static String escapeHtml(String input) {
                         return input;
                     }
                 }
-                """,
-                        """
+                """, """
                 package org.apache.commons.text;
                 public class StringEscapeUtils {
                     public static String escapeHtml4(String input) {
@@ -2638,18 +2574,15 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 }
                 """),
                 // language=java
-                java(
-                        """
+                java("""
                 package org.apache.commons.lang;
                 public class StringUtils {}
-                """,
-                        """
+                """, """
                 package org.apache.commons.lang3;
                 public class StringUtils {}
                 """),
                 // language=java
-                java(
-                        """
+                java("""
                 import org.apache.commons.lang.StringEscapeUtils;
                 import org.apache.commons.lang.StringUtils;
 
@@ -2659,8 +2592,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         return StringEscapeUtils.escapeHtml(unsafeInput);
                     }
                 }
-                """,
-                        """
+                """, """
                 import org.apache.commons.lang3.StringUtils;
                 import org.apache.commons.text.StringEscapeUtils;
 
@@ -2679,8 +2611,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.AddPluginsBom"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -2720,8 +2651,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -2780,8 +2710,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.AddPluginsBom"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -2826,8 +2755,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -2906,8 +2834,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.ReplaceLibrariesWithApiPlugin"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -2990,8 +2917,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3074,18 +3000,17 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """
-                                .formatted(
-                                        asmApiVersion,
-                                        byteBuddyApiVersion,
-                                        commonsCompressVersion,
-                                        commonsLang3ApiVersion,
-                                        commonTextApiVersion,
-                                        gsonApiVersion,
-                                        jodaTimeApiVersion,
-                                        jsoupVersion,
-                                        jsonApiVersion,
-                                        jsonPathApiVersion)));
+                """.formatted(
+                                asmApiVersion,
+                                byteBuddyApiVersion,
+                                commonsCompressVersion,
+                                commonsLang3ApiVersion,
+                                commonTextApiVersion,
+                                gsonApiVersion,
+                                jodaTimeApiVersion,
+                                jsoupVersion,
+                                jsonApiVersion,
+                                jsonPathApiVersion)));
     }
 
     @Test
@@ -3095,8 +3020,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.ReplaceLibrariesWithApiPlugin"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3153,8 +3077,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3229,8 +3152,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.ReplaceLibrariesWithApiPlugin"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3268,8 +3190,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3307,8 +3228,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """
-                                .formatted(Settings.getPluginVersion("asm-api"))));
+                """.formatted(Settings.getPluginVersion("asm-api"))));
     }
 
     @Test
@@ -3317,8 +3237,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.UseCompressApiPlugin"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3361,8 +3280,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3400,8 +3318,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """
-                                .formatted(Settings.getPluginVersion("commons-compress-api"))));
+                """.formatted(Settings.getPluginVersion("commons-compress-api"))));
     }
 
     @Test
@@ -3411,16 +3328,14 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText"),
                 // language=java
-                java(
-                        """
+                java("""
                 package org.apache.commons.lang;
                 public class StringEscapeUtils {
                     public static String escapeHtml(String input) {
                         return input;
                     }
                 }
-                """,
-                        """
+                """, """
                 package org.apache.commons.text;
                 public class StringEscapeUtils {
                     public static String escapeHtml4(String input) {
@@ -3429,18 +3344,15 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 }
                 """),
                 // language=java
-                java(
-                        """
+                java("""
                 package org.apache.commons.lang;
                 public class StringUtils {}
-                """,
-                        """
+                """, """
                 package org.apache.commons.lang3;
                 public class StringUtils {}
                 """),
                 // language=java
-                java(
-                        """
+                java("""
                 import org.apache.commons.lang.StringEscapeUtils;
                 import org.apache.commons.lang.StringUtils;
 
@@ -3450,8 +3362,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         return StringEscapeUtils.escapeHtml(unsafeInput);
                     }
                 }
-                """,
-                        """
+                """, """
                 import org.apache.commons.lang3.StringUtils;
                 import org.apache.commons.text.StringEscapeUtils;
 
@@ -3478,8 +3389,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             .cycles(1);
                 },
                 // language=java
-                java(
-                        """
+                java("""
                 import org.junit.Before;
                 import org.junit.After;
                 import org.junit.Test;
@@ -3558,8 +3468,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         j.before();
                     }
                 }
-                """,
-                        """
+                """, """
                 import org.junit.jupiter.api.*;
                 import org.jvnet.hudson.test.JenkinsRule;
                 import org.jvnet.hudson.test.junit.jupiter.WithJenkins;
@@ -3645,8 +3554,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 }
                 """),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3688,8 +3596,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3732,8 +3639,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """
-                                .formatted(Settings.getJenkinsParentVersion())));
+                """.formatted(Settings.getJenkinsParentVersion())));
     }
 
     @Test
@@ -3743,8 +3649,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3786,8 +3691,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3840,8 +3744,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.EnsureRelativePath"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3868,8 +3771,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     </pluginRepository>
                   </pluginRepositories>
                 </project>
-                """,
-                        """
+                """, """
                 <?xml version="1.0" encoding="UTF-8"?>
                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                   <modelVersion>4.0.0</modelVersion>
@@ -3940,14 +3842,12 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupDependabot"),
                 text(""), // Need one minimum file to trigger the recipe
                 // language=yaml
-                yaml(
-                        """
+                yaml("""
                     ---
                     version: 2
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
+                }));
     }
 
     @Test
@@ -3957,9 +3857,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupDependabot"),
                 text(""), // Need one minimum file to trigger the recipe
                 // language=yaml
-                yaml(
-                        null,
-                        """
+                yaml(null, """
                     version: 2
                     updates:
                     - package-ecosystem: maven
@@ -3970,10 +3868,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                       directory: /
                       schedule:
                         interval: monthly
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
+                }));
     }
 
     /**
@@ -3995,8 +3892,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupJenkinsfile"),
                 // language=xml
-                pomXml(
-                        """
+                pomXml("""
                   <?xml version="1.0" encoding="UTF-8"?>
                   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
                            xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
@@ -4022,9 +3918,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                       </repositories>
                   </project>
                   """),
-                groovy(
-                        null,
-                        """
+                groovy(null, """
               /*
               See the documentation for more options:
               https://github.com/jenkins-infra/pipeline-library/
@@ -4036,8 +3930,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                       [platform: 'linux', jdk: 21],
                       [platform: 'windows', jdk: 17]
                   ]
-              )""",
-                        spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+              )""", spec -> spec.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
 
     /**
@@ -4059,9 +3952,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupGitIgnore"),
                 text(""), // Need one minimum file to trigger the recipe
-                text(
-                        null,
-                        """
+                text(null, """
                      target
                     \s
                      # mvn hpi:run
@@ -4077,10 +3968,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                      .settings
                      .classpath
                      .project
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath());
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.GITIGNORE.getPath());
+                }));
     }
 
     /**
@@ -4104,9 +3994,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupSecurityScan"),
                 text(""), // Need one minimum file to trigger the recipe
                 // language=yaml
-                yaml(
-                        null,
-                        """
+                yaml(null, """
                     # More information about the Jenkins security scan can be found at the developer docs: https://www.jenkins.io/redirect/jenkins-security-scan/
                     ---
                     name: Jenkins Security Scan
@@ -4130,10 +4018,9 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         with:
                           java-cache: 'maven'  # Optionally enable use of a build dependency cache. Specify 'maven' or 'gradle' as appropriate.
                           # java-version: 21  # Optionally specify what version of Java to set up for the build, or remove to use a recent default.
-                    """,
-                        sourceSpecs -> {
-                            sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_SECURITY.getPath());
-                        }));
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_SECURITY.getPath());
+                }));
     }
 
     /**

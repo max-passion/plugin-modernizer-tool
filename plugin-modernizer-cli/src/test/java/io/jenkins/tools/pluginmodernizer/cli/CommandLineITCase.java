@@ -779,8 +779,7 @@ public class CommandLineITCase {
         } else {
             args += "--plugins %s ".formatted(plugin.getName());
         }
-        args +=
-                """
+        args += """
         --debug
         --maven-home %s
         --ssh-private-key %s
@@ -790,17 +789,16 @@ public class CommandLineITCase {
         --jenkins-plugin-info %s
         --plugin-health-score %s
         --jenkins-plugins-stats-installations-url %s
-        """
-                        .formatted(
-                                getModernizerMavenHome(),
-                                keysPath.resolve(plugin.getName()),
-                                cachePath,
-                                wmRuntimeInfo.getHttpBaseUrl() + "/api",
-                                wmRuntimeInfo.getHttpBaseUrl() + "/update-center.json",
-                                wmRuntimeInfo.getHttpBaseUrl() + "/plugin-versions.json",
-                                wmRuntimeInfo.getHttpBaseUrl() + "/scores",
-                                wmRuntimeInfo.getHttpBaseUrl() + "/jenkins-stats/svg/202406-plugins.csv")
-                        .replaceAll("\\s+", " ");
+        """.formatted(
+                        getModernizerMavenHome(),
+                        keysPath.resolve(plugin.getName()),
+                        cachePath,
+                        wmRuntimeInfo.getHttpBaseUrl() + "/api",
+                        wmRuntimeInfo.getHttpBaseUrl() + "/update-center.json",
+                        wmRuntimeInfo.getHttpBaseUrl() + "/plugin-versions.json",
+                        wmRuntimeInfo.getHttpBaseUrl() + "/scores",
+                        wmRuntimeInfo.getHttpBaseUrl() + "/jenkins-stats/svg/202406-plugins.csv")
+                .replaceAll("\\s+", " ");
         LOG.debug("Run args: {}", args);
         return args;
     }

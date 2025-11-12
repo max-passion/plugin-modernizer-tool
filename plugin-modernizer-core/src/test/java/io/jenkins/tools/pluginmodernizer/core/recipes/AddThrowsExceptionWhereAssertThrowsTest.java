@@ -18,8 +18,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new AddThrowsExceptionWhereAssertThrows()),
                 // language=java
-                java(
-                        """
+                java("""
                     import static org.junit.jupiter.api.Assertions.assertThrows;
                     import org.junit.jupiter.api.Test;
 
@@ -31,8 +30,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
                              });
                         }
                     }
-                    """,
-                        """
+                    """, """
                     import static org.junit.jupiter.api.Assertions.assertThrows;
                     import org.junit.jupiter.api.Test;
 
@@ -52,8 +50,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new AddThrowsExceptionWhereAssertThrows()),
                 // language=java
-                java(
-                        """
+                java("""
                         import org.junit.jupiter.api.Assertions;
                         import org.junit.jupiter.api.Test;
 
@@ -65,8 +62,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
                                 });
                             }
                         }
-                        """,
-                        """
+                        """, """
                         import org.junit.jupiter.api.Assertions;
                         import org.junit.jupiter.api.Test;
 
@@ -86,8 +82,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new AddThrowsExceptionWhereAssertThrows()),
                 // language=java
-                java(
-                        """
+                java("""
                         import static org.junit.jupiter.api.Assertions.assertThrows;
                         import org.junit.jupiter.api.Test;
 
@@ -107,8 +102,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new AddThrowsExceptionWhereAssertThrows()),
                 // language=java
-                java(
-                        """
+                java("""
                         import org.junit.jupiter.api.Test;
 
                         public class MyTest {
@@ -125,8 +119,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new AddThrowsExceptionWhereAssertThrows()),
                 // language=java
-                java(
-                        """
+                java("""
                         import static org.junit.jupiter.api.Assertions.assertThrows;
                         import org.junit.jupiter.api.Test;
                         import java.io.IOException;
@@ -139,8 +132,7 @@ public class AddThrowsExceptionWhereAssertThrowsTest implements RewriteTest {
                                 });
                             }
                         }
-                        """,
-                        """
+                        """, """
                         import static org.junit.jupiter.api.Assertions.assertThrows;
                         import org.junit.jupiter.api.Test;
                         import java.io.IOException;

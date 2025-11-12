@@ -31,8 +31,7 @@ public class UpdateJenkinsFileVisitor extends GroovyIsoVisitor<ExecutionContext>
     /**
      * The method comment
      */
-    public static final String METHOD_COMMENT =
-            """
+    public static final String METHOD_COMMENT = """
 
              See the documentation for more options:
              https://github.com/jenkins-infra/pipeline-library/

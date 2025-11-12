@@ -14,8 +14,7 @@ import org.slf4j.LoggerFactory;
 public class MergeGitIgnoreRecipe extends Recipe {
     private static final Logger LOG = LoggerFactory.getLogger(MergeGitIgnoreRecipe.class);
 
-    private static final String ARCHETYPE_GITIGNORE_CONTENT =
-            """
+    private static final String ARCHETYPE_GITIGNORE_CONTENT = """
             target
 
             # mvn hpi:run

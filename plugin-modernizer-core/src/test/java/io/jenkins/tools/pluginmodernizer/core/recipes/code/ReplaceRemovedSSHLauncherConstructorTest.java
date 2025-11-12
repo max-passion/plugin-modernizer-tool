@@ -18,8 +18,7 @@ import org.openrewrite.test.RewriteTest;
 public class ReplaceRemovedSSHLauncherConstructorTest implements RewriteTest {
 
     @Language("java")
-    public static final String BEFORE =
-            """
+    public static final String BEFORE = """
             import hudson.plugins.sshslaves.SSHLauncher;
 
             public class Foo {
@@ -30,8 +29,7 @@ public class ReplaceRemovedSSHLauncherConstructorTest implements RewriteTest {
             """;
 
     @Language("java")
-    public static final String AFTER =
-            """
+    public static final String AFTER = """
             import hudson.plugins.sshslaves.SSHLauncher;
 
             public class Foo {
