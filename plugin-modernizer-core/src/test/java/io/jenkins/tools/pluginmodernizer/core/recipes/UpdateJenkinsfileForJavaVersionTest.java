@@ -50,16 +50,14 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(25, 2)),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                         buildPlugin(
                           dontRemoveMe: 'true',
                           forkCount: '1C',
                           jdkVersions: ['8', '11'],
                           platforms: ['linux', 'windows']
                         )
-                        """,
-                        """
+                        """, """
                         /*
                          See the documentation for more options:
                          https://github.com/jenkins-infra/pipeline-library/
@@ -72,8 +70,7 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                             [platform: 'windows', jdk: 11],
                             [platform: 'linux', jdk: 25],
                         ])
-                        """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                        """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
 
     @Test
@@ -139,8 +136,7 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
         rewriteRun(
                 spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(25, 2)),
                 // language=groovy
-                groovy(
-                        """
+                groovy("""
                         buildPlugin(
                           useContainerAgent: true,
                           configurations: [
@@ -148,8 +144,7 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                             [platform: 'linux', jdk: 21],
                           ]
                         )
-                        """,
-                        """
+                        """, """
                         /*
                          See the documentation for more options:
                          https://github.com/jenkins-infra/pipeline-library/
@@ -161,8 +156,7 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                             [platform: 'windows', jdk: 21],
                             [platform: 'linux', jdk: 25],
                         ])
-                        """,
-                        sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+                        """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
 
     @Test
