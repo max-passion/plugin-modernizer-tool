@@ -29,7 +29,7 @@ This means your plugin POM was already using the `${plugin.getMetadata().getJenk
 For security reasons, the Jenkins infrastructure does not execute Jenkinsfiles proposed in pull requests.
 Instead, it builds the code using the Jenkinsfile from the default branch.
 
-In this case, the existing Jenkinsfile specifies Java 8, not Java 11, which is causing the check to fail.
+In this case, the existing Jenkinsfile specifies Java 8, not Java 17, which is causing the check to fail.
 To resolve this,
 a maintainer can replay the failed build
 by substituting the current Jenkinsfile content with our proposed changes using the "replay the build"
