@@ -68,7 +68,7 @@
     <commons-compress.version>1.28.0</commons-compress.version>
     <guava.version>33.5.0-jre</guava.version>
     <byte-buddy.version>1.18.1</byte-buddy.version>
-    <wiremock.version>3.13.1</wiremock.version>
+    <wiremock.version>3.13.2</wiremock.version>
     <jte.version>3.2.1</jte.version>
     <snakeyaml.version>2.5</snakeyaml.version>
     <guice.version>7.0.0</guice.version>
