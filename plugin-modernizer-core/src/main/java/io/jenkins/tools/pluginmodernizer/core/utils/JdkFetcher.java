@@ -57,15 +57,13 @@ public class JdkFetcher {
             downloadAndSetupJdk(jdkVersion, jdkPath);
         }
 
-        // [Fix] Handle macOS JDK structure (Contents/Home)
-        // If the standard bin directory doesn't exist, check for the macOS specific path
         if (!Files.isDirectory(jdkPath.resolve("bin"))) {
             Path macOsHome = jdkPath.resolve("Contents").resolve("Home");
             if (Files.isDirectory(macOsHome)) {
-                return macOsHome;
+                jdkPath = macOsHome;
             }
         }
-        // [Debug] Print the path we are returning
+
         LOG.info("Resolved JDK Path for version {}: {}", jdkVersion, jdkPath);
 
         return jdkPath;
