@@ -48,7 +48,7 @@
     <!-- Version -->
     <jenkins.core.minimum.version>2.504.3</jenkins.core.minimum.version>
     <openrewrite.bom.version>3.17.0</openrewrite.bom.version>
-    <openrewrite.maven.plugin.version>6.24.0</openrewrite.maven.plugin.version>
+    <openrewrite.maven.plugin.version>6.25.0</openrewrite.maven.plugin.version>
     <micrometer.version>1.16.0</micrometer.version>
     <slf4j.version>2.0.17</slf4j.version>
     <logback.version>1.5.21</logback.version>
@@ -63,7 +63,7 @@
     <maven.version>3.9.11</maven.version>
     <commons-codec.version>1.20.0</commons-codec.version>
     <jacoco-maven-plugin.version>0.8.14</jacoco-maven-plugin.version>
-    <jgit.version>7.4.0.202509020913-r</jgit.version>
+    <jgit.version>7.5.0.202512021534-r</jgit.version>
     <github-api.version>2.0-rc.5</github-api.version>
     <commons-compress.version>1.28.0</commons-compress.version>
     <guava.version>33.5.0-jre</guava.version>
@@ -73,7 +73,7 @@
     <snakeyaml.version>2.5</snakeyaml.version>
     <guice.version>7.0.0</guice.version>
     <error.prone.version>2.45.0</error.prone.version>
-    <checker.qual.version>3.52.0</checker.qual.version>
+    <checker.qual.version>3.52.1</checker.qual.version>
     <jakarta.inject.version>2.0.1</jakarta.inject.version>
     <jwt.version>0.13.0</jwt.version>
     <bouncycastle.version>1.83</bouncycastle.version>
