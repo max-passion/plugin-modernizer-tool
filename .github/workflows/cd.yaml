@@ -128,7 +128,7 @@ jobs:
 
       - name: Archive output
         if: always()
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: jreleaser-release
           path: |
@@ -136,7 +136,7 @@ jobs:
             out/jreleaser/output.properties
 
       - name: Upload built jar
-        uses: actions/upload-artifact@v5
+        uses: actions/upload-artifact@v6
         with:
           name: built-jar
           retention-days: 1
