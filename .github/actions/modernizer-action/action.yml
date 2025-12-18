@@ -29,7 +29,7 @@ runs:
       with:
         java-distribution: 'temurin'
         java-version: 21
-        maven-version: 3.9.11
+        maven-version: 3.9.12
         cache-enabled: true
         checkout-enabled: false
 

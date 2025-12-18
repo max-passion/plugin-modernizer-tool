@@ -210,7 +210,7 @@ public class Settings {
     }
 
     public static String getMavenVersion() {
-        return readProperty("maven.version", "versions.properties");
+        return readProperty("maven.modernizer.version", "versions.properties");
     }
 
     /**
