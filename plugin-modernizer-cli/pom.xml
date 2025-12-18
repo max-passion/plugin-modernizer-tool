@@ -89,7 +89,7 @@
     <dependency>
       <groupId>org.apache.maven</groupId>
       <artifactId>apache-maven</artifactId>
-      <version>${maven.version}</version>
+      <version>${maven.modernizer.version}</version>
       <classifier>bin</classifier>
       <type>zip</type>
       <scope>test</scope>
@@ -157,8 +157,8 @@
             <exclude>**/*ITCase.java</exclude>
           </excludes>
           <environmentVariables>
-            <MAVEN_HOME>${project.build.directory}/apache-maven-${maven.version}</MAVEN_HOME>
-            <M2_HOME>${project.build.directory}/apache-maven-${maven.version}</M2_HOME>
+            <MAVEN_HOME>${project.build.directory}/apache-maven-${maven.modernizer.version}</MAVEN_HOME>
+            <M2_HOME>${project.build.directory}/apache-maven-${maven.modernizer.version}</M2_HOME>
           </environmentVariables>
         </configuration>
       </plugin>
@@ -181,7 +181,7 @@
                 <include>**/*ITCase.java</include>
               </includes>
               <environmentVariables>
-                <MAVEN_HOME>${project.build.directory}/apache-maven-${maven.version}</MAVEN_HOME>
+                <MAVEN_HOME>${project.build.directory}/apache-maven-${maven.modernizer.version}</MAVEN_HOME>
                 <GH_TOKEN>fake-token</GH_TOKEN>
                 <GH_OWNER>fake-owner</GH_OWNER>
                 <GH_TARGET_ORGANISATION>jenkinsci</GH_TARGET_ORGANISATION>

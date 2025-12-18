@@ -76,7 +76,7 @@ With over 2000 plugins in Jenkins, keeping them updated manually is a daunting t
 ## Getting Started
 
 ### Requirements
-- Maven version 3.9.11 or later, or mvnd
+- Maven version 3.9.12 or later, or mvnd
 - Java 21 ([Eclipse Temurin](https://adoptium.net/temurin/releases) recommended)
 
 ### Build
