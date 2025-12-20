@@ -118,6 +118,7 @@ recipeList:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
       newVersion: 5.X
+      versionPattern: "\\.v[a-f0-9_]+"
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - org.openrewrite.maven.AddProperty:
       key: ban-junit4-imports.skip
@@ -172,6 +173,7 @@ recipeList:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
       newVersion: 5.X
+      versionPattern: "\\.v[a-f0-9_]+"
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJavaVersion:
@@ -253,6 +255,7 @@ recipeList:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
       newVersion: 5.X
+      versionPattern: "\\.v[a-f0-9_]+"
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
