@@ -1112,10 +1112,14 @@ public class Plugin {
 
         setModernizationMetadata(pluginCacheManager.copy(
                 cacheManager, targetDir, safeTimestamp + ".json", new ModernizationMetadata(pluginCacheManager)));
-        LOG.info(
-                "Copied plugin {} modernization metadata to cache: {}",
-                getName(),
-                getModernizationMetadata().getLocation().toAbsolutePath());
+        if (getModernizationMetadata() != null) {
+            LOG.info(
+                    "Copied plugin {} modernization metadata to cache: {}",
+                    getName(),
+                    getModernizationMetadata().getLocation().toAbsolutePath());
+        } else {
+            LOG.warn("Failed to copy modernization metadata for plugin {}", getName());
+        }
     }
 
     /**
