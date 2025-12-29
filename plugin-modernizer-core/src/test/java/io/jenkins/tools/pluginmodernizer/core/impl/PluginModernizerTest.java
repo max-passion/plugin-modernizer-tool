@@ -297,9 +297,10 @@ class PluginModernizerTest {
         when(plugin.getName()).thenReturn("test-plugin");
         when(plugin.getMetadata()).thenReturn(null);
 
-        // Execute 
+        // Execute
         try {
-            java.lang.reflect.Method method = PluginModernizer.class.getDeclaredMethod("collectModernizationMetadata", Plugin.class);
+            java.lang.reflect.Method method =
+                    PluginModernizer.class.getDeclaredMethod("collectModernizationMetadata", Plugin.class);
             method.setAccessible(true);
             method.invoke(pluginModernizer, plugin);
 

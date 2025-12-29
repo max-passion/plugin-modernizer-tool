@@ -479,7 +479,7 @@ public class PluginModernizer {
             LOG.warn("Cannot collect modernization metadata for plugin {} - plugin metadata is null", plugin.getName());
             return;
         }
-        
+
         ModernizationMetadata modernizationMetadata = new ModernizationMetadata(cacheManager, plugin);
         modernizationMetadata.setPluginName(plugin.getMetadata().getPluginName());
         modernizationMetadata.setJenkinsBaseline(plugin.getJenkinsBaseline());
