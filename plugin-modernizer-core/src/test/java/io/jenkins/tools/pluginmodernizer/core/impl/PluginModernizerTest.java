@@ -1,6 +1,8 @@
 package io.jenkins.tools.pluginmodernizer.core.impl;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.fail;
+import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.*;
 
@@ -286,6 +288,45 @@ class PluginModernizerTest {
         // Verify that existsInUpdateCenter was never called for local plugins
         verify(pluginService, never()).existsInUpdateCenter(localPlugin);
         verify(pluginService).extractRepoName(localPlugin);
+    }
+
+    @Test
+    void testCollectModernizationMetadata_WithNullMetadata_ShouldLogWarningAndReturn() {
+        // Setup
+        Plugin plugin = mock(Plugin.class);
+        when(plugin.getName()).thenReturn("test-plugin");
+        when(plugin.getMetadata()).thenReturn(null);
+
+        // Execute
+        try {
+            java.lang.reflect.Method method =
+                    PluginModernizer.class.getDeclaredMethod("collectModernizationMetadata", Plugin.class);
+            method.setAccessible(true);
+            method.invoke(pluginModernizer, plugin);
+
+            // Verify that the method returns early without NPE
+            verify(plugin, atLeast(1)).getMetadata();
+            verify(plugin, never()).setModernizationMetadata(any());
+        } catch (Exception e) {
+            fail("Should not throw exception when plugin metadata is null: " + e.getMessage());
+        }
+    }
+
+    @Test
+    void testValidateModernizationMetadata_WithNullMetadata_ShouldReturnEarly() {
+        // Setup
+        Plugin plugin = mock(Plugin.class);
+        when(plugin.getName()).thenReturn("test-plugin");
+        when(plugin.isLocal()).thenReturn(false);
+        when(plugin.getModernizationMetadata()).thenReturn(null);
+
+        // Execute
+        pluginModernizer.validateModernizationMetadata(plugin);
+
+        // Verify that it returns early without calling validate()
+        verify(plugin).isLocal();
+        verify(plugin, atLeast(1)).getModernizationMetadata();
+        // No exception should be thrown
     }
 
     private Recipe createMockRecipe(String name, String description) {

@@ -475,6 +475,11 @@ public class PluginModernizer {
      * @param plugin The plugin
      */
     private void collectModernizationMetadata(Plugin plugin) {
+        if (plugin.getMetadata() == null) {
+            LOG.warn("Cannot collect modernization metadata for plugin {} - plugin metadata is null", plugin.getName());
+            return;
+        }
+
         ModernizationMetadata modernizationMetadata = new ModernizationMetadata(cacheManager, plugin);
         modernizationMetadata.setPluginName(plugin.getMetadata().getPluginName());
         modernizationMetadata.setJenkinsBaseline(plugin.getJenkinsBaseline());
@@ -530,6 +535,7 @@ public class PluginModernizer {
         }
         if (plugin.getModernizationMetadata() == null) {
             LOG.warn("Plugin {} has no modernization metadata. Skipping validation.", plugin.getName());
+            return;
         }
         if (plugin.getModernizationMetadata().validate()) {
             LOG.info("Plugin {} modernization metadata is valid.", plugin.getName());

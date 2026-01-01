@@ -410,4 +410,11 @@ public class PluginTest {
         Marker actualMarker = plugin.getMarker();
         assertEquals(expectedMarker, actualMarker);
     }
+
+    @Test
+    public void testModernizationMetadataInitiallyNull() {
+        Plugin plugin = Plugin.build("example");
+        plugin.withConfig(config);
+        assertNull(plugin.getModernizationMetadata());
+    }
 }
