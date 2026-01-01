@@ -1063,7 +1063,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
     void upgradeToRecommendCoreVersionTestWithMultipleBom() {
         rewriteRun(
                 spec -> {
-                    spec.parser(MavenParser.builder().activeProfiles("consume-incrementals"));
+                    spec.parser(MavenParser.builder());
                     spec.recipeFromResource(
                             "/META-INF/rewrite/recipes.yml",
                             "io.jenkins.tools.pluginmodernizer.UpgradeToRecommendCoreVersion");
