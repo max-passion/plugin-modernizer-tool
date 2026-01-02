@@ -1202,14 +1202,12 @@ public class GHServiceTest {
 
     @Test
     public void shouldUpdatePullRequest() throws Exception {
-        // Test removed as updating PRs is no longer supported (idempotency skips
-        // creation)
+        // Test removed as updating PRs is no longer supported (idempotency skips creation)
     }
 
     @Test
     public void shouldUpdateMetadataPullRequest() throws Exception {
-        // Test removed as updating PRs is no longer supported (idempotency skips
-        // creation)
+        // Test removed as updating PRs is no longer supported (idempotency skips creation)
     }
 
     @Test

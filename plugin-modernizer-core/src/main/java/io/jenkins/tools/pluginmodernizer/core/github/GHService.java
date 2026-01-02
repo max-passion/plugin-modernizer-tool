@@ -354,8 +354,7 @@ public class GHService {
      * @param plugin The plugin
      * @param repoType The repo type to fork
      * @throws IOException          Forking the repository failed due to I/O error
-     * @throws InterruptedException Forking the repository failed due to
-     *                              interruption
+     * @throws InterruptedException Forking the repository failed due to interruption
      */
     private GHRepository forkRepoType(Plugin plugin, RepoType repoType) throws IOException, InterruptedException {
         GHOrganization organization = getOrganization();
@@ -394,8 +393,7 @@ public class GHService {
      * Fork the repository
      *
      * @param originalRepo The original repository to fork
-     * @param organization The organization to fork the repository to. Can be null
-     *                     for personal account
+     * @param organization The organization to fork the repository to. Can be null for personal account
      * @return The forked repository
      * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
@@ -417,8 +415,7 @@ public class GHService {
      * Fork the default branch only
      *
      * @param originalRepo The original repository to fork
-     * @param organization The organization to fork the repository to. Can be null
-     *                     for personal account
+     * @param organization The organization to fork the repository to. Can be null for personal account
      * @return The forked repository
      * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
@@ -446,8 +443,7 @@ public class GHService {
     }
 
     /**
-     * Get the organization object for the given owner or null if the owner is not
-     * an organization
+     * Get the organization object for the given owner or null if the owner is not an organization
      *
      * @return The GHOrganization object or null
      * @throws IOException If the organization access failed
@@ -511,8 +507,7 @@ public class GHService {
     }
 
     /**
-     * Sync a fork repository from its original upstream. Only the main branch is
-     * synced in case multiple branches exist.
+     * Sync a fork repository from its original upstream. Only the main branch is synced in case multiple branches exist.
      *
      * @param plugin The plugin to sync
      * @param repoType The repo type
@@ -550,8 +545,7 @@ public class GHService {
     }
 
     /**
-     * Sync a fork repository from its original upstream. Only the main branch is
-     * synced in case multiple branches exist.
+     * Sync a fork repository from its original upstream. Only the main branch is synced in case multiple branches exist.
      *
      * @param forkedRepo Forked repository
      * @throws IOException if an error occurs while syncing the repository
@@ -729,8 +723,7 @@ public class GHService {
     }
 
     /**
-     * Return the remote URI patched with default SSH 22 port required by apache
-     * mina sshd transport
+     * Return the remote URI patched with default SSH 22 port required by apache mina sshd transport
      *
      * @param repository The repository to get the remote URI for
      * @return The patched remote URI HTTP or SSH depending on config
@@ -1046,8 +1039,7 @@ public class GHService {
     }
 
     /**
-     * Open or update a pull request for the plugin and current recipe or its
-     * metadata
+     * Open or update a pull request for the plugin and current recipe or its metadata
      *
      * @param plugin The plugin
      * @param repoType The repo type to open a pull request for
@@ -1366,8 +1358,7 @@ public class GHService {
     }
 
     /**
-     * JGit expect a credential provider even if transport and authentication is
-     * none at transport level with
+     * JGit expect a credential provider even if transport and authentication is none at transport level with
      * Apache Mina SSHD. This is therefor a dummy provider
      */
     private static class SshCredentialsProvider extends CredentialsProvider {
