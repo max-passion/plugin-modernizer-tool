@@ -73,14 +73,11 @@ import org.slf4j.LoggerFactory;
 public class GHService {
 
     private static final Logger LOG = LoggerFactory.getLogger(GHService.class);
-    private static final Logger BRANCH_NAMELOG = LoggerFactory.getLogger(GHService.class);
 
     /**
      * Allowed github tags for PR
      */
     private static final Set<String> ALLOWED_TAGS = Set.of("chore", "dependencies", "developer");
-
-    private static final Set<String> ALLOWED_METADATA_TAGS = Set.of("chore", "metadata");
 
     @Inject
     private Config config;
@@ -194,8 +191,8 @@ public class GHService {
         if (sshKeyAuth) {
             try {
                 SshClient client = SshClient.setUpDefaultClient();
-                FileKeyPairProvider keyPairProvider =
-                        new FileKeyPairProvider(Collections.singletonList(config.getSshPrivateKey()));
+                FileKeyPairProvider keyPairProvider = new FileKeyPairProvider(
+                        Collections.singletonList(config.getSshPrivateKey()));
                 client.setKeyIdentityProvider(keyPairProvider);
                 GitSshdSessionFactory sshdFactory = new GitSshdSessionFactory(client);
                 SshSessionFactory.setInstance(sshdFactory);
@@ -221,8 +218,8 @@ public class GHService {
         try {
             String jwtToken = JWTUtils.getJWT(config, Settings.GITHUB_APP_PRIVATE_KEY_FILE);
             GHApp app = new GitHubBuilder().withJwtToken(jwtToken).build().getApp();
-            GHAppInstallationToken appInstallationToken =
-                    app.getInstallationById(installationId).createToken().create();
+            GHAppInstallationToken appInstallationToken = app.getInstallationById(installationId).createToken()
+                    .create();
             github = new GitHubBuilder()
                     .withAppInstallationToken(appInstallationToken.getToken())
                     .build();
@@ -699,9 +696,8 @@ public class GHService {
                         .call();
                 LOG.info("Fetched {} repository from {} to branch {}", repoType.getType(), remoteUri, ref.getName());
             } catch (RefNotFoundException e) {
-                String message =
-                        "Unable to find branch %s in repository. Probably the default branch was renamed. You can remove the local repository at %s and try again."
-                                .formatted(defaultBranch, localRepository);
+                String message = "Unable to find branch %s in repository. Probably the default branch was renamed. You can remove the local repository at %s and try again."
+                        .formatted(defaultBranch, localRepository);
                 LOG.error(message);
                 plugin.addError(message);
                 plugin.raiseLastError();
@@ -742,8 +738,8 @@ public class GHService {
      */
     private URIish getRemoteUri(GHRepository repository) throws URISyntaxException {
         // Get the correct URI
-        URIish remoteUri =
-                sshKeyAuth ? new URIish(repository.getSshUrl()) : new URIish(repository.getHttpTransportUrl());
+        URIish remoteUri = sshKeyAuth ? new URIish(repository.getSshUrl())
+                : new URIish(repository.getHttpTransportUrl());
 
         // Ensure to set port 22 if not set on remote URL to work with apache mina sshd
         if (sshKeyAuth) {
@@ -1022,14 +1018,14 @@ public class GHService {
         try (Git git = Git.open(localRepository.toFile())) {
             String branchName = repoType.getBranchName(plugin, config.getRecipe());
             List<PushResult> results = StreamSupport.stream(
-                            git.push()
-                                    .setForce(true)
-                                    .setRemote("origin")
-                                    .setCredentialsProvider(getCredentialProvider())
-                                    .setRefSpecs(new RefSpec(branchName + ":" + branchName))
-                                    .call()
-                                    .spliterator(),
-                            false)
+                    git.push()
+                            .setForce(true)
+                            .setRemote("origin")
+                            .setCredentialsProvider(getCredentialProvider())
+                            .setRefSpecs(new RefSpec(branchName + ":" + branchName))
+                            .call()
+                            .spliterator(),
+                    false)
                     .toList();
             results.forEach(result -> {
                 LOG.debug("Push result: {}", result.getMessages());
@@ -1231,76 +1227,78 @@ public class GHService {
         File gitDir = gitDirPath.toFile();
 
         try (Repository repository = new FileRepositoryBuilder()
-                        .setGitDir(gitDir)
-                        .readEnvironment()
-                        .findGitDir()
-                        .build();
+                .setGitDir(gitDir)
+                .readEnvironment()
+                .findGitDir()
+                .build();
                 Git git = new Git(repository)) {
 
-            ObjectReader reader = repository.newObjectReader();
-            DiffFormatter formatter = new DiffFormatter(new ByteArrayOutputStream());
-            formatter.setRepository(repository);
-            formatter.setDiffComparator(RawTextComparator.DEFAULT);
-            formatter.setDetectRenames(true);
+            try (ObjectReader reader = repository.newObjectReader();
+                    DiffFormatter formatter = new DiffFormatter(new ByteArrayOutputStream())) {
+                formatter.setRepository(repository);
+                formatter.setDiffComparator(RawTextComparator.DEFAULT);
+                formatter.setDetectRenames(true);
 
-            int additions = 0;
-            int deletions = 0;
-            int changedFiles = 0;
-            if (dryRun) {
-                // UNSTAGED: Working Directory vs Index
-                DirCacheIterator indexTree = new DirCacheIterator(repository.readDirCache());
-                FileTreeIterator workingTree = new FileTreeIterator(repository);
+                int additions = 0;
+                int deletions = 0;
+                int changedFiles = 0;
+                if (dryRun) {
+                    // UNSTAGED: Working Directory vs Index
+                    DirCacheIterator indexTree = new DirCacheIterator(repository.readDirCache());
+                    FileTreeIterator workingTree = new FileTreeIterator(repository);
 
-                List<DiffEntry> unstagedDiffs = git.diff()
-                        .setOldTree(indexTree)
-                        .setNewTree(workingTree)
+                    List<DiffEntry> unstagedDiffs = git.diff()
+                            .setOldTree(indexTree)
+                            .setNewTree(workingTree)
+                            .setShowNameAndStatusOnly(false)
+                            .call();
+
+                    for (DiffEntry diff : unstagedDiffs) {
+                        try {
+                            EditList edits = formatter.toFileHeader(diff).toEditList();
+                            for (Edit edit : edits) {
+                                additions += edit.getEndB() - edit.getBeginB();
+                                deletions += edit.getEndA() - edit.getBeginA();
+                            }
+                            changedFiles++;
+                        } catch (MissingObjectException e) {
+                            LOG.warn("Skipping diff for {}: {}", diff.getNewPath(), e.getMessage());
+                        }
+                    }
+                    return new DiffStats(additions, deletions, changedFiles);
+                }
+                // COMMITTED: HEAD vs default branch or previous commit
+                ObjectId head = repository.resolve("HEAD");
+                String defaultBranchName = plugin.getRemoteRepository(this).getDefaultBranch();
+                ObjectId defaultBranch = repository.resolve("refs/heads/" + defaultBranchName);
+
+                if (defaultBranch == null) {
+                    throw new IOException("Could not resolve default branch.");
+                }
+
+                CanonicalTreeParser oldTree = new CanonicalTreeParser();
+                CanonicalTreeParser newTree = new CanonicalTreeParser();
+                try (RevWalk walk = new RevWalk(repository)) {
+                    oldTree.reset(reader, walk.parseTree(defaultBranch));
+                    newTree.reset(reader, walk.parseTree(head));
+                }
+
+                List<DiffEntry> committedDiffs = git.diff()
+                        .setOldTree(oldTree)
+                        .setNewTree(newTree)
                         .setShowNameAndStatusOnly(false)
                         .call();
 
-                for (DiffEntry diff : unstagedDiffs) {
-                    try {
-                        EditList edits = formatter.toFileHeader(diff).toEditList();
-                        for (Edit edit : edits) {
-                            additions += edit.getEndB() - edit.getBeginB();
-                            deletions += edit.getEndA() - edit.getBeginA();
-                        }
-                        changedFiles++;
-                    } catch (MissingObjectException e) {
-                        LOG.warn("Skipping diff for {}: {}", diff.getNewPath(), e.getMessage());
+                for (DiffEntry diff : committedDiffs) {
+                    EditList edits = formatter.toFileHeader(diff).toEditList();
+                    for (Edit edit : edits) {
+                        additions += edit.getEndB() - edit.getBeginB();
+                        deletions += edit.getEndA() - edit.getBeginA();
                     }
+                    changedFiles++;
                 }
                 return new DiffStats(additions, deletions, changedFiles);
             }
-            // COMMITTED: HEAD vs default branch or previous commit
-            ObjectId head = repository.resolve("HEAD");
-            String defaultBranchName = plugin.getRemoteRepository(this).getDefaultBranch();
-            ObjectId defaultBranch = repository.resolve("refs/heads/" + defaultBranchName);
-
-            if (defaultBranch == null) {
-                throw new IOException("Could not resolve default branch.");
-            }
-
-            CanonicalTreeParser oldTree = new CanonicalTreeParser();
-            CanonicalTreeParser newTree = new CanonicalTreeParser();
-            oldTree.reset(reader, new RevWalk(repository).parseTree(defaultBranch));
-            newTree.reset(reader, new RevWalk(repository).parseTree(head));
-
-            List<DiffEntry> committedDiffs = git.diff()
-                    .setOldTree(oldTree)
-                    .setNewTree(newTree)
-                    .setShowNameAndStatusOnly(false)
-                    .call();
-
-            for (DiffEntry diff : committedDiffs) {
-                EditList edits = formatter.toFileHeader(diff).toEditList();
-                for (Edit edit : edits) {
-                    additions += edit.getEndB() - edit.getBeginB();
-                    deletions += edit.getEndA() - edit.getBeginA();
-                }
-                changedFiles++;
-            }
-            reader.close();
-            return new DiffStats(additions, deletions, changedFiles);
 
         } catch (IOException | GitAPIException e) {
             plugin.addError("Failed to get diff stats", e);

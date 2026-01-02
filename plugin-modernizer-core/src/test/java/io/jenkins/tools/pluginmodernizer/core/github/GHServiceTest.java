@@ -58,7 +58,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({MockitoExtension.class})
+@ExtendWith({ MockitoExtension.class })
 @Execution(ExecutionMode.CONCURRENT)
 public class GHServiceTest {
 
@@ -90,9 +90,9 @@ public class GHServiceTest {
             service = Guice.createInjector(new GuiceModule(config)).getInstance(GHService.class);
             // Set github mock
             Field field = ReflectionUtils.findFields(
-                            GHService.class,
-                            f -> f.getName().equals("github"),
-                            ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                    GHService.class,
+                    f -> f.getName().equals("github"),
+                    ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                     .get(0);
             field.setAccessible(true);
             field.set(service, github);
@@ -214,7 +214,6 @@ public class GHServiceTest {
     public void isArchivedTest() throws Exception {
         // Mock
         GHRepository repository = Mockito.mock(GHRepository.class);
-        GHMyself myself = Mockito.mock(GHMyself.class);
 
         doReturn(true).when(repository).isArchived();
         doReturn(repository).when(plugin).getRemoteRepository(eq(service));
@@ -369,8 +368,6 @@ public class GHServiceTest {
     @Test
     public void shouldNotForkArchivedRepos() throws Exception {
 
-        GHRepository repository = Mockito.mock(GHRepository.class);
-
         // Mock
         doReturn(true).when(plugin).isArchived(eq(service));
 
@@ -447,7 +444,6 @@ public class GHServiceTest {
         GHRepository repository = Mockito.mock(GHRepository.class);
         GHRepository fork = Mockito.mock(GHRepository.class);
         GHMyself myself = Mockito.mock(GHMyself.class);
-        GHRepositoryForkBuilder builder = Mockito.mock(GHRepositoryForkBuilder.class);
 
         // Mock
         doReturn("fake-owner").when(config).getGithubOwner();
@@ -478,7 +474,6 @@ public class GHServiceTest {
         GHRepository repository = Mockito.mock(GHRepository.class);
         GHRepository fork = Mockito.mock(GHRepository.class);
         GHMyself myself = Mockito.mock(GHMyself.class);
-        GHRepositoryForkBuilder builder = Mockito.mock(GHRepositoryForkBuilder.class);
 
         // Mock
         doReturn("fake-owner").when(config).getGithubOwner();
@@ -915,9 +910,9 @@ public class GHServiceTest {
 
         // Use SSH key auth
         Field field = ReflectionUtils.findFields(
-                        GHService.class,
-                        f -> f.getName().equals("sshKeyAuth"),
-                        ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                GHService.class,
+                f -> f.getName().equals("sshKeyAuth"),
+                ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                 .get(0);
         field.setAccessible(true);
         field.set(service, true);
@@ -952,9 +947,9 @@ public class GHServiceTest {
 
         // Use SSH key auth
         Field field = ReflectionUtils.findFields(
-                        GHService.class,
-                        f -> f.getName().equals("sshKeyAuth"),
-                        ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                GHService.class,
+                f -> f.getName().equals("sshKeyAuth"),
+                ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                 .get(0);
         field.setAccessible(true);
         field.set(service, true);
@@ -1045,9 +1040,9 @@ public class GHServiceTest {
 
         // Use SSH key auth
         Field field = ReflectionUtils.findFields(
-                        GHService.class,
-                        f -> f.getName().equals("sshKeyAuth"),
-                        ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                GHService.class,
+                f -> f.getName().equals("sshKeyAuth"),
+                ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                 .get(0);
         field.setAccessible(true);
         field.set(service, true);
@@ -1163,11 +1158,10 @@ public class GHServiceTest {
     public void shouldOpenMetadataPullRequest() throws Exception {
 
         // Mocks
-        Recipe recipe = Mockito.mock(Recipe.class);
+
         GHRepository repository = Mockito.mock(GHRepository.class);
         GHPullRequest pr = Mockito.mock(GHPullRequest.class);
         GHPullRequestQueryBuilder prQuery = Mockito.mock(GHPullRequestQueryBuilder.class);
-        PagedIterable<?> prQueryList = Mockito.mock(PagedIterable.class);
 
         doReturn("example").when(plugin).getName();
         doReturn(null).when(config).getGithubAppTargetInstallationId();
