@@ -191,8 +191,8 @@ public class GHService {
         if (sshKeyAuth) {
             try {
                 SshClient client = SshClient.setUpDefaultClient();
-                FileKeyPairProvider keyPairProvider = new FileKeyPairProvider(
-                        Collections.singletonList(config.getSshPrivateKey()));
+                FileKeyPairProvider keyPairProvider =
+                        new FileKeyPairProvider(Collections.singletonList(config.getSshPrivateKey()));
                 client.setKeyIdentityProvider(keyPairProvider);
                 GitSshdSessionFactory sshdFactory = new GitSshdSessionFactory(client);
                 SshSessionFactory.setInstance(sshdFactory);
@@ -218,8 +218,8 @@ public class GHService {
         try {
             String jwtToken = JWTUtils.getJWT(config, Settings.GITHUB_APP_PRIVATE_KEY_FILE);
             GHApp app = new GitHubBuilder().withJwtToken(jwtToken).build().getApp();
-            GHAppInstallationToken appInstallationToken = app.getInstallationById(installationId).createToken()
-                    .create();
+            GHAppInstallationToken appInstallationToken =
+                    app.getInstallationById(installationId).createToken().create();
             github = new GitHubBuilder()
                     .withAppInstallationToken(appInstallationToken.getToken())
                     .build();
@@ -690,8 +690,9 @@ public class GHService {
                         .call();
                 LOG.info("Fetched {} repository from {} to branch {}", repoType.getType(), remoteUri, ref.getName());
             } catch (RefNotFoundException e) {
-                String message = "Unable to find branch %s in repository. Probably the default branch was renamed. You can remove the local repository at %s and try again."
-                        .formatted(defaultBranch, localRepository);
+                String message =
+                        "Unable to find branch %s in repository. Probably the default branch was renamed. You can remove the local repository at %s and try again."
+                                .formatted(defaultBranch, localRepository);
                 LOG.error(message);
                 plugin.addError(message);
                 plugin.raiseLastError();
@@ -731,8 +732,8 @@ public class GHService {
      */
     private URIish getRemoteUri(GHRepository repository) throws URISyntaxException {
         // Get the correct URI
-        URIish remoteUri = sshKeyAuth ? new URIish(repository.getSshUrl())
-                : new URIish(repository.getHttpTransportUrl());
+        URIish remoteUri =
+                sshKeyAuth ? new URIish(repository.getSshUrl()) : new URIish(repository.getHttpTransportUrl());
 
         // Ensure to set port 22 if not set on remote URL to work with apache mina sshd
         if (sshKeyAuth) {
@@ -1011,14 +1012,14 @@ public class GHService {
         try (Git git = Git.open(localRepository.toFile())) {
             String branchName = repoType.getBranchName(plugin, config.getRecipe());
             List<PushResult> results = StreamSupport.stream(
-                    git.push()
-                            .setForce(true)
-                            .setRemote("origin")
-                            .setCredentialsProvider(getCredentialProvider())
-                            .setRefSpecs(new RefSpec(branchName + ":" + branchName))
-                            .call()
-                            .spliterator(),
-                    false)
+                            git.push()
+                                    .setForce(true)
+                                    .setRemote("origin")
+                                    .setCredentialsProvider(getCredentialProvider())
+                                    .setRefSpecs(new RefSpec(branchName + ":" + branchName))
+                                    .call()
+                                    .spliterator(),
+                            false)
                     .toList();
             results.forEach(result -> {
                 LOG.debug("Push result: {}", result.getMessages());
@@ -1219,10 +1220,10 @@ public class GHService {
         File gitDir = gitDirPath.toFile();
 
         try (Repository repository = new FileRepositoryBuilder()
-                .setGitDir(gitDir)
-                .readEnvironment()
-                .findGitDir()
-                .build();
+                        .setGitDir(gitDir)
+                        .readEnvironment()
+                        .findGitDir()
+                        .build();
                 Git git = new Git(repository)) {
 
             try (ObjectReader reader = repository.newObjectReader();

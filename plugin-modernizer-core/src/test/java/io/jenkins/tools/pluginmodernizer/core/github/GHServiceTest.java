@@ -58,7 +58,7 @@ import org.mockito.MockedStatic;
 import org.mockito.Mockito;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-@ExtendWith({ MockitoExtension.class })
+@ExtendWith({MockitoExtension.class})
 @Execution(ExecutionMode.CONCURRENT)
 public class GHServiceTest {
 
@@ -90,9 +90,9 @@ public class GHServiceTest {
             service = Guice.createInjector(new GuiceModule(config)).getInstance(GHService.class);
             // Set github mock
             Field field = ReflectionUtils.findFields(
-                    GHService.class,
-                    f -> f.getName().equals("github"),
-                    ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                            GHService.class,
+                            f -> f.getName().equals("github"),
+                            ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                     .get(0);
             field.setAccessible(true);
             field.set(service, github);
@@ -910,9 +910,9 @@ public class GHServiceTest {
 
         // Use SSH key auth
         Field field = ReflectionUtils.findFields(
-                GHService.class,
-                f -> f.getName().equals("sshKeyAuth"),
-                ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                        GHService.class,
+                        f -> f.getName().equals("sshKeyAuth"),
+                        ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                 .get(0);
         field.setAccessible(true);
         field.set(service, true);
@@ -947,9 +947,9 @@ public class GHServiceTest {
 
         // Use SSH key auth
         Field field = ReflectionUtils.findFields(
-                GHService.class,
-                f -> f.getName().equals("sshKeyAuth"),
-                ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                        GHService.class,
+                        f -> f.getName().equals("sshKeyAuth"),
+                        ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                 .get(0);
         field.setAccessible(true);
         field.set(service, true);
@@ -1040,9 +1040,9 @@ public class GHServiceTest {
 
         // Use SSH key auth
         Field field = ReflectionUtils.findFields(
-                GHService.class,
-                f -> f.getName().equals("sshKeyAuth"),
-                ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
+                        GHService.class,
+                        f -> f.getName().equals("sshKeyAuth"),
+                        ReflectionUtils.HierarchyTraversalMode.TOP_DOWN)
                 .get(0);
         field.setAccessible(true);
         field.set(service, true);
