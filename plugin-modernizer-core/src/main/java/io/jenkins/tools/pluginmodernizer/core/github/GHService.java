@@ -1170,13 +1170,6 @@ public class GHService {
     }
 
     /**
-     * Check if a pull request already exists for the branch to the target repo
-     *
-     * @param plugin   The plugin
-     * @param repoType The repo type to check
-     * @return The pull request if it exists
-     */
-    /**
      * Find existing pull request
      *
      * @param repo The repository
