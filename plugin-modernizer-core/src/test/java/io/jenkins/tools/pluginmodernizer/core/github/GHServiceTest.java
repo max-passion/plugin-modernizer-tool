@@ -1266,6 +1266,7 @@ public class GHServiceTest {
 
         doReturn(repository).when(plugin).getRemoteRepository(eq(service));
         Mockito.lenient().doReturn(null).when(config).getGithubAppTargetInstallationId();
+        doReturn(Config.DuplicatePrStrategy.SKIP).when(config).getDuplicatePrStrategy();
 
         // Mock finding existing PR
         doReturn(prQuery).when(repository).queryPullRequests();
