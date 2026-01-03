@@ -125,7 +125,7 @@ public class Config {
     /**
      * Return if the current configuration is only fetching metadata which will skip
      * compile and verify steps
-     * 
+     *
      * @return True if only fetching metadata
      */
     public boolean isFetchMetadataOnly() {
@@ -134,7 +134,7 @@ public class Config {
 
     /**
      * Return if the execution the recipe will be skipped
-     * 
+     *
      * @return True if the recipe will skip verification
      */
     public boolean isSkipVerification() {
