@@ -3,6 +3,7 @@ package io.jenkins.tools.pluginmodernizer.core.recipes;
 import static org.openrewrite.groovy.Assertions.groovy;
 
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
+import java.util.List;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
@@ -126,6 +127,35 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                           configurations: [
                             [platform: 'linux', jdk: 17],
                             [platform: 'windows', jdk: 17],
+                            [platform: 'linux', jdk: 21],
+                        ])
+                        """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
+    }
+
+    @Test
+    void shouldAddJava21ToModernConfigurationsAndRemoveOldJDK() {
+        rewriteRun(
+                spec -> spec.recipe(new UpdateJenkinsfileForJavaVersion(21, List.of(17))),
+                // language=groovy
+                groovy("""
+                        buildPlugin(
+                          useContainerAgent: true,
+                          configurations: [
+                            [platform: 'linux', jdk: 11],
+                            [platform: 'linux', jdk: 17],
+                            [platform: 'windows', jdk: 17]
+                          ]
+                        )
+                        """, """
+                        /*
+                         See the documentation for more options:
+                         https://github.com/jenkins-infra/pipeline-library/
+                        */
+                        buildPlugin(
+                          useContainerAgent: true,
+                          forkCount: '1C', // Set to `false` if you need to use Docker for containerized tests
+                          configurations: [
+                            [platform: 'linux', jdk: 11],
                             [platform: 'linux', jdk: 21],
                         ])
                         """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
