@@ -251,7 +251,7 @@ public class GHService {
     /**
      * Get a plugin repository to the organization or personal account
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type
      * @return The GHRepository object
      */
@@ -274,7 +274,7 @@ public class GHService {
     /**
      * Check if the repository is forked to the organization or personal account
      *
-     * @param plugin The plugin to check
+     * @param plugin   The plugin to check
      * @param repoType The repo type
      * @return True if the repository is forked
      */
@@ -309,7 +309,7 @@ public class GHService {
     /**
      * Fork repository to the organization or personal account
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type to fork
      */
     public void fork(Plugin plugin, RepoType repoType) {
@@ -351,9 +351,9 @@ public class GHService {
     /**
      * Fork repository to the organization or personal account
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type to fork
-     * @throws IOException Forking the repository failed due to I/O error
+     * @throws IOException          Forking the repository failed due to I/O error
      * @throws InterruptedException Forking the repository failed due to
      *                              interruption
      */
@@ -397,7 +397,7 @@ public class GHService {
      * @param organization The organization to fork the repository to. Can be null
      *                     for personal account
      * @return The forked repository
-     * @throws IOException If the fork operation failed
+     * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
      */
     private GHRepository forkRepository(GHRepository originalRepo, GHOrganization organization)
@@ -420,7 +420,7 @@ public class GHService {
      * @param organization The organization to fork the repository to. Can be null
      *                     for personal account
      * @return The forked repository
-     * @throws IOException If the fork operation failed
+     * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
      */
     private GHRepository fork(GHRepository originalRepo, GHOrganization organization)
@@ -438,7 +438,7 @@ public class GHService {
      *
      * @param originalRepo The original repository to fork
      * @return The forked repository
-     * @throws IOException If the fork operation failed
+     * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
      */
     private GHRepository forkRepository(GHRepository originalRepo) throws IOException, InterruptedException {
@@ -465,7 +465,7 @@ public class GHService {
      * Check if the repository is forked on the given organization
      *
      * @param organization The organization to check
-     * @param repoName The name of the repository
+     * @param repoName     The name of the repository
      * @return True if the repository is forked
      * @throws IOException If the repository access failed
      */
@@ -480,7 +480,7 @@ public class GHService {
      * Get the forked repository on the given organization
      *
      * @param organization The organization to check
-     * @param repoName The name of the repository
+     * @param repoName     The name of the repository
      * @return The forked repository
      * @throws IOException If the repository access failed
      */
@@ -514,7 +514,7 @@ public class GHService {
      * Sync a fork repository from its original upstream. Only the main branch is
      * synced in case multiple branches exist.
      *
-     * @param plugin The plugin to sync
+     * @param plugin   The plugin to sync
      * @param repoType The repo type
      */
     public void sync(Plugin plugin, RepoType repoType) {
@@ -614,7 +614,7 @@ public class GHService {
     /**
      * Fetch repository code from the fork or original repo in dry-run mode
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type to fetch
      */
     public void fetch(Plugin plugin, RepoType repoType) {
@@ -652,7 +652,7 @@ public class GHService {
     /**
      * Fetch the repository code into local directory of the plugin
      *
-     * @param plugin The plugin to fetch
+     * @param plugin   The plugin to fetch
      * @param repoType The repo type
      * @throws GitAPIException If the fetch operation failed
      */
@@ -758,7 +758,7 @@ public class GHService {
     /**
      * Clone the repository to the given directory
      *
-     * @param plugin The plugin
+     * @param plugin    The plugin
      * @param remoteUri The remote URI of the repository
      * @param directory The directory to clone the repository to
      * @throws GitAPIException If the clone operation failed
@@ -777,7 +777,7 @@ public class GHService {
     /**
      * Checkout the branch. Creates the branch if not exists
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type to checkout branch for
      */
     public void checkoutBranch(Plugin plugin, RepoType repoType) {
@@ -813,7 +813,7 @@ public class GHService {
     /**
      * Commit all changes in the repo type directory
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type to commit changes for
      */
     public void commitChanges(Plugin plugin, RepoType repoType) {
@@ -994,7 +994,7 @@ public class GHService {
     /**
      * Push the changes to the forked repository
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type to push changes for
      */
     public void pushChanges(Plugin plugin, RepoType repoType) {
@@ -1049,7 +1049,7 @@ public class GHService {
      * Open or update a pull request for the plugin and current recipe or its
      * metadata
      *
-     * @param plugin The plugin
+     * @param plugin   The plugin
      * @param repoType The repo type to open a pull request for
      */
     public void openPullRequest(Plugin plugin, RepoType repoType) {
@@ -1207,7 +1207,7 @@ public class GHService {
 
     /**
      * Delete legacy PR open from the plugin-modernizer-tool branch
-     *
+     * 
      * @param plugin The plugin to check
      */
     private void deleteLegacyPrs(Plugin plugin) {
@@ -1235,7 +1235,7 @@ public class GHService {
 
     /**
      * Get the diff statistics after modernization
-     *
+     * 
      * @param plugin The plugin after modernization
      * @param dryRun The state of the cli tool
      * @return DiffStats (no. of additions, deletions and changed files)
@@ -1351,7 +1351,7 @@ public class GHService {
      * Ensure the forked reository correspond of the origin parent repository
      *
      * @param originalRepo The original repository
-     * @param fork The forked repository
+     * @param fork         The forked repository
      * @throws IOException If the check failed
      */
     private void checkSameParentRepository(Plugin plugin, GHRepository originalRepo, GHRepository fork)
