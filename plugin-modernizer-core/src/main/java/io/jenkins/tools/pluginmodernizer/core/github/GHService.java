@@ -1375,7 +1375,8 @@ public class GHService {
     }
 
     /**
-     * JGit expect a credential provider even if transport and authentication is none at transport level with Apache Mina SSHD. This is therefor a dummy provider
+     * JGit expect a credential provider even if transport and authentication is none at transport level with
+     * Apache Mina SSHD. This is therefor a dummy provider
      */
     private static class SshCredentialsProvider extends CredentialsProvider {
         @Override
