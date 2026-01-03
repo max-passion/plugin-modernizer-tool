@@ -114,11 +114,8 @@ preconditions:
   - org.openrewrite.java.search.DoesNotUseType:
       fullyQualifiedTypeName: org.jvnet.hudson.test.JenkinsSessionRule
 recipeList:
-  - org.openrewrite.maven.UpgradeParentVersion:
-      groupId: org.jenkins-ci.plugins
-      artifactId: plugin
-      newVersion: 5.X
-      versionPattern: "\\.v[a-f0-9_]+"
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
+      majorVersionFilter: 5
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - org.openrewrite.maven.AddProperty:
       key: ban-junit4-imports.skip
@@ -169,16 +166,13 @@ recipeList:
   - org.openrewrite.java.migrate.RemoveSecurityPolicy
   - org.openrewrite.java.migrate.RemoveSecurityManager
   - org.openrewrite.java.migrate.SystemGetSecurityManagerToNull
-  - org.openrewrite.maven.UpgradeParentVersion:
-      groupId: org.jenkins-ci.plugins
-      artifactId: plugin
-      newVersion: 6.X
-      versionPattern: "\\.v[a-f0-9_]+"
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
+      majorVersionFilter: 6
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJavaVersion:
       javaVersion: 25
-      jdksToRemove: [11, 17]
+      jdksToRemove: [8, 11, 17]
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.RemoveOldJavaVersionForModernJenkins
@@ -249,10 +243,8 @@ displayName: Upgrade parent version to latest available in the 4.x line
 description: Upgrade the parent version to latest available in the 4.x line.
 tags: ['dependencies']
 recipeList:
-  - org.openrewrite.maven.UpgradeParentVersion:
-      groupId: org.jenkins-ci.plugins
-      artifactId: plugin
-      newVersion: 4.X
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
+      majorVersionFilter: 4
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -261,11 +253,8 @@ displayName: Upgrade parent version to latest available in the 5.x line
 description: Upgrade the parent version to latest available in the 5.x line.
 tags: ['dependencies']
 recipeList:
-  - org.openrewrite.maven.UpgradeParentVersion:
-      groupId: org.jenkins-ci.plugins
-      artifactId: plugin
-      newVersion: 5.X
-      versionPattern: "\\.v[a-f0-9_]+"
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
+      majorVersionFilter: 5
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -274,11 +263,8 @@ displayName: Upgrade parent version to latest available in the 6.x line
 description: Upgrade the parent version to latest available in the 6.x line.
 tags: ['dependencies']
 recipeList:
-  - org.openrewrite.maven.UpgradeParentVersion:
-      groupId: org.jenkins-ci.plugins
-      artifactId: plugin
-      newVersion: 6.X
-      versionPattern: "\\.v[a-f0-9_]+"
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
+      majorVersionFilter: 6
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
