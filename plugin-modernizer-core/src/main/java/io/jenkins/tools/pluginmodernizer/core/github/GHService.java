@@ -724,7 +724,6 @@ public class GHService {
 
     /**
      * Return the remote URI patched with default SSH 22 port required by apache mina sshd transport
-     *
      * @param repository The repository to get the remote URI for
      * @return The patched remote URI HTTP or SSH depending on config
      * @throws URISyntaxException If the URI is invalid
