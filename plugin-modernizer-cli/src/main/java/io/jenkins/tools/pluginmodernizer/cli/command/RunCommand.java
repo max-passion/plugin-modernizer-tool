@@ -33,40 +33,34 @@ public class RunCommand implements ICommand {
     /**
      * Recipe to be applied
      */
-    @CommandLine.Option(
-            names = {"-r", "--recipe"},
-            required = true,
-            description = "Recipe to be applied.",
-            completionCandidates = RecipeConverter.class,
-            converter = RecipeConverter.class)
+    @CommandLine.Option(names = { "-r",
+            "--recipe" }, required = true, description = "Recipe to be applied.", completionCandidates = RecipeConverter.class, converter = RecipeConverter.class)
     private Recipe recipe;
 
-    @CommandLine.Option(
-            names = {"--draft"},
-            description = "Open a draft pull request.")
+    @CommandLine.Option(names = { "--draft" }, description = "Open a draft pull request.")
     public boolean draft;
 
-    @CommandLine.Option(
-            names = {"--clean-forks"},
-            description =
-                    "Remove forked repositories before and after the modernization process. Might cause data loss if you have other changes pushed on those forks. Forks with open pull request targeting original repo are not removed to prevent closing unmerged pull requests.")
+    @CommandLine.Option(names = {
+            "--clean-forks" }, description = "Remove forked repositories before and after the modernization process. Might cause data loss if you have other changes pushed on those forks. Forks with open pull request targeting original repo are not removed to prevent closing unmerged pull requests.")
     public boolean removeForks;
 
     /**
      * Skip modernization metadata
      */
-    @CommandLine.Option(
-            names = {"--skip-metadata"},
-            description = "Disable collection and pushing of modernization metadata")
+    @CommandLine.Option(names = {
+            "--skip-metadata" }, description = "Disable collection and pushing of modernization metadata")
     private boolean skipMetadata;
 
     /**
      * Override opt out plugins
      */
-    @CommandLine.Option(
-            names = {"--override-opt-out-plugins"},
-            description = "Override the default behavior to allow PRs to plugins marked as opt-out")
+    @CommandLine.Option(names = {
+            "--override-opt-out-plugins" }, description = "Override the default behavior to allow PRs to plugins marked as opt-out")
     private boolean overrideOptOutPlugins;
+
+    @CommandLine.Option(names = {
+            "--on-duplicate-pr" }, description = "Strategy to apply when a pull request already exists. Default: SKIP.", defaultValue = "SKIP")
+    private Config.DuplicatePrStrategy duplicatePrStrategy;
 
     /**
      * Environment options
@@ -100,6 +94,7 @@ public class RunCommand implements ICommand {
                 .withRemoveForks(removeForks)
                 .withSkipMetadata(skipMetadata)
                 .withOverrideOptOutPlugins(overrideOptOutPlugins)
+                .withDuplicatePrStrategy(duplicatePrStrategy)
                 .build();
     }
 
