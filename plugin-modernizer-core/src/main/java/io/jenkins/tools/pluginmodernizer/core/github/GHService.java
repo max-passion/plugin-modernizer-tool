@@ -1238,10 +1238,10 @@ public class GHService {
         File gitDir = gitDirPath.toFile();
 
         try (Repository repository = new FileRepositoryBuilder()
-                .setGitDir(gitDir)
-                .readEnvironment()
-                .findGitDir()
-                .build();
+                        .setGitDir(gitDir)
+                        .readEnvironment()
+                        .findGitDir()
+                        .build();
                 Git git = new Git(repository)) {
 
             ObjectReader reader = repository.newObjectReader();
