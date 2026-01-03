@@ -251,7 +251,7 @@ public class GHService {
     /**
      * Get a plugin repository to the organization or personal account
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type
      * @return The GHRepository object
      */
@@ -274,7 +274,7 @@ public class GHService {
     /**
      * Check if the repository is forked to the organization or personal account
      *
-     * @param plugin   The plugin to check
+     * @param plugin The plugin to check
      * @param repoType The repo type
      * @return True if the repository is forked
      */
@@ -309,7 +309,7 @@ public class GHService {
     /**
      * Fork repository to the organization or personal account
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type to fork
      */
     public void fork(Plugin plugin, RepoType repoType) {
@@ -351,11 +351,10 @@ public class GHService {
     /**
      * Fork repository to the organization or personal account
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type to fork
-     * @throws IOException          Forking the repository failed due to I/O error
-     * @throws InterruptedException Forking the repository failed due to
-     *                              interruption
+     * @throws IOException Forking the repository failed due to I/O error
+     * @throws InterruptedException Forking the repository failed due to interruption
      */
     private GHRepository forkRepoType(Plugin plugin, RepoType repoType) throws IOException, InterruptedException {
         GHOrganization organization = getOrganization();
@@ -394,8 +393,7 @@ public class GHService {
      * Fork the repository
      *
      * @param originalRepo The original repository to fork
-     * @param organization The organization to fork the repository to. Can be null
-     *                     for personal account
+     * @param organization The organization to fork the repository to. Can be null for personal account
      * @return The forked repository
      * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
@@ -417,8 +415,7 @@ public class GHService {
      * Fork the default branch only
      *
      * @param originalRepo The original repository to fork
-     * @param organization The organization to fork the repository to. Can be null
-     *                     for personal account
+     * @param organization The organization to fork the repository to. Can be null for personal account
      * @return The forked repository
      * @throws IOException          If the fork operation failed
      * @throws InterruptedException If the fork operation was interrupted
@@ -446,8 +443,7 @@ public class GHService {
     }
 
     /**
-     * Get the organization object for the given owner or null if the owner is not
-     * an organization
+     * Get the organization object for the given owner or null if the owner is not an organization
      *
      * @return The GHOrganization object or null
      * @throws IOException If the organization access failed
@@ -511,10 +507,9 @@ public class GHService {
     }
 
     /**
-     * Sync a fork repository from its original upstream. Only the main branch is
-     * synced in case multiple branches exist.
+     * Sync a fork repository from its original upstream. Only the main branch is synced in case multiple branches exist.
      *
-     * @param plugin   The plugin to sync
+     * @param plugin The plugin to sync
      * @param repoType The repo type
      */
     public void sync(Plugin plugin, RepoType repoType) {
@@ -550,8 +545,7 @@ public class GHService {
     }
 
     /**
-     * Sync a fork repository from its original upstream. Only the main branch is
-     * synced in case multiple branches exist.
+     * Sync a fork repository from its original upstream. Only the main branch is synced in case multiple branches exist.
      *
      * @param forkedRepo Forked repository
      * @throws IOException if an error occurs while syncing the repository
@@ -614,7 +608,7 @@ public class GHService {
     /**
      * Fetch repository code from the fork or original repo in dry-run mode
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type to fetch
      */
     public void fetch(Plugin plugin, RepoType repoType) {
@@ -652,7 +646,7 @@ public class GHService {
     /**
      * Fetch the repository code into local directory of the plugin
      *
-     * @param plugin   The plugin to fetch
+     * @param plugin The plugin to fetch
      * @param repoType The repo type
      * @throws GitAPIException If the fetch operation failed
      */
@@ -729,8 +723,7 @@ public class GHService {
     }
 
     /**
-     * Return the remote URI patched with default SSH 22 port required by apache
-     * mina sshd transport
+     * Return the remote URI patched with default SSH 22 port required by apache mina sshd transport
      *
      * @param repository The repository to get the remote URI for
      * @return The patched remote URI HTTP or SSH depending on config
@@ -758,7 +751,7 @@ public class GHService {
     /**
      * Clone the repository to the given directory
      *
-     * @param plugin    The plugin
+     * @param plugin The plugin
      * @param remoteUri The remote URI of the repository
      * @param directory The directory to clone the repository to
      * @throws GitAPIException If the clone operation failed
@@ -777,7 +770,7 @@ public class GHService {
     /**
      * Checkout the branch. Creates the branch if not exists
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type to checkout branch for
      */
     public void checkoutBranch(Plugin plugin, RepoType repoType) {
@@ -813,7 +806,7 @@ public class GHService {
     /**
      * Commit all changes in the repo type directory
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type to commit changes for
      */
     public void commitChanges(Plugin plugin, RepoType repoType) {
@@ -994,7 +987,7 @@ public class GHService {
     /**
      * Push the changes to the forked repository
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type to push changes for
      */
     public void pushChanges(Plugin plugin, RepoType repoType) {
@@ -1046,10 +1039,9 @@ public class GHService {
     }
 
     /**
-     * Open or update a pull request for the plugin and current recipe or its
-     * metadata
+     * Open or update a pull request for the plugin and current recipe or its metadata
      *
-     * @param plugin   The plugin
+     * @param plugin The plugin
      * @param repoType The repo type to open a pull request for
      */
     public void openPullRequest(Plugin plugin, RepoType repoType) {
@@ -1207,7 +1199,6 @@ public class GHService {
 
     /**
      * Delete legacy PR open from the plugin-modernizer-tool branch
-     * 
      * @param plugin The plugin to check
      */
     private void deleteLegacyPrs(Plugin plugin) {
@@ -1235,7 +1226,6 @@ public class GHService {
 
     /**
      * Get the diff statistics after modernization
-     * 
      * @param plugin The plugin after modernization
      * @param dryRun The state of the cli tool
      * @return DiffStats (no. of additions, deletions and changed files)
@@ -1386,9 +1376,7 @@ public class GHService {
     }
 
     /**
-     * JGit expect a credential provider even if transport and authentication is
-     * none at transport level with
-     * Apache Mina SSHD. This is therefor a dummy provider
+     * JGit expect a credential provider even if transport and authentication is none at transport level with Apache Mina SSHD. This is therefor a dummy provider
      */
     private static class SshCredentialsProvider extends CredentialsProvider {
         @Override
