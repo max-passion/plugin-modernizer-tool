@@ -123,8 +123,7 @@ public class Config {
     }
 
     /**
-     * Return if the current configuration is only fetching metadata which will skip
-     * compile and verify steps
+     * Return if only fetching metadata (skips compile/verify).
      *
      * @return True if only fetching metadata
      */
@@ -133,7 +132,7 @@ public class Config {
     }
 
     /**
-     * Return if the execution the recipe will be skipped
+     * Return if recipe execution will be skipped.
      *
      * @return True if the recipe will skip verification
      */
