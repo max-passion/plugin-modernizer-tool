@@ -353,7 +353,7 @@ public class GHService {
      *
      * @param plugin The plugin
      * @param repoType The repo type to fork
-     * @throws IOException Forking the repository failed due to I/O error
+     * @throws IOException          Forking the repository failed due to I/O error
      * @throws InterruptedException Forking the repository failed due to interruption
      */
     private GHRepository forkRepoType(Plugin plugin, RepoType repoType) throws IOException, InterruptedException {
@@ -1010,14 +1010,14 @@ public class GHService {
         try (Git git = Git.open(localRepository.toFile())) {
             String branchName = repoType.getBranchName(plugin, config.getRecipe());
             List<PushResult> results = StreamSupport.stream(
-                    git.push()
-                            .setForce(true)
-                            .setRemote("origin")
-                            .setCredentialsProvider(getCredentialProvider())
-                            .setRefSpecs(new RefSpec(branchName + ":" + branchName))
-                            .call()
-                            .spliterator(),
-                    false)
+                            git.push()
+                                    .setForce(true)
+                                    .setRemote("origin")
+                                    .setCredentialsProvider(getCredentialProvider())
+                                    .setRefSpecs(new RefSpec(branchName + ":" + branchName))
+                                    .call()
+                                    .spliterator(),
+                            false)
                     .toList();
             results.forEach(result -> {
                 LOG.debug("Push result: {}", result.getMessages());
