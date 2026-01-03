@@ -181,6 +181,16 @@ recipeList:
       jdksToRemove: [11, 17]
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.RemoveOldJavaVersionForModernJenkins
+displayName: Remove old Java version on Jenkinsfile for modern Jenkins versions
+description: Remove old Java version on Jenkinsfile for modern Jenkins versions.
+tags: ['migration', 'dependencies']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJavaVersion:
+      javaVersion: 25
+      jdksToRemove: [8, 11, 17]
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
 displayName: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons Text
 description: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons Text.
