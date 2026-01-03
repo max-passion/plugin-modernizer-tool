@@ -172,13 +172,13 @@ recipeList:
   - org.openrewrite.maven.UpgradeParentVersion:
       groupId: org.jenkins-ci.plugins
       artifactId: plugin
-      newVersion: 5.X
+      newVersion: 6.X
       versionPattern: "\\.v[a-f0-9_]+"
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJavaVersion:
       javaVersion: 25
-      totalJdk: 2
+      jdksToRemove: [11, 17]
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
@@ -259,19 +259,32 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.UpgradeParent6Version
+displayName: Upgrade parent version to latest available in the 6.x line
+description: Upgrade the parent version to latest available in the 6.x line.
+tags: ['dependencies']
+recipeList:
+  - org.openrewrite.maven.UpgradeParentVersion:
+      groupId: org.jenkins-ci.plugins
+      artifactId: plugin
+      newVersion: 6.X
+      versionPattern: "\\.v[a-f0-9_]+"
+  - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.UpgradeNextMajorParentVersion
-displayName: Upgrade to the next major parent version (5.X) requiring Jenkins 2.504 and Java 17
-description: Upgrade to the next major parent version (5.X) requiring Jenkins 2.504 and Java 17.
+displayName: Upgrade to the next major parent version (6.X) requiring Jenkins 2.516 and Java 21
+description: Upgrade to the next major parent version (6.X) requiring Jenkins 2.516 and Java 21.
 tags: ['dependencies']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateScmUrl
-  - io.jenkins.tools.pluginmodernizer.UpgradeParent5Version
+  - io.jenkins.tools.pluginmodernizer.UpgradeParent6Version
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
-      minimumVersion: 2.504.3
+      minimumVersion: 2.516.3
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsTestHarnessVersion:
-      jenkinsVersion: 2.504.3
+      jenkinsVersion: 2.516.3
   - org.openrewrite.java.ChangePackage:  #deprecating
       oldPackageName: com.gargoylesoftware.htmlunit
       newPackageName: org.htmlunit
@@ -551,7 +564,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateScmUrl
-  - io.jenkins.tools.pluginmodernizer.UpgradeParent5Version
+  - io.jenkins.tools.pluginmodernizer.UpgradeParent6Version
   - io.jenkins.tools.pluginmodernizer.AddPluginsBom
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: ${jenkins.core.minimum.version}
