@@ -37,11 +37,11 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                           forkCount: '1C', // run this number of tests in parallel for faster feedback.  If the number terminates with a 'C', the value will be multiplied by the number of available CPU cores
                           useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
                           configurations: [
-                            [platform: 'linux', jdk: 8],
-                            [platform: 'windows', jdk: 8],
+                            [platform: 'linux', jdk: 25],
                             [platform: 'linux', jdk: 11],
                             [platform: 'windows', jdk: 11],
-                            [platform: 'linux', jdk: 25],
+                            [platform: 'linux', jdk: 8],
+                            [platform: 'windows', jdk: 8],
                         ])
                         """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
@@ -89,7 +89,6 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                       configurations: [
                         [platform: 'linux', jdk: 21],
                         [platform: 'windows', jdk: 17],
-                        [platform: 'linux', jdk: 25],
                     ])
                     """, """
                     /*
@@ -100,8 +99,8 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                       forkCount: '1C', // run this number of tests in parallel for faster feedback.  If the number terminates with a 'C', the value will be multiplied by the number of available CPU cores
                       useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
                       configurations: [
-                        [platform: 'windows', jdk: 21],
                         [platform: 'linux', jdk: 25],
+                        [platform: 'windows', jdk: 21],
                     ])
                     """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
@@ -133,8 +132,8 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                       forkCount: '1C', // run this number of tests in parallel for faster feedback.  If the number terminates with a 'C', the value will be multiplied by the number of available CPU cores
                       useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
                       configurations: [
-                        [platform: 'linux', jdk: 21],
                         [platform: 'linux', jdk: 25],
+                        [platform: 'linux', jdk: 21],
                     ])
                     """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
@@ -161,8 +160,8 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                           forkCount: '1C', // run this number of tests in parallel for faster feedback.  If the number terminates with a 'C', the value will be multiplied by the number of available CPU cores
                           useContainerAgent: true, // Set to `false` if you need to use Docker for containerized tests
                           configurations: [
-                            [platform: 'windows', jdk: 11],
                             [platform: 'linux', jdk: 25],
+                            [platform: 'windows', jdk: 11],
                         ])
                         """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
@@ -189,9 +188,9 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                           useContainerAgent: true,
                           forkCount: '1C', // Set to `false` if you need to use Docker for containerized tests
                           configurations: [
+                            [platform: 'linux', jdk: 25],
                             [platform: 'linux', jdk: 17],
                             [platform: 'windows', jdk: 17],
-                            [platform: 'linux', jdk: 25],
                         ])
                         """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
@@ -218,9 +217,9 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                           useContainerAgent: true,
                           forkCount: '1C', // Set to `false` if you need to use Docker for containerized tests
                           configurations: [
+                            [platform: 'linux', jdk: 21],
                             [platform: 'linux', jdk: 17],
                             [platform: 'windows', jdk: 17],
-                            [platform: 'linux', jdk: 21],
                         ])
                         """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
@@ -248,8 +247,8 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                           useContainerAgent: true,
                           forkCount: '1C', // Set to `false` if you need to use Docker for containerized tests
                           configurations: [
-                            [platform: 'windows', jdk: 11],
                             [platform: 'linux', jdk: 21],
+                            [platform: 'windows', jdk: 11],
                         ])
                         """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
@@ -276,8 +275,8 @@ public class UpdateJenkinsfileForJavaVersionTest implements RewriteTest {
                           useContainerAgent: true,
                           forkCount: '1C', // Set to `false` if you need to use Docker for containerized tests
                           configurations: [
-                            [platform: 'windows', jdk: 21],
                             [platform: 'linux', jdk: 25],
+                            [platform: 'windows', jdk: 21],
                         ])
                         """, sourceSpecs -> sourceSpecs.path(ArchetypeCommonFile.JENKINSFILE.getPath())));
     }
