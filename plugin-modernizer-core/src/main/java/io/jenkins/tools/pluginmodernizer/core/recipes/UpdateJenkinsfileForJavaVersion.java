@@ -169,9 +169,10 @@ public class UpdateJenkinsfileForJavaVersion extends Recipe {
                     }
                 }
 
-                // Reorder by lowest JDK first
+                // Reorder by higher JDK first
                 model.platformConfigs = model.platformConfigs.stream()
-                        .sorted(Comparator.comparingInt(a -> a.jdk().getMajor()))
+                        .sorted((a, b) ->
+                                Integer.compare(b.jdk().getMajor(), a.jdk().getMajor()))
                         .collect(Collectors.toList());
 
                 // We pass it the complete, updated configuration, and it will overwrite the old method call.
