@@ -1088,19 +1088,24 @@ public class GHService {
                             "Duplicate PR detected: {}. Skipping creation.",
                             existingPR.get().getHtmlUrl());
                     return;
-                case REPLACE:
+
+                case UPDATE:
                     LOG.info(
-                            "Duplicate PR detected: {}. Closing and creating new.",
+                            "Duplicate PR detected: {}. Updating existing PR.",
                             existingPR.get().getHtmlUrl());
                     try {
-                        existingPR.get().close();
+                        GHPullRequest pr = existingPR.get();
+                        pr.setTitle(prTitle);
+                        pr.setBody(prBody);
+                        LOG.info("Successfully updated PR: {}", pr.getHtmlUrl());
                     } catch (IOException e) {
                         LOG.warn(
-                                "Failed to close existing PR: {}",
+                                "Failed to update existing PR: {}",
                                 existingPR.get().getHtmlUrl(),
                                 e);
                     }
-                    break;
+                    return;
+
                 case IGNORE:
                     LOG.info(
                             "Duplicate PR detected: {}. Creating new one as per IGNORE strategy.",

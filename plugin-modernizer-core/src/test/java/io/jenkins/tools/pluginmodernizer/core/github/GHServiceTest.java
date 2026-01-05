@@ -1048,7 +1048,7 @@ public class GHServiceTest {
         field.set(service, true);
 
         // doReturn("fake-repo").when(plugin).getRepositoryName();
-        doReturn(repository).when(plugin).getRemoteRepository(eq(service));
+        doReturn(repository).when(plugin).getRemoteRepository(any());
         doReturn(git).when(cloneCommand).call();
         doReturn("fake-url").when(repository).getSshUrl();
         doReturn(cloneCommand).when(cloneCommand).setRemote(eq("origin"));
@@ -1077,7 +1077,7 @@ public class GHServiceTest {
         CloneCommand cloneCommand = Mockito.mock(CloneCommand.class);
 
         // doReturn("fake-repo").when(plugin).getRepositoryName();
-        doReturn(repository).when(plugin).getRemoteRepository(eq(service));
+        doReturn(repository).when(plugin).getRemoteRepository(any());
         doReturn(git).when(cloneCommand).call();
         doReturn("fake-url").when(repository).getHttpTransportUrl();
         doReturn(cloneCommand).when(cloneCommand).setRemote(eq("origin"));
@@ -1198,18 +1198,6 @@ public class GHServiceTest {
         // Test
         service.openPullRequest(plugin, RepoType.METADATA);
         verify(repository).createPullRequest(anyString(), anyString(), any(), anyString(), eq(true), eq(false));
-    }
-
-    @Test
-    public void shouldUpdatePullRequest() throws Exception {
-        // Test removed as updating PRs is no longer supported (idempotency skips
-        // creation)
-    }
-
-    @Test
-    public void shouldUpdateMetadataPullRequest() throws Exception {
-        // Test removed as updating PRs is no longer supported (idempotency skips
-        // creation)
     }
 
     @Test

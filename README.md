@@ -279,6 +279,8 @@ source <(plugin-modernizer generate-completion)
 
 - `--github-api-url` (optional) Set the URL for the GitHub API. If not set via CLI option or environment variable, will default to `https://api.github.com`. Automatically set if `GH_HOST` environment variable is set.
 
+- `--on-duplicate-pr` (optional) Strategy to apply when a pull request already exists. Default: `SKIP`. Strategies include: `SKIP` (do nothing if a matching PR exists), `UPDATE` (update the title and body of the existing PR), and `IGNORE` (create a new PR regardless of existing ones - legacy behavior).
+
 ## Plugin Input Format
 
 Plugins can be passed to the CLI tool in two ways:

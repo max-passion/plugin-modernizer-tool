@@ -124,7 +124,6 @@ public class Config {
 
     /**
      * Return if only fetching metadata (skips compile/verify).
-     *
      * @return True if only fetching metadata
      */
     public boolean isFetchMetadataOnly() {
@@ -133,7 +132,6 @@ public class Config {
 
     /**
      * Return if recipe execution will be skipped.
-     *
      * @return True if the recipe will skip verification
      */
     public boolean isSkipVerification() {
@@ -216,7 +214,7 @@ public class Config {
 
     public enum DuplicatePrStrategy {
         SKIP,
-        REPLACE,
+        UPDATE,
         IGNORE
     }
 
