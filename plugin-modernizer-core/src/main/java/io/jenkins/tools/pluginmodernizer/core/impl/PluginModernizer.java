@@ -224,8 +224,11 @@ public class PluginModernizer {
             if (config.isRemoveForks()) {
                 plugin.deleteFork(ghService);
             }
-
             plugin.fetch(ghService);
+
+            // Adjust for multi-module projects after fetching
+            plugin.adjustForMultiModule();
+
             if (plugin.hasErrors()) {
                 LOG.info("Plugin {} has errors. Will not process this plugin.", plugin.getName());
             }
