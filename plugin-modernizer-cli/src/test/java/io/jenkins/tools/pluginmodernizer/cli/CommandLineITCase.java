@@ -22,6 +22,7 @@ import java.security.KeyPair;
 import java.security.KeyPairGenerator;
 import java.security.PrivateKey;
 import java.security.Security;
+import java.util.List;
 import java.util.Properties;
 import java.util.stream.Stream;
 import org.apache.commons.io.FileUtils;
@@ -642,6 +643,129 @@ public class CommandLineITCase {
             assertTrue(
                     Files.exists(targetPath.resolve(ArchetypeCommonFile.CODEOWNERS.getPath())),
                     "Code owner file was not created");
+        }
+    }
+
+    @Test
+    @Tag("Slow")
+    public void testMultiModulePluginAddCodeOwner(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+
+        Path logFile = setupLogs("testMultiModulePluginAddCodeOwner");
+
+        // Copy multi-module plugin to cache and use as local plugin
+        final String plugin = "test-plugin";
+        final Path multiModulePluginPath = Path.of("src/test/resources").resolve("multi-module-plugin");
+        Path targetPath = cachePath
+                .resolve("jenkins-plugin-modernizer-cli")
+                .resolve(plugin)
+                .resolve("sources");
+        FileUtils.copyDirectory(multiModulePluginPath.toFile(), targetPath.toFile());
+        Git.init().setDirectory(targetPath.toFile()).call().close();
+
+        final String recipe = "AddCodeOwner";
+
+        try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
+
+            gitRemote.start();
+
+            // Junit attachment with logs file for the plugin build
+            System.out.printf("[[ATTACHMENT|%s]]%n", getMavenInvokerLog(plugin));
+            System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+
+            Invoker invoker = buildInvoker();
+            InvocationRequest request = buildRequest(
+                    "run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin, targetPath))),
+                    logFile);
+            InvocationResult result = invoker.execute(request);
+
+            // Assert output
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode()),
+                    () -> assertTrue(
+                            Files.readAllLines(logFile).stream()
+                                    .anyMatch(line -> line.matches("(.*)Modified file: .github/CODEOWNERS(.*)")),
+                            "Code owner file not modified on logs"),
+                    () -> assertTrue(Files.readAllLines(logFile).stream()
+                            .anyMatch(line -> line.matches("(.*)Dry run mode. Changes were made on (.*)"))));
+
+            // Check that CODEOWNERS file was created in the plugin module subdirectory
+            Path codeownersPath = targetPath.resolve("test-plugin").resolve(ArchetypeCommonFile.CODEOWNERS.getPath());
+            assertTrue(Files.exists(codeownersPath), "Code owner file was not created in plugin module subdirectory");
+
+            // Verify correct team name is used (plugin artifactId, not parent artifactId)
+            List<String> codeownersLines = Files.readAllLines(codeownersPath);
+            assertTrue(
+                    codeownersLines.stream().anyMatch(line -> line.contains("@jenkinsci/test-plugin-developers")),
+                    "CODEOWNERS file should contain correct team name based on plugin artifactId (test-plugin), not parent artifactId");
+            assertFalse(
+                    codeownersLines.stream()
+                            .anyMatch(line -> line.contains("@jenkinsci/multi-module-parent-developers")),
+                    "CODEOWNERS file should not contain parent artifactId in team name");
+        }
+    }
+
+    /**
+     * Test multi-module plugin with FetchMetadata recipe (requires compilation)
+     * This verifies that multi-module plugins can be properly compiled and modernized
+     */
+    @Test
+    @Tag("Slow")
+    public void testMultiModulePluginFetchMetadata(WireMockRuntimeInfo wmRuntimeInfo) throws Exception {
+
+        Path logFile = setupLogs("testMultiModulePluginFetchMetadata");
+
+        // Copy multi-module plugin to cache and use as local plugin
+        final String plugin = "test-plugin";
+        final Path multiModulePluginPath = Path.of("src/test/resources").resolve("multi-module-plugin");
+        Path targetPath = cachePath
+                .resolve("jenkins-plugin-modernizer-cli")
+                .resolve(plugin)
+                .resolve("sources");
+        FileUtils.copyDirectory(multiModulePluginPath.toFile(), targetPath.toFile());
+        Git.init().setDirectory(targetPath.toFile()).call().close();
+
+        final String recipe = "FetchMetadata";
+
+        try (GitHubServerContainer gitRemote = new GitHubServerContainer(wmRuntimeInfo, keysPath, plugin, "main")) {
+
+            gitRemote.start();
+
+            // Junit attachment with logs file for the plugin build
+            System.out.printf("[[ATTACHMENT|%s]]%n", getMavenInvokerLog(plugin));
+            System.out.printf("[[ATTACHMENT|%s]]%n", logFile.toAbsolutePath());
+
+            Invoker invoker = buildInvoker();
+            InvocationRequest request = buildRequest(
+                    "run --recipe %s %s".formatted(recipe, getRunArgs(wmRuntimeInfo, Plugin.build(plugin, targetPath))),
+                    logFile);
+            InvocationResult result = invoker.execute(request);
+
+            // Assert output - FetchMetadata requires compilation so it should complete successfully
+            assertAll(
+                    () -> assertEquals(0, result.getExitCode(), "Build should succeed for multi-module plugin"),
+                    () -> assertTrue(
+                            Files.readAllLines(logFile).stream()
+                                    .anyMatch(
+                                            line -> line.matches("(.*)Multi-module project detected for plugin (.*)")),
+                            "Multi-module detection message not found in logs"),
+                    () -> assertTrue(
+                            Files.readAllLines(logFile).stream()
+                                    .anyMatch(line -> line.matches("(.*)Found Jenkins plugin module at:(.*)")),
+                            "Plugin module detection message not found in logs"));
+
+            // Verify metadata was collected from the plugin module (not parent)
+            Path pluginMetadataPath = cachePath
+                    .resolve("jenkins-plugin-modernizer-cli")
+                    .resolve(plugin)
+                    .resolve("plugin-metadata.json");
+            assertTrue(
+                    Files.exists(pluginMetadataPath), "Plugin metadata file should exist after FetchMetadata recipe");
+
+            // Read and verify the metadata contains correct plugin name
+            String metadataContent = Files.readString(pluginMetadataPath);
+            assertTrue(
+                    metadataContent.contains("\"pluginName\":\"Test Plugin\""),
+                    "Metadata should contain correct plugin name from plugin module");
         }
     }
 
