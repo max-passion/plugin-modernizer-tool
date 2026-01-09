@@ -3442,12 +3442,6 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         Assert.assertEquals(0, tempFile.length());
                     }
 
-                    @Test
-                    public void testInstanceOf() {
-                        Object obj = new String();
-                        Assert.assertTrue(obj instanceof java.lang.String);
-                    }
-
                     @Test(expected = IllegalArgumentException.class)
                     public void testException() {
                         throw new IllegalArgumentException("Expected");
@@ -3517,12 +3511,6 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         File tempFile = newFile(tempFolder, "test.txt");
                         assertTrue(tempFile.exists(), "File should exist");
                         assertEquals(0, tempFile.length());
-                    }
-
-                    @Test
-                    void testInstanceOf() {
-                        Object obj = new String();
-                        assertInstanceOf(java.lang.String.class, obj);
                     }
 
                     @Test
