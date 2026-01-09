@@ -1245,7 +1245,7 @@ public class Plugin {
     /**
      * Adjusts the localRepository path if this is a multi-module Maven project.
      * For multi-module projects (packaging=pom), searches for the actual Jenkins plugin module
-     * (packaging=hpi or jenkins-plugin) and updates the localRepository to point to that module.
+     * (packaging=hpi) and updates the localRepository to point to that module.
      * This ensures that OpenRewrite recipes operate on the correct pom.xml with the correct artifactId.
      */
     public void adjustForMultiModule() {
@@ -1288,7 +1288,7 @@ public class Plugin {
                     }
                 } else {
                     LOG.warn(
-                            "Multi-module project detected but no module with packaging 'hpi' or 'jenkins-plugin' found for plugin {}",
+                            "Multi-module project detected but no module with packaging 'hpi' found for plugin {}",
                             name);
                 }
             } else {
@@ -1301,7 +1301,7 @@ public class Plugin {
 
     /**
      * Find the Jenkins plugin module in a multi-module project.
-     * Searches all subdirectories for a pom.xml with packaging 'hpi' or 'jenkins-plugin'.
+     * Searches all subdirectories for a pom.xml with packaging 'hpi'.
      *
      * @param rootPath The root path of the multi-module project
      * @return The path to the plugin module, or null if not found
@@ -1316,7 +1316,7 @@ public class Plugin {
                             StaticPomParser parser =
                                     new StaticPomParser(dir.resolve("pom.xml").toString());
                             String packaging = parser.getPackaging();
-                            return "hpi".equals(packaging) || "jenkins-plugin".equals(packaging);
+                            return "hpi".equals(packaging);
                         } catch (Exception e) {
                             LOG.debug("Failed to parse pom.xml in {}: {}", dir, e.getMessage());
                             return false;

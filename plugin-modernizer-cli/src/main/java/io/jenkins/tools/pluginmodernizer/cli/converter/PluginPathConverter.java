@@ -33,7 +33,7 @@ public class PluginPathConverter implements CommandLine.ITypeConverter<Plugin> {
         String packaging = rootPomParser.getPackaging();
 
         // Check if this is a single-module Jenkins plugin
-        if ("hpi".equals(packaging) || "jenkins-plugin".equals(packaging)) {
+        if ("hpi".equals(packaging)) {
             String artifactId = rootPomParser.getArtifactId();
             if (artifactId == null) {
                 throw new IllegalArgumentException("Path does not contain a valid Jenkins plugin: " + path);
@@ -58,18 +58,17 @@ public class PluginPathConverter implements CommandLine.ITypeConverter<Plugin> {
                 return Plugin.build(artifactId, pluginPath);
             }
             throw new IllegalArgumentException(
-                    "Multi-module project detected but no module with packaging 'hpi' or 'jenkins-plugin' found in: "
-                            + path);
+                    "Multi-module project detected but no module with packaging 'hpi' found" + path);
         }
 
         throw new IllegalArgumentException(
-                "Path does not contain a Jenkins plugin (packaging must be 'hpi', 'jenkins-plugin', or a multi-module project with an hpi module): "
+                "Path does not contain a Jenkins plugin (packaging must be 'hpi' or a multi-module project with an hpi module): "
                         + path);
     }
 
     /**
      * Find the Jenkins plugin module in a multi-module project.
-     * Searches all subdirectories for a pom.xml with packaging 'hpi' or 'jenkins-plugin'.
+     * Searches all subdirectories for a pom.xml with packaging 'hpi'.
      *
      * @param rootPath The root path of the multi-module project
      * @return The path to the plugin module, or null if not found
@@ -85,7 +84,7 @@ public class PluginPathConverter implements CommandLine.ITypeConverter<Plugin> {
                             StaticPomParser parser =
                                     new StaticPomParser(dir.resolve("pom.xml").toString());
                             String packaging = parser.getPackaging();
-                            return "hpi".equals(packaging) || "jenkins-plugin".equals(packaging);
+                            return "hpi".equals(packaging);
                         } catch (Exception e) {
                             LOG.debug("Failed to parse pom.xml in {}: {}", dir, e.getMessage());
                             return false;

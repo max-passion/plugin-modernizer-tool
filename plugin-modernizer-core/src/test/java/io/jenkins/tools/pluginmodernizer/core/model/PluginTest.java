@@ -572,45 +572,6 @@ public class PluginTest {
     }
 
     @Test
-    public void testAdjustForMultiModuleWithJenkinsPluginPackaging(@TempDir Path tempDir) throws IOException {
-        // Test with jenkins-plugin packaging (older format)
-        Path rootDir = tempDir.resolve("legacy-plugin");
-        Path pluginModule = rootDir.resolve("plugin");
-        Files.createDirectories(pluginModule);
-
-        String rootPom = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <project>
-                <modelVersion>4.0.0</modelVersion>
-                <groupId>io.jenkins.plugins</groupId>
-                <artifactId>parent</artifactId>
-                <version>1.0.0</version>
-                <packaging>pom</packaging>
-            </project>
-            """;
-        Files.writeString(rootDir.resolve("pom.xml"), rootPom);
-
-        String pluginPom = """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <project>
-                <modelVersion>4.0.0</modelVersion>
-                <groupId>io.jenkins.plugins</groupId>
-                <artifactId>legacy-plugin</artifactId>
-                <version>1.0.0</version>
-                <packaging>jenkins-plugin</packaging>
-            </project>
-            """;
-        Files.writeString(pluginModule.resolve("pom.xml"), pluginPom);
-
-        Plugin plugin = Plugin.build("parent", rootDir);
-        plugin.adjustForMultiModule();
-
-        // Should detect jenkins-plugin packaging
-        assertEquals(pluginModule, plugin.getLocalRepository());
-        assertTrue(plugin.isLocal());
-    }
-
-    @Test
     public void testAdjustForMultiModuleNullRepository() {
         // Test with null repository (remote plugin not yet fetched)
         Plugin plugin = Plugin.build("test-plugin");

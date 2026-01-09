@@ -120,43 +120,7 @@ class PluginPathConverterTest {
 
         assertTrue(exception
                 .getMessage()
-                .contains(
-                        "Multi-module project detected but no module with packaging 'hpi' or 'jenkins-plugin' found"));
-    }
-
-    @Test
-    void testMultiModuleWithJenkinsPluginPackaging(@TempDir Path tempDir) throws Exception {
-        // Test with jenkins-plugin packaging (older format)
-        Path rootPom = tempDir.resolve("pom.xml");
-        Files.writeString(rootPom, """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <project xmlns="http://maven.apache.org/POM/4.0.0">
-                <modelVersion>4.0.0</modelVersion>
-                <groupId>io.jenkins.plugins</groupId>
-                <artifactId>parent</artifactId>
-                <version>1.0.0-SNAPSHOT</version>
-                <packaging>pom</packaging>
-            </project>
-            """);
-
-        Path pluginDir = tempDir.resolve("legacy-plugin");
-        Files.createDirectories(pluginDir);
-        Path pluginPom = pluginDir.resolve("pom.xml");
-        Files.writeString(pluginPom, """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <project xmlns="http://maven.apache.org/POM/4.0.0">
-                <modelVersion>4.0.0</modelVersion>
-                <artifactId>legacy-plugin</artifactId>
-                <packaging>jenkins-plugin</packaging>
-            </project>
-            """);
-
-        PluginPathConverter converter = new PluginPathConverter();
-        Plugin plugin = converter.convert(tempDir.toString());
-
-        assertNotNull(plugin);
-        assertEquals("legacy-plugin", plugin.getName());
-        assertEquals(pluginDir, plugin.getLocalRepository());
+                .contains("Multi-module project detected but no module with packaging 'hpi' found"));
     }
 
     @Test
