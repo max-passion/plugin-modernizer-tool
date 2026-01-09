@@ -7,9 +7,12 @@ import io.jenkins.tools.pluginmodernizer.core.config.Config;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.github.GHService;
 import io.jenkins.tools.pluginmodernizer.core.impl.MavenInvoker;
+import java.io.IOException;
+import java.nio.file.Files;
 import java.nio.file.Path;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
+import org.junit.jupiter.api.io.TempDir;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.mockito.Mock;
@@ -416,5 +419,279 @@ public class PluginTest {
         Plugin plugin = Plugin.build("example");
         plugin.withConfig(config);
         assertNull(plugin.getModernizationMetadata());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleSingleModule(@TempDir Path tempDir) throws IOException {
+        // Create a single-module plugin structure
+        Path pluginDir = tempDir.resolve("single-plugin");
+        Files.createDirectories(pluginDir);
+
+        String singleModulePom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>test-plugin</artifactId>
+                <version>1.0.0</version>
+                <packaging>hpi</packaging>
+            </project>
+            """;
+        Files.writeString(pluginDir.resolve("pom.xml"), singleModulePom);
+
+        Plugin plugin = Plugin.build("test-plugin", pluginDir);
+        plugin.adjustForMultiModule();
+
+        // Should remain unchanged for single-module projects
+        assertEquals("test-plugin", plugin.getName());
+        assertEquals(pluginDir, plugin.getLocalRepository());
+        assertTrue(plugin.isLocal());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleProject(@TempDir Path tempDir) throws IOException {
+        // Create a multi-module plugin structure (simulating local plugin)
+        Path rootDir = tempDir.resolve("multi-plugin");
+        Path pluginModule = rootDir.resolve("plugin-module");
+        Files.createDirectories(pluginModule);
+
+        String rootPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>parent</artifactId>
+                <version>1.0.0</version>
+                <packaging>pom</packaging>
+            </project>
+            """;
+        Files.writeString(rootDir.resolve("pom.xml"), rootPom);
+
+        String pluginPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>actual-plugin</artifactId>
+                <version>1.0.0</version>
+                <packaging>hpi</packaging>
+            </project>
+            """;
+        Files.writeString(pluginModule.resolve("pom.xml"), pluginPom);
+
+        Plugin plugin = Plugin.build("parent", rootDir);
+        plugin.adjustForMultiModule();
+
+        // Should be adjusted to the plugin module
+        assertEquals(pluginModule, plugin.getLocalRepository());
+        assertTrue(plugin.isLocal());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleRemotePlugin(@TempDir Path tempDir) throws IOException {
+        // Simulate a multi-module plugin cloned from remote (non-local)
+        Path rootDir = tempDir.resolve("openstack-cloud").resolve("sources");
+        Path pluginModule = rootDir.resolve("plugin");
+        Files.createDirectories(pluginModule);
+
+        String rootPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>parent</artifactId>
+                <version>1.0.0</version>
+                <packaging>pom</packaging>
+            </project>
+            """;
+        Files.writeString(rootDir.resolve("pom.xml"), rootPom);
+
+        String pluginPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>openstack-cloud</artifactId>
+                <version>1.0.0</version>
+                <packaging>hpi</packaging>
+            </project>
+            """;
+        Files.writeString(pluginModule.resolve("pom.xml"), pluginPom);
+
+        // Create a non-local plugin (simulating remote fetch)
+        Plugin plugin = Plugin.build("openstack-cloud");
+        plugin.withConfig(config);
+        doReturn(tempDir).when(config).getCachePath();
+
+        // Verify it's not local initially
+        assertFalse(plugin.isLocal());
+
+        // After adjustment, it should become local and point to plugin module
+        plugin.adjustForMultiModule();
+
+        assertTrue(plugin.isLocal());
+        assertEquals(pluginModule, plugin.getLocalRepository());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleNoPluginModule(@TempDir Path tempDir) throws IOException {
+        // Create a multi-module project without a plugin module
+        Path rootDir = tempDir.resolve("multi-no-plugin");
+        Path someModule = rootDir.resolve("some-module");
+        Files.createDirectories(someModule);
+
+        String rootPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>parent</artifactId>
+                <version>1.0.0</version>
+                <packaging>pom</packaging>
+            </project>
+            """;
+        Files.writeString(rootDir.resolve("pom.xml"), rootPom);
+
+        String modulePom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>some-module</artifactId>
+                <version>1.0.0</version>
+                <packaging>jar</packaging>
+            </project>
+            """;
+        Files.writeString(someModule.resolve("pom.xml"), modulePom);
+
+        Plugin plugin = Plugin.build("parent", rootDir);
+        plugin.adjustForMultiModule();
+
+        // Should remain unchanged if no plugin module found
+        assertEquals(rootDir, plugin.getLocalRepository());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleWithJenkinsPluginPackaging(@TempDir Path tempDir) throws IOException {
+        // Test with jenkins-plugin packaging (older format)
+        Path rootDir = tempDir.resolve("legacy-plugin");
+        Path pluginModule = rootDir.resolve("plugin");
+        Files.createDirectories(pluginModule);
+
+        String rootPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>parent</artifactId>
+                <version>1.0.0</version>
+                <packaging>pom</packaging>
+            </project>
+            """;
+        Files.writeString(rootDir.resolve("pom.xml"), rootPom);
+
+        String pluginPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>legacy-plugin</artifactId>
+                <version>1.0.0</version>
+                <packaging>jenkins-plugin</packaging>
+            </project>
+            """;
+        Files.writeString(pluginModule.resolve("pom.xml"), pluginPom);
+
+        Plugin plugin = Plugin.build("parent", rootDir);
+        plugin.adjustForMultiModule();
+
+        // Should detect jenkins-plugin packaging
+        assertEquals(pluginModule, plugin.getLocalRepository());
+        assertTrue(plugin.isLocal());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleNullRepository() {
+        // Test with null repository (remote plugin not yet fetched)
+        Plugin plugin = Plugin.build("test-plugin");
+        plugin.withConfig(config);
+        doReturn(Path.of("test-cache")).when(config).getCachePath();
+
+        // Should handle gracefully without throwing exception
+        assertDoesNotThrow(() -> plugin.adjustForMultiModule());
+        assertFalse(plugin.isLocal());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleNonExistentPath(@TempDir Path tempDir) {
+        // Test with non-existent path
+        Path nonExistent = tempDir.resolve("does-not-exist");
+        Plugin plugin = Plugin.build("test-plugin", nonExistent);
+
+        // Should handle gracefully without throwing exception
+        assertDoesNotThrow(() -> plugin.adjustForMultiModule());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleNoPomFile(@TempDir Path tempDir) throws IOException {
+        // Test with directory but no pom.xml
+        Path pluginDir = tempDir.resolve("no-pom");
+        Files.createDirectories(pluginDir);
+
+        Plugin plugin = Plugin.build("test-plugin", pluginDir);
+
+        // Should handle gracefully without throwing exception
+        assertDoesNotThrow(() -> plugin.adjustForMultiModule());
+        assertEquals(pluginDir, plugin.getLocalRepository());
+    }
+
+    @Test
+    public void testAdjustForMultiModuleMultiplePluginModules(@TempDir Path tempDir) throws IOException {
+        // Test with multiple hpi modules (should pick first one found)
+        Path rootDir = tempDir.resolve("multi-hpi");
+        Path module1 = rootDir.resolve("module1");
+        Path module2 = rootDir.resolve("module2");
+        Files.createDirectories(module1);
+        Files.createDirectories(module2);
+
+        String rootPom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <groupId>io.jenkins.plugins</groupId>
+                <artifactId>parent</artifactId>
+                <version>1.0.0</version>
+                <packaging>pom</packaging>
+            </project>
+            """;
+        Files.writeString(rootDir.resolve("pom.xml"), rootPom);
+
+        String module1Pom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <artifactId>plugin1</artifactId>
+                <packaging>hpi</packaging>
+            </project>
+            """;
+        Files.writeString(module1.resolve("pom.xml"), module1Pom);
+
+        String module2Pom = """
+            <?xml version="1.0" encoding="UTF-8"?>
+            <project>
+                <modelVersion>4.0.0</modelVersion>
+                <artifactId>plugin2</artifactId>
+                <packaging>hpi</packaging>
+            </project>
+            """;
+        Files.writeString(module2.resolve("pom.xml"), module2Pom);
+
+        Plugin plugin = Plugin.build("parent", rootDir);
+        plugin.adjustForMultiModule();
+
+        // Should find one of the plugin modules (first match)
+        assertTrue(plugin.isLocal());
+        assertTrue(plugin.getLocalRepository().equals(module1)
+                || plugin.getLocalRepository().equals(module2));
     }
 }
