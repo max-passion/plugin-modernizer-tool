@@ -64,11 +64,11 @@ public class SetupDependabot extends ScanningRecipe<AtomicBoolean> {
             @Override
             public Tree visit(Tree tree, ExecutionContext ctx) {
                 SourceFile sourceFile = (SourceFile) tree;
-                if (sourceFile.getSourcePath().equals(ArchetypeCommonFile.RENOVATE.getPath())) {
+                if (ArchetypeCommonFile.RENOVATE.same(sourceFile.getSourcePath())) {
                     LOG.info("Project is using Renovate. Doing nothing.");
                     shouldCreate.set(false);
                 }
-                if (sourceFile.getSourcePath().equals(ArchetypeCommonFile.DEPENDABOT.getPath())) {
+                if (ArchetypeCommonFile.DEPENDABOT.same(sourceFile.getSourcePath())) {
                     LOG.info("Project is using Dependabot already. Doing nothing.");
                     shouldCreate.set(false);
                 }

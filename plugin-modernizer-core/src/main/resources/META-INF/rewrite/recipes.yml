@@ -649,11 +649,29 @@ recipeList:
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.SetupDependabot
-displayName: Setup dependabot
-description: Setup dependabot for the Jenkins plugin if it doesn't exist.
+displayName: Setup Dependabot
+description: Setup Dependabot for the Jenkins plugin if it doesn't exist.
 tags: ['chore', 'skip-verification']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.SetupDependabot
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SetupRenovate
+displayName: Setup Renovate
+description: Setup Renovate for the Jenkins plugin if it doesn't exist.
+tags: ['chore', 'skip-verification']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.SetupRenovate
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.SwitchToRenovate
+displayName: Switch from Dependabot to Renovate
+description: Switch from Dependabot to Renovate for the Jenkins plugin.
+tags: ['chore', 'skip-verification']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.SetupRenovate:
+      force: true
+  - io.jenkins.tools.pluginmodernizer.core.recipes.RemoveDependabot
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.RemoveReleaseDrafter

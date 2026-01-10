@@ -79,7 +79,7 @@ public enum ArchetypeCommonFile {
      * Renovate configuration file.
      * Not in archetype but to skip plugins using a different bot for updates
      */
-    RENOVATE("renovate.json"),
+    RENOVATE(".github/renovate.json", "renovate.json"),
 
     /**
      * Maven extensions file

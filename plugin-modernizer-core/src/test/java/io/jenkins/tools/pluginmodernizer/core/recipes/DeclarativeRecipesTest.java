@@ -6,6 +6,7 @@ import static org.openrewrite.java.Assertions.mavenProject;
 import static org.openrewrite.java.Assertions.srcMainJava;
 import static org.openrewrite.java.Assertions.srcMainResources;
 import static org.openrewrite.java.Assertions.srcTestJava;
+import static org.openrewrite.json.Assertions.json;
 import static org.openrewrite.maven.Assertions.pomXml;
 import static org.openrewrite.test.SourceSpecs.text;
 import static org.openrewrite.yaml.Assertions.yaml;
@@ -3871,6 +3872,50 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         interval: monthly
                     """, sourceSpecs -> {
                     sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
+                }));
+    }
+
+    @Test
+    void shouldAddRenovate() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SetupRenovate"),
+                text(""), // Need one minimum file to trigger the recipe
+                // language=yaml
+                json(null, """
+                    {
+                      "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+                      "extends": [
+                        "github>jenkinsci/renovate-config"
+                      ]
+                    }
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.RENOVATE.getPath());
+                }));
+    }
+
+    @Test
+    void shouldSwitchToRenovate() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.SwitchToRenovate"),
+                // language=yaml
+                yaml("""
+                    ---
+                    version: 2
+                    """, null, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.DEPENDABOT.getPath());
+                }),
+                // language=yaml
+                json(null, """
+                    {
+                      "$schema": "https://docs.renovatebot.com/renovate-schema.json",
+                      "extends": [
+                        "github>jenkinsci/renovate-config"
+                      ]
+                    }
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.RENOVATE.getPath());
                 }));
     }
 
