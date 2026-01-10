@@ -369,6 +369,44 @@ public class TemplateUtilsTest {
     }
 
     @Test
+    public void testFriendlyPrTitleSetupRenovate() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("io.jenkins.tools.pluginmodernizer.SetupRenovate").when(recipe).getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("chore(dependencies): Automate dependency updates with Renovate", result);
+    }
+
+    @Test
+    public void testFriendlyPrTitleSwitchToRenovate() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("io.jenkins.tools.pluginmodernizer.SwitchToRenovate")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("chore(dependencies): Switch to Renovate for automated dependency updates", result);
+    }
+
+    @Test
     public void testFriendlyPrTitleSetupJenkinsfile() {
 
         // Mocks
