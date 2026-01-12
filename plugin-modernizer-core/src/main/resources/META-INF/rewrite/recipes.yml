@@ -439,7 +439,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: joda-time-api
-      pluginVersion: 2.14.0-149.v1c3ce991d1b_9
+      pluginVersion: 2.14.0-177.vd7e9347b_e7d5
       replaces:
         - groupId: joda-time
           artifactId: joda-time
