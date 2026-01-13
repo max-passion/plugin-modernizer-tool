@@ -811,4 +811,22 @@ public class TemplateUtilsTest {
                 result.contains("This pull request upgrades `Apache Commons Lang 2` to `Apache Commons Lang 3`"),
                 "Description");
     }
+
+    @Test
+    public void testFriendlyPrTitleMigrateJavaxAnnotationsToSpotbugs() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn("io.jenkins.tools.pluginmodernizer.JavaxAnnotationsToSpotbugs")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals("Migrate `javax.annotations` to SpotBugs annotations", result);
+    }
 }

@@ -95,7 +95,8 @@ valid_migration_ids = [
     "io.jenkins.tools.pluginmodernizer.MigrateTomakehurstToWiremock",
     "io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText",
     "io.jenkins.tools.pluginmodernizer.RemoveOldJavaVersionForModernJenkins",
-    "io.jenkins.tools.pluginmodernizer.SwitchToRenovate"
+    "io.jenkins.tools.pluginmodernizer.SwitchToRenovate",
+    "io.jenkins.tools.pluginmodernizer.JavaxAnnotationsToSpotbugs"
 ]
 
 def validate_metadata(file_path):

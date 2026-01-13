@@ -311,6 +311,17 @@
                   <artifactId>hamcrest</artifactId>
                   <version>3.0</version>
                 </dependency>
+                <!-- JSR305 annotations -->
+                <dependency>
+                  <groupId>javax.annotation</groupId>
+                  <artifactId>javax.annotation-api</artifactId>
+                  <version>1.3.2</version>
+                </dependency>
+                <dependency>
+                  <groupId>com.google.code.findbugs</groupId>
+                  <artifactId>jsr305</artifactId>
+                  <version>3.0.2</version>
+                </dependency>
               </artifactItems>
             </configuration>
           </execution>
