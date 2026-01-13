@@ -117,7 +117,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
       majorVersionFilter: 5
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
-  - org.openrewrite.maven.AddProperty:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.AddProperty:
       key: ban-junit4-imports.skip
       value: false
   - io.jenkins.tools.pluginmodernizer.core.recipes.AnnotateWithJenkins  
@@ -190,6 +190,9 @@ displayName: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons T
 description: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons Text.
 tags: ['dependencies', 'migration']
 recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.AddProperty:
+      key: ban-commons-lang-2.skip
+      value: false
   # upgrade Commons Lang from 2 to 3
   - org.openrewrite.maven.AddDependency:
       groupId: io.jenkins.plugins
