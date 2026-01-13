@@ -573,6 +573,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateStaplerAndJavaxToJakarta
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateAcegiSecurityToSpringSecurity
   - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
+  - io.jenkins.tools.pluginmodernizer.JavaxAnnotationsToSpotbugs
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
   - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
@@ -732,3 +733,18 @@ description: This PR migrates the groupId and artifactId to the new artifact and
 tags: ['chore']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.JavaxAnnotationsToSpotbugs
+displayName: Migrate `javax.annotations` to SpotBugs annotations.
+description: SpotBugs is the [preferred replacement](https://www.jenkins.io/doc/developer/tutorial-improve/replace-jsr-305-annotations/) of JSR-305 annotations for Jenkins plugins.
+tags: ['chore']
+recipeList:
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: javax.annotation.Nonnull
+      newFullyQualifiedTypeName: edu.umd.cs.findbugs.annotations.NonNull
+      ignoreDefinition: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: javax.annotation
+      newPackageName: edu.umd.cs.findbugs.annotations
+      recursive: false

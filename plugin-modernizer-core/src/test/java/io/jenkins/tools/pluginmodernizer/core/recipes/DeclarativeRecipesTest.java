@@ -783,8 +783,21 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 import hudson.util.IOException2;
                                 import java.io.File;
                                 import java.io.IOException;
+                                import javax.annotation.CheckForNull;
+                                import javax.annotation.Nonnull;
 
                                 public class Foo {
+
+                                    @CheckForNull
+                                    public String getSomething() {
+                                       return "something";
+                                    }
+
+                                    @Nonnull
+                                    public String getOther() {
+                                       return "something";
+                                    }
+
                                     public static void main(String[] args) {
                                         try {
                                             parseFile(new File("invalid.xml"));
@@ -802,10 +815,23 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                     }
                                 }
                                 """, """
+                                import edu.umd.cs.findbugs.annotations.NonNull;
                                 import java.io.File;
                                 import java.io.IOException;
+                                import edu.umd.cs.findbugs.annotations.CheckForNull;
 
                                 public class Foo {
+
+                                    @CheckForNull
+                                    public String getSomething() {
+                                       return "something";
+                                    }
+
+                                    @NonNull
+                                    public String getOther() {
+                                       return "something";
+                                    }
+
                                     public static void main(String[] args) {
                                         try {
                                             parseFile(new File("invalid.xml"));
