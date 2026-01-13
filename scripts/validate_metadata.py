@@ -63,6 +63,7 @@ valid_migration_ids = [
     "io.jenkins.tools.pluginmodernizer.UpgradeNextMajorParentVersion",
     "io.jenkins.tools.pluginmodernizer.UpgradeParent4Version",
     "io.jenkins.tools.pluginmodernizer.UpgradeParent5Version",
+    "io.jenkins.tools.pluginmodernizer.UpgradeParent6Version",
     "io.jenkins.tools.pluginmodernizer.UpgradeBomVersion",
     "io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride",
     "io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag",
@@ -84,14 +85,17 @@ valid_migration_ids = [
     "io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava11CoreVersion",
     "io.jenkins.tools.pluginmodernizer.UpgradeToLatestJava8CoreVersion",
     "io.jenkins.tools.pluginmodernizer.SetupDependabot",
+    "io.jenkins.tools.pluginmodernizer.SetupRenovate",
     "io.jenkins.tools.pluginmodernizer.RemoveReleaseDrafter",
     "io.jenkins.tools.pluginmodernizer.FixJellyIssues",
     "io.jenkins.tools.pluginmodernizer.conditions.IsUsingRecommendCoreVersion",
     "io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithASMRemoved",
     "io.jenkins.tools.pluginmodernizer.conditions.IsUsingCoreVersionWithCommonsCompressRemoved",
     "io.jenkins.tools.pluginmodernizer.EnsureIndexJelly",
-    "io.jenkins.tools.pluginmodernizer.MigrateTomakehurstToWiremock"
-    "io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText"
+    "io.jenkins.tools.pluginmodernizer.MigrateTomakehurstToWiremock",
+    "io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText",
+    "io.jenkins.tools.pluginmodernizer.RemoveOldJavaVersionForModernJenkins",
+    "io.jenkins.tools.pluginmodernizer.SwitchToRenovate"
 ]
 
 def validate_metadata(file_path):
