@@ -115,7 +115,7 @@ preconditions:
       fullyQualifiedTypeName: org.jvnet.hudson.test.JenkinsSessionRule
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
-      majorVersionFilter: 5
+      majorVersionFilter: 6
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - org.openrewrite.maven.AddProperty:
       key: ban-junit4-imports.skip
