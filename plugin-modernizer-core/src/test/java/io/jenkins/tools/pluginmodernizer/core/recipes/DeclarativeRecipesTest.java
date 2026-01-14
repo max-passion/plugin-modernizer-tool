@@ -729,6 +729,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                             <jenkins.baseline>%s</jenkins.baseline>
                             <jenkins.version>${jenkins.baseline}.%s</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -895,9 +896,10 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins.version>2.440.3</jenkins.version>
                             <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
-                             <maven.compiler.source>17</maven.compiler.source>
-                             <maven.compiler.release>17</maven.compiler.release>
-                             <maven.compiler.target>17</maven.compiler.target>
+                            <maven.compiler.source>17</maven.compiler.source>
+                            <maven.compiler.release>17</maven.compiler.release>
+                            <maven.compiler.target>17</maven.compiler.target>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <repositories>
                             <repository>
@@ -933,6 +935,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins.version>%s</jenkins.version>
                             <jenkins-test-harness.version>%s</jenkins-test-harness.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <repositories>
                             <repository>
@@ -995,6 +998,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                             <jenkins.baseline>2.440</jenkins.baseline>
                             <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -1047,6 +1051,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                             <jenkins.baseline>%s</jenkins.baseline>
                             <jenkins.version>${jenkins.baseline}.%s</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -1132,6 +1137,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         <revision>2.17.0</revision>
                         <changelist>999999-SNAPSHOT</changelist>
                         <jenkins.version>2.516.1</jenkins.version>
+                        <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                       </properties>
                       <repositories>
                         <repository>
@@ -1206,6 +1212,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                         <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                         <jenkins.baseline>%s</jenkins.baseline>
                         <jenkins.version>${jenkins.baseline}.%s</jenkins.version>
+                        <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                       </properties>
                       <repositories>
                         <repository>
@@ -1318,6 +1325,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                             <jenkins.version>2.440.3</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -1379,6 +1387,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                             <jenkins.baseline>2.462</jenkins.baseline>
                             <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -1521,6 +1530,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                           <properties>
                             <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                             <jenkins.version>2.303.3</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -1576,6 +1586,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                             <jenkins.baseline>2.346</jenkins.baseline>
                             <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -2037,6 +2048,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                                 <maven.compiler.source>11</maven.compiler.source>
                                 <maven.compiler.target>11</maven.compiler.target>
                                 <maven.compiler.release>11</maven.compiler.release>
+                                <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                               </properties>
                               <dependencies>
                                 <dependency>
@@ -2080,6 +2092,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                               <properties>
                                 <jenkins-test-harness.version>%s</jenkins-test-harness.version>
                                 <jenkins.version>%s</jenkins.version>
+                                <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                               </properties>
                               <dependencies>
                                 <dependency>
@@ -2335,6 +2348,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                             <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                             <jenkins.baseline>2.516</jenkins.baseline>
                             <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                            <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                           </properties>
                           <dependencyManagement>
                             <dependencies>
@@ -2497,6 +2511,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     <jenkins-test-harness.version>2.41.1</jenkins-test-harness.version>
                     <jenkins.baseline>2.440</jenkins.baseline>
                     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                    <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                   </properties>
                   <dependencyManagement>
                     <dependencies>
@@ -2549,6 +2564,7 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     <!-- https://www.jenkins.io/doc/developer/plugin-development/choosing-jenkins-baseline/ -->
                     <jenkins.baseline>2.516</jenkins.baseline>
                     <jenkins.version>${jenkins.baseline}.3</jenkins.version>
+                    <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                   </properties>
                   <dependencyManagement>
                     <dependencies>
@@ -3367,6 +3383,33 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 spec -> spec.recipeFromResource(
                         "/META-INF/rewrite/recipes.yml",
                         "io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText"),
+                // language=xml
+                pomXml("""
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>io.jenkins.plugins</groupId>
+                  <artifactId>empty</artifactId>
+                  <version>1.0.0-SNAPSHOT</version>
+                  <name>Empty pom</name>
+                  <properties>
+                    <jenkins.version>2.492.1</jenkins.version>
+                  </properties>
+                </project>
+                """, """
+                <?xml version="1.0" encoding="UTF-8"?>
+                <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                  <modelVersion>4.0.0</modelVersion>
+                  <groupId>io.jenkins.plugins</groupId>
+                  <artifactId>empty</artifactId>
+                  <version>1.0.0-SNAPSHOT</version>
+                  <name>Empty pom</name>
+                  <properties>
+                    <jenkins.version>2.492.1</jenkins.version>
+                    <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
+                  </properties>
+                </project>
+                """),
                 // language=java
                 java("""
                 package org.apache.commons.lang;
@@ -3640,8 +3683,8 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <packaging>hpi</packaging>
                   <name>Empty Plugin</name>
                   <properties>
-                    <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
                     <jenkins.version>2.440.3</jenkins.version>
+                    <ban-junit4-imports.skip>false</ban-junit4-imports.skip>
                   </properties>
                   <dependencyManagement>
                     <dependencies>
