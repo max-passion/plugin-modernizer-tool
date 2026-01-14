@@ -10,7 +10,7 @@ project:
     homepage: https://github.com/jenkins-infra/plugin-modernizer-tool
   java:
     groupId: io.jenkins.plugin-modernizer
-    version: 17
+    version: 25
   inceptionYear: 2024
 
 release:

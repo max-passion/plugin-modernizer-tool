@@ -10,7 +10,7 @@ class PluginModernizer < Formula
 
     def install
       libexec.install "jenkins-plugin-modernizer-{{projectVersion}}.jar"
-      bin.write_jar_script libexec/"jenkins-plugin-modernizer-{{projectVersion}}.jar", "plugin-modernizer"
+      bin.write_jar_script libexec/"jenkins-plugin-modernizer-{{projectVersion}}.jar", "plugin-modernizer", "--add-opens=java.base/java.lang=ALL-UNNAMED --sun-misc-unsafe-memory-access=allow"
     end
 
     test do

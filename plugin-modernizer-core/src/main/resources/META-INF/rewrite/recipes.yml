@@ -115,9 +115,9 @@ preconditions:
       fullyQualifiedTypeName: org.jvnet.hudson.test.JenkinsSessionRule
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
-      majorVersionFilter: 5
+      majorVersionFilter: 6
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
-  - org.openrewrite.maven.AddProperty:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.AddProperty:
       key: ban-junit4-imports.skip
       value: false
   - io.jenkins.tools.pluginmodernizer.core.recipes.AnnotateWithJenkins  
@@ -190,6 +190,9 @@ displayName: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons T
 description: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons Text.
 tags: ['dependencies', 'migration']
 recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.AddProperty:
+      key: ban-commons-lang-2.skip
+      value: false
   # upgrade Commons Lang from 2 to 3
   - org.openrewrite.maven.AddDependency:
       groupId: io.jenkins.plugins
@@ -439,7 +442,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.ReplaceLibrariesWithApiPlugin:
       pluginGroupId: io.jenkins.plugins
       pluginArtifactId: joda-time-api
-      pluginVersion: 2.14.0-149.v1c3ce991d1b_9
+      pluginVersion: 2.14.0-177.vd7e9347b_e7d5
       replaces:
         - groupId: joda-time
           artifactId: joda-time
@@ -573,6 +576,7 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateStaplerAndJavaxToJakarta
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateAcegiSecurityToSpringSecurity
   - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
+  - io.jenkins.tools.pluginmodernizer.JavaxAnnotationsToSpotbugs
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
   - io.jenkins.tools.pluginmodernizer.RemoveDevelopersTag
@@ -732,3 +736,18 @@ description: This PR migrates the groupId and artifactId to the new artifact and
 tags: ['chore']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.JavaxAnnotationsToSpotbugs
+displayName: Migrate `javax.annotations` to SpotBugs annotations.
+description: SpotBugs is the [preferred replacement](https://www.jenkins.io/doc/developer/tutorial-improve/replace-jsr-305-annotations/) of JSR-305 annotations for Jenkins plugins.
+tags: ['chore']
+recipeList:
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: javax.annotation.Nonnull
+      newFullyQualifiedTypeName: edu.umd.cs.findbugs.annotations.NonNull
+      ignoreDefinition: true
+  - org.openrewrite.java.ChangePackage:
+      oldPackageName: javax.annotation
+      newPackageName: edu.umd.cs.findbugs.annotations
+      recursive: false
