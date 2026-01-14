@@ -3392,9 +3392,21 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <artifactId>empty</artifactId>
                   <version>1.0.0-SNAPSHOT</version>
                   <name>Empty pom</name>
+                  <parent>
+                    <groupId>org.jenkins-ci.plugins</groupId>
+                    <artifactId>plugin</artifactId>
+                    <version>4.88</version>
+                    <relativePath />
+                  </parent>
                   <properties>
                     <jenkins.version>2.492.1</jenkins.version>
                   </properties>
+                  <repositories>
+                    <repository>
+                      <id>repo.jenkins-ci.org</id>
+                      <url>https://repo.jenkins-ci.org/public/</url>
+                    </repository>
+                  </repositories>
                 </project>
                 """, """
                 <?xml version="1.0" encoding="UTF-8"?>
@@ -3404,12 +3416,24 @@ public class DeclarativeRecipesTest implements RewriteTest {
                   <artifactId>empty</artifactId>
                   <version>1.0.0-SNAPSHOT</version>
                   <name>Empty pom</name>
+                  <parent>
+                    <groupId>org.jenkins-ci.plugins</groupId>
+                    <artifactId>plugin</artifactId>
+                    <version>%s</version>
+                    <relativePath />
+                  </parent>
                   <properties>
                     <jenkins.version>2.492.1</jenkins.version>
                     <ban-commons-lang-2.skip>false</ban-commons-lang-2.skip>
                   </properties>
+                  <repositories>
+                    <repository>
+                      <id>repo.jenkins-ci.org</id>
+                      <url>https://repo.jenkins-ci.org/public/</url>
+                    </repository>
+                  </repositories>
                 </project>
-                """),
+                """.formatted(Settings.getJenkinsParentVersion())),
                 // language=java
                 java("""
                 package org.apache.commons.lang;

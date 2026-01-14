@@ -24,19 +24,34 @@ public class UpdateParent extends Recipe {
     }
 
     /**
-     * The minimum version.
+     * The major version to filter.
      */
     @Option(displayName = "Version", description = "The major version to filter.", example = "5", required = false)
     Integer majorVersionFilter;
 
+    /**
+     * Whether to keep the major version when updating.
+     */
+    @Option(
+            displayName = "Keep Major Version",
+            description = "Whether to keep the major version when updating.",
+            example = "true",
+            required = false)
+    Boolean keepMajor = false;
+
     public UpdateParent() {}
 
-    public UpdateParent(Integer majorVersionFilter) {
+    public UpdateParent(Boolean keepMajor) {
+        this.keepMajor = keepMajor;
+    }
+
+    public UpdateParent(Integer majorVersionFilter, Boolean keepMajor) {
         this.majorVersionFilter = majorVersionFilter;
+        this.keepMajor = keepMajor;
     }
 
     @Override
     public TreeVisitor<?, ExecutionContext> getVisitor() {
-        return new UpdateParentVersionVisitor(majorVersionFilter, new MavenMetadataFailures(this));
+        return new UpdateParentVersionVisitor(majorVersionFilter, keepMajor, new MavenMetadataFailures(this));
     }
 }

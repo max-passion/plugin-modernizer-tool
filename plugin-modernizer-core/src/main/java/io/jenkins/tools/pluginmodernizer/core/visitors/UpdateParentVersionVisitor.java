@@ -40,6 +40,11 @@ public class UpdateParentVersionVisitor extends MavenIsoVisitor<ExecutionContext
     private final Integer majorVersion;
 
     /**
+     * Whether to keep the major version when updating
+     */
+    private final boolean keepMajor;
+
+    /**
      * The version comparator for the parent
      */
     private final transient LatestRelease latestParentReleaseComparator =
@@ -57,14 +62,16 @@ public class UpdateParentVersionVisitor extends MavenIsoVisitor<ExecutionContext
     public UpdateParentVersionVisitor(MavenMetadataFailures metadataFailures) {
         this.metadataFailures = metadataFailures;
         this.majorVersion = null;
+        this.keepMajor = false;
     }
 
     /**
      * Contructor
      */
-    public UpdateParentVersionVisitor(Integer majorVersion, MavenMetadataFailures metadataFailures) {
+    public UpdateParentVersionVisitor(Integer majorVersion, Boolean keepMajor, MavenMetadataFailures metadataFailures) {
         this.metadataFailures = metadataFailures;
         this.majorVersion = majorVersion;
+        this.keepMajor = keepMajor;
     }
 
     @Override
@@ -82,10 +89,18 @@ public class UpdateParentVersionVisitor extends MavenIsoVisitor<ExecutionContext
 
         LOG.debug("Updating parent version from {} to latest.release", version);
 
-        String newParentVersion = getLatestParentVersion(version, ctx);
+        String newParentVersion = getLatestParentVersion(version, keepMajor, ctx);
         if (newParentVersion == null) {
             LOG.debug("No newer version available for parent plugin pom");
             return document;
+        }
+        if (keepMajor) {
+            String currentMajor = Semver.majorVersion(version);
+            String newMajor = Semver.majorVersion(newParentVersion);
+            if (!Objects.equals(currentMajor, newMajor)) {
+                LOG.debug("Keeping major version {}, skipping update to {}", currentMajor, newParentVersion);
+                return document;
+            }
         }
         LOG.debug("Newer version available for parent plugin pom: {}", newParentVersion);
 
@@ -99,9 +114,9 @@ public class UpdateParentVersionVisitor extends MavenIsoVisitor<ExecutionContext
      * @param ctx The execution context
      * @return The newer parent version
      */
-    public String getLatestParentVersion(String currentVersion, ExecutionContext ctx) {
+    public String getLatestParentVersion(String currentVersion, boolean keepMajor, ExecutionContext ctx) {
         try {
-            return getLatestParentVersion(currentVersion, getResolutionResult(), ctx);
+            return getLatestParentVersion(currentVersion, keepMajor, getResolutionResult(), ctx);
         } catch (MavenDownloadingException e) {
             LOG.warn("Failed to download metadata for parent pom", e);
             return null;
@@ -124,7 +139,8 @@ public class UpdateParentVersionVisitor extends MavenIsoVisitor<ExecutionContext
      * @param ctx The execution context
      * @return The latest
      */
-    private String getLatestParentVersion(String currentVersion, MavenResolutionResult mrr, ExecutionContext ctx)
+    private String getLatestParentVersion(
+            String currentVersion, boolean keepMajor, MavenResolutionResult mrr, ExecutionContext ctx)
             throws MavenDownloadingException {
 
         // Since 'incrementals' repository is always enabled with -Pconsume-incrementals
@@ -152,6 +168,13 @@ public class UpdateParentVersionVisitor extends MavenIsoVisitor<ExecutionContext
         // Apply major version filter if any (just check beginning of the version string)
         if (majorVersion != null) {
             String majorPrefix = majorVersion + ".";
+            versions.removeIf(v -> !v.startsWith(majorPrefix));
+            oldVersions.removeIf(v -> !v.startsWith(majorPrefix));
+        }
+
+        if (keepMajor) {
+            String currentMajor = Semver.majorVersion(currentVersion);
+            String majorPrefix = currentMajor + ".";
             versions.removeIf(v -> !v.startsWith(majorPrefix));
             oldVersions.removeIf(v -> !v.startsWith(majorPrefix));
         }
