@@ -9,6 +9,7 @@ import io.jenkins.tools.pluginmodernizer.core.github.GHService;
 import io.jenkins.tools.pluginmodernizer.core.impl.CacheManager;
 import io.jenkins.tools.pluginmodernizer.core.impl.MavenInvoker;
 import io.jenkins.tools.pluginmodernizer.core.utils.PluginService;
+import io.jenkins.tools.pluginmodernizer.core.utils.StaticPomParser;
 import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.net.URI;
@@ -26,6 +27,7 @@ import java.util.List;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
 import javax.xml.xpath.XPath;
@@ -1236,6 +1238,94 @@ public class Plugin {
         } catch (Exception e) {
             addError("Failed to parse pom file: " + pom, e);
             raiseLastError();
+            return null;
+        }
+    }
+
+    /**
+     * Adjusts the localRepository path if this is a multi-module Maven project.
+     * For multi-module projects (packaging=pom), searches for the actual Jenkins plugin module
+     * (packaging=hpi) and updates the localRepository to point to that module.
+     * This ensures that OpenRewrite recipes operate on the correct pom.xml with the correct artifactId.
+     */
+    public void adjustForMultiModule() {
+        // Get the actual local repository path (handles both local and remote plugins)
+        Path repoPath = getLocalRepository();
+
+        if (repoPath == null || !Files.exists(repoPath)) {
+            LOG.debug("No local repository set or path does not exist for plugin {}", name);
+            return;
+        }
+
+        Path pomPath = repoPath.resolve("pom.xml");
+        if (!Files.exists(pomPath)) {
+            LOG.debug("No pom.xml found at {}", repoPath);
+            return;
+        }
+
+        try {
+            StaticPomParser rootParser = new StaticPomParser(pomPath.toString());
+            String packaging = rootParser.getPackaging();
+
+            // Check if this is a multi-module project (packaging=pom)
+            if ("pom".equals(packaging)) {
+                LOG.info("Multi-module project detected for plugin {}. Searching for plugin module...", name);
+                Path pluginModule = findJenkinsPluginModule(repoPath);
+
+                if (pluginModule != null) {
+                    LOG.info("Found Jenkins plugin module at: {}", pluginModule);
+
+                    // For non-local plugins, we need to make them "local" so getLocalRepository()
+                    // uses our custom path instead of calculating it
+                    if (!isLocal()) {
+                        withLocal(true);
+                        localRepository = pluginModule;
+                        LOG.info("Adjusted to plugin module at: {}", localRepository);
+                    } else {
+                        // For local plugins, just update the path
+                        localRepository = pluginModule;
+                        LOG.info("Adjusted local plugin to module at: {}", localRepository);
+                    }
+                } else {
+                    LOG.warn(
+                            "Multi-module project detected but no module with packaging 'hpi' found for plugin {}",
+                            name);
+                }
+            } else {
+                LOG.debug("Plugin {} is not a multi-module project (packaging={})", name, packaging);
+            }
+        } catch (Exception e) {
+            LOG.warn("Failed to check for multi-module structure for plugin {}: {}", name, e.getMessage());
+        }
+    }
+
+    /**
+     * Find the Jenkins plugin module in a multi-module project.
+     * Searches all subdirectories for a pom.xml with packaging 'hpi'.
+     *
+     * @param rootPath The root path of the multi-module project
+     * @return The path to the plugin module, or null if not found
+     */
+    private Path findJenkinsPluginModule(Path rootPath) {
+        try (Stream<Path> paths = Files.walk(rootPath, 2)) { // Search up to 2 levels deep
+            return paths.filter(Files::isDirectory)
+                    .filter(dir -> !dir.equals(rootPath)) // Skip root directory
+                    .filter(dir -> Files.exists(dir.resolve("pom.xml")))
+                    .filter(dir -> {
+                        try {
+                            StaticPomParser parser =
+                                    new StaticPomParser(dir.resolve("pom.xml").toString());
+                            String packaging = parser.getPackaging();
+                            return "hpi".equals(packaging);
+                        } catch (Exception e) {
+                            LOG.debug("Failed to parse pom.xml in {}: {}", dir, e.getMessage());
+                            return false;
+                        }
+                    })
+                    .findFirst()
+                    .orElse(null);
+        } catch (IOException e) {
+            LOG.warn("Error searching for plugin module in {}: {}", rootPath, e.getMessage());
             return null;
         }
     }
