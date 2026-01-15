@@ -225,6 +225,9 @@ recipeList:
   - org.openrewrite.java.ChangeMethodName:
       methodPattern: "*..StringEscapeUtils escapeHtml(java.lang.String)"
       newMethodName: escapeHtml4
+  - org.openrewrite.java.ChangeMethodName:
+      methodPattern: "*..StringEscapeUtils escapeJavaScript(java.lang.String)"
+      newMethodName: escapeEcmaScript
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
