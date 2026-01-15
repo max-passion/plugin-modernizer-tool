@@ -116,6 +116,7 @@ preconditions:
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
       majorVersionFilter: 6
+      keepMajor: false
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.core.recipes.AddProperty:
       key: ban-junit4-imports.skip
@@ -168,6 +169,7 @@ recipeList:
   - org.openrewrite.java.migrate.SystemGetSecurityManagerToNull
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
       majorVersionFilter: 6
+      keepMajor: false
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.SetupJenkinsfile
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateJenkinsfileForJavaVersion:
@@ -190,6 +192,8 @@ displayName: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons T
 description: Migrate Commons Lang from 2 to 3 and StringEscapeUtils to Commons Text.
 tags: ['dependencies', 'migration']
 recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
+      keepMajor: false
   - io.jenkins.tools.pluginmodernizer.core.recipes.AddProperty:
       key: ban-commons-lang-2.skip
       value: false
@@ -197,7 +201,7 @@ recipeList:
   - org.openrewrite.maven.AddDependency:
       groupId: io.jenkins.plugins
       artifactId: commons-lang3-api
-      version: LATEST
+      version: latest.release
       onlyIfUsing: org.apache.commons.lang.*
   - org.openrewrite.java.ChangePackage:
       oldPackageName: org.apache.commons.lang
@@ -213,7 +217,7 @@ recipeList:
   - org.openrewrite.maven.AddDependency:
         groupId: io.jenkins.plugins
         artifactId: commons-text-api
-        version: LATEST
+        version: latest.release
         onlyIfUsing: org.apache.commons.lang.StringEscapeUtils
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.apache.commons.lang3.StringEscapeUtils
@@ -248,6 +252,7 @@ tags: ['dependencies']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
       majorVersionFilter: 4
+      keepMajor: false
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -258,6 +263,7 @@ tags: ['dependencies']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
       majorVersionFilter: 5
+      keepMajor: false
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -268,6 +274,7 @@ tags: ['dependencies']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateParent:
       majorVersionFilter: 6
+      keepMajor: false
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
 ---
 type: specs.openrewrite.org/v1beta/recipe
@@ -594,8 +601,11 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureRelativePath
   - io.jenkins.tools.pluginmodernizer.EnsureIndexJelly
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpdateScmUrl
-  - io.jenkins.tools.pluginmodernizer.UpgradeParent4Version
   - io.jenkins.tools.pluginmodernizer.AddPluginsBom
+  - org.openrewrite.maven.UpgradeParentVersion:
+      groupId: org.jenkins-ci.plugins
+      artifactId: plugin
+      newVersion: 4.88
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsVersion:
       minimumVersion: 2.462.3
   - io.jenkins.tools.pluginmodernizer.core.recipes.UpgradeJenkinsTestHarnessVersion:
@@ -604,7 +614,6 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.RemoveDependencyVersionOverride
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
-  - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - io.jenkins.tools.pluginmodernizer.core.recipes.MigrateTomakehurstToWiremock
@@ -640,7 +649,6 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.code.ReplaceRemovedSSHLauncherConstructor
   - io.jenkins.tools.pluginmodernizer.RemoveExtraMavenProperties
   - io.jenkins.tools.pluginmodernizer.ReplaceIOException2WithIOException
-  - io.jenkins.tools.pluginmodernizer.MigrateCommonsLang2ToLang3AndCommonText
   - io.jenkins.tools.pluginmodernizer.UpgradeBomVersion
   - io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
   - org.openrewrite.java.RemoveUnusedImports

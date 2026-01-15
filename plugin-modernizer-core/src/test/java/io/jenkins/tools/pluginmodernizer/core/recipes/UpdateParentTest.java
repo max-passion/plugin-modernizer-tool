@@ -87,9 +87,61 @@ public class UpdateParentTest implements RewriteTest {
     }
 
     @Test
+    void shouldUpdateToLatestCurrentMajor() {
+        rewriteRun(
+                spec -> spec.recipe(new UpdateParent(true)),
+                // language=xml
+                pomXml("""
+                 <?xml version="1.0" encoding="UTF-8"?>
+                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                   <modelVersion>4.0.0</modelVersion>
+                   <groupId>io.jenkins.plugins</groupId>
+                   <artifactId>empty</artifactId>
+                   <version>1.0.0-SNAPSHOT</version>
+                   <parent>
+                        <groupId>org.jenkins-ci.plugins</groupId>
+                        <artifactId>plugin</artifactId>
+                        <version>5.1</version>
+                        <relativePath />
+                   </parent>
+                   <packaging>hpi</packaging>
+                   <name>Empty Plugin</name>
+                    <repositories>
+                      <repository>
+                        <id>repo.jenkins-ci.org</id>
+                        <url>https://repo.jenkins-ci.org/public/</url>
+                      </repository>
+                    </repositories>
+                 </project>
+                 """, """
+                 <?xml version="1.0" encoding="UTF-8"?>
+                 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
+                   <modelVersion>4.0.0</modelVersion>
+                   <groupId>io.jenkins.plugins</groupId>
+                   <artifactId>empty</artifactId>
+                   <version>1.0.0-SNAPSHOT</version>
+                   <parent>
+                        <groupId>org.jenkins-ci.plugins</groupId>
+                        <artifactId>plugin</artifactId>
+                        <version>5.2102.v5f5fe09fccf1</version>
+                        <relativePath />
+                   </parent>
+                   <packaging>hpi</packaging>
+                   <name>Empty Plugin</name>
+                    <repositories>
+                      <repository>
+                        <id>repo.jenkins-ci.org</id>
+                        <url>https://repo.jenkins-ci.org/public/</url>
+                      </repository>
+                    </repositories>
+                 </project>
+                 """));
+    }
+
+    @Test
     void shouldUpdateToLatestReleasedWithoutMavenConfigAndFilter() {
         rewriteRun(
-                spec -> spec.recipe(new UpdateParent(5)),
+                spec -> spec.recipe(new UpdateParent(5, false)),
                 // language=xml
                 pomXml("""
                  <?xml version="1.0" encoding="UTF-8"?>
