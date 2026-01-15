@@ -3441,11 +3441,17 @@ public class DeclarativeRecipesTest implements RewriteTest {
                     public static String escapeHtml(String input) {
                         return input;
                     }
+                    public static String escapeJavaScript(String input) {
+                        return input;
+                    }
                 }
                 """, """
                 package org.apache.commons.text;
                 public class StringEscapeUtils {
                     public static String escapeHtml4(String input) {
+                        return input;
+                    }
+                    public static String escapeEcmaScript(String input) {
                         return input;
                     }
                 }
