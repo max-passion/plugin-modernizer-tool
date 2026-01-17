@@ -13,4 +13,4 @@ This is an automated pull request created by the [Jenkins Plugin Modernizer](htt
 
 ## Enable incrementals
 
-Jenkins evaluation of pull request builds is faster and easier when incremental builds are enabled. See the jenkins.io [continuous delivery documentation](https://www.jenkins.io/doc/developer/publishing/releasing-cd/) for more details.
+Jenkins evaluation of pull request builds is faster and easier when incremental builds are enabled. See the jenkins.io [enable incrementals tutorial](https://www.jenkins.io/doc/developer/tutorial-improve/enable-incrementals/) for more details.

@@ -42,7 +42,6 @@ public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState>
     private static final String MAVEN_CONFIG_TEMPLATE = """
             -Pconsume-incrementals
             -Pmight-produce-incrementals
-            -Dchangelist.format=%d.v%s
             """;
 
     @Override

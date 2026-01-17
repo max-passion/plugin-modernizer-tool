@@ -93,7 +93,7 @@ class AddIncrementalsTest implements RewriteTest {
                     """),
                 text(
                         null,
-                        "-Pconsume-incrementals\n-Pmight-produce-incrementals\n-Dchangelist.format=%d.v%s\n",
+                        "-Pconsume-incrementals\n-Pmight-produce-incrementals\n",
                         spec -> spec.path(ArchetypeCommonFile.MAVEN_CONFIG.getPath())),
                 xml(null, """
                     <?xml version="1.0" encoding="UTF-8"?>
