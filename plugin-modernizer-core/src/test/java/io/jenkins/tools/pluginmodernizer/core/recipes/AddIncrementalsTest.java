@@ -95,7 +95,9 @@ class AddIncrementalsTest implements RewriteTest {
                         null,
                         "-Pconsume-incrementals\n-Pmight-produce-incrementals\n",
                         spec -> spec.path(ArchetypeCommonFile.MAVEN_CONFIG.getPath())),
-                xml(null, """
+                xml(
+                        null,
+                        """
                     <?xml version="1.0" encoding="UTF-8"?>
                     <extensions xmlns="http://maven.apache.org/EXTENSIONS/1.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/EXTENSIONS/1.0.0 http://maven.apache.org/xsd/core-extensions-1.0.0.xsd">
                       <extension>
@@ -104,7 +106,8 @@ class AddIncrementalsTest implements RewriteTest {
                         <version>%s</version>
                       </extension>
                     </extensions>
-                    """.formatted(Settings.getIncrementalExtensionVersion()), spec -> spec.path(ArchetypeCommonFile.MAVEN_EXTENSIONS.getPath())));
+                    """.formatted(Settings.getIncrementalExtensionVersion()),
+                        spec -> spec.path(ArchetypeCommonFile.MAVEN_EXTENSIONS.getPath())));
     }
 
     @Test

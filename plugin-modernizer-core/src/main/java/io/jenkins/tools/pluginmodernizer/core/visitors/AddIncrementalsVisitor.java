@@ -31,8 +31,7 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
         // Check if properties section exists
         Optional<Xml.Tag> propertiesTag = root.getChild("properties");
         if (propertiesTag.isEmpty()) {
-            LOG.warn(
-                    "POM lacks a properties section. Cannot add incrementals properties. Skipping transformation.");
+            LOG.warn("POM lacks a properties section. Cannot add incrementals properties. Skipping transformation.");
             return document;
         }
 
@@ -60,9 +59,8 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
             // Add properties if they don't exist
             document = (Xml.Document)
                     new AddProperty("revision", revision).getVisitor().visitNonNull(document, ctx);
-            document = (Xml.Document) new AddProperty("changelist", "-SNAPSHOT")
-                    .getVisitor()
-                    .visitNonNull(document, ctx);
+            document = (Xml.Document)
+                    new AddProperty("changelist", "-SNAPSHOT").getVisitor().visitNonNull(document, ctx);
 
             // Extract and add GitHub repo from SCM
             Optional<Xml.Tag> scmTag = root.getChild("scm");
@@ -102,9 +100,9 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
                     String url = urlTag.get().getValue().orElse("");
                     Matcher urlMatcher = GITHUB_PATTERN.matcher(url);
                     if (urlMatcher.find()) {
-                        document = (Xml.Document) new ChangeTagValueVisitor<>(
-                                        urlTag.get(), "https://github.com/${gitHubRepo}")
-                                .visitNonNull(document, ctx);
+                        document = (Xml.Document)
+                                new ChangeTagValueVisitor<>(urlTag.get(), "https://github.com/${gitHubRepo}")
+                                        .visitNonNull(document, ctx);
                     }
                 }
             }
@@ -172,7 +170,8 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
         }
 
         // Update developerConnection
-        Optional<Xml.Tag> devConnectionTag = scmTag.isPresent() ? scmTag.get().getChild("developerConnection") : Optional.empty();
+        Optional<Xml.Tag> devConnectionTag =
+                scmTag.isPresent() ? scmTag.get().getChild("developerConnection") : Optional.empty();
         if (devConnectionTag.isPresent()) {
             document = (Xml.Document)
                     new ChangeTagValueVisitor<>(devConnectionTag.get(), "scm:git:git@github.com:${gitHubRepo}.git")
