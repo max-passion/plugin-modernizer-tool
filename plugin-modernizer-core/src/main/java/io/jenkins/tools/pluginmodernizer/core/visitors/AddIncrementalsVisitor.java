@@ -18,7 +18,7 @@ import org.slf4j.LoggerFactory;
 public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AddIncrementalsVisitor.class);
-    private static final Pattern VERSION_PATTERN = Pattern.compile("^(\\d+(?:\\.\\d+)*)");
+    private static final Pattern VERSION_PATTERN = Pattern.compile("^(\\d+(?:\\.\\d+)*)(.*|$)");
     private static final Pattern GITHUB_PATTERN =
             Pattern.compile("github\\.com[:/]([^/]+/[^/]+?)(?:\\.git)?$", Pattern.CASE_INSENSITIVE);
 
@@ -27,6 +27,14 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
         document = super.visitDocument(document, ctx);
 
         Xml.Tag root = document.getRoot();
+
+        // Check if properties section exists
+        Optional<Xml.Tag> propertiesTag = root.getChild("properties");
+        if (propertiesTag.isEmpty()) {
+            LOG.warn(
+                    "POM lacks a properties section. Cannot add incrementals properties. Skipping transformation.");
+            return document;
+        }
 
         // Check if already using incrementals format
         Optional<Xml.Tag> versionTag = root.getChild("version");
@@ -58,8 +66,9 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
 
             // Extract and add GitHub repo from SCM
             Optional<Xml.Tag> scmTag = root.getChild("scm");
+            String gitHubRepo = null;
             if (scmTag.isPresent()) {
-                String gitHubRepo = extractGitHubRepo(scmTag.get());
+                gitHubRepo = extractGitHubRepo(scmTag.get());
                 if (gitHubRepo != null) {
                     LOG.debug("Adding gitHubRepo property: {}", gitHubRepo);
                     document = (Xml.Document) new AddProperty("gitHubRepo", gitHubRepo)
@@ -74,23 +83,29 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
                 document = (Xml.Document)
                         new AddProperty("scmTag", "HEAD").getVisitor().visitNonNull(document, ctx);
 
+                // Refresh root tag reference to avoid stale references after document transformations
+                root = document.getRoot();
+                scmTag = root.getChild("scm");
+
                 // Update SCM tag to use ${scmTag}
-                Optional<Xml.Tag> tagTag = scmTag.get().getChild("tag");
+                Optional<Xml.Tag> tagTag = scmTag.isPresent() ? scmTag.get().getChild("tag") : Optional.empty();
                 if (tagTag.isPresent()) {
                     document = (Xml.Document)
                             new ChangeTagValueVisitor<>(tagTag.get(), "${scmTag}").visitNonNull(document, ctx);
                 }
             }
 
-            // Update URL to use ${gitHubRepo} if present
-            Optional<Xml.Tag> urlTag = root.getChild("url");
-            if (urlTag.isPresent()) {
-                String url = urlTag.get().getValue().orElse("");
-                Matcher urlMatcher = GITHUB_PATTERN.matcher(url);
-                if (urlMatcher.find()) {
-                    document =
-                            (Xml.Document) new ChangeTagValueVisitor<>(urlTag.get(), "https://github.com/${gitHubRepo}")
-                                    .visitNonNull(document, ctx);
+            // Only rewrite the URL if the gitHubRepo property was successfully added
+            if (gitHubRepo != null) {
+                Optional<Xml.Tag> urlTag = root.getChild("url");
+                if (urlTag.isPresent()) {
+                    String url = urlTag.get().getValue().orElse("");
+                    Matcher urlMatcher = GITHUB_PATTERN.matcher(url);
+                    if (urlMatcher.find()) {
+                        document = (Xml.Document) new ChangeTagValueVisitor<>(
+                                        urlTag.get(), "https://github.com/${gitHubRepo}")
+                                .visitNonNull(document, ctx);
+                    }
                 }
             }
         }
@@ -102,6 +117,7 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
      * Extract GitHub repository from SCM tag
      */
     private String extractGitHubRepo(Xml.Tag scmTag) {
+        // Try connection tag first
         Optional<Xml.Tag> connectionTag = scmTag.getChild("connection");
         if (connectionTag.isPresent()) {
             String connection = connectionTag.get().getValue().orElse("");
@@ -110,6 +126,27 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
                 return matcher.group(1);
             }
         }
+
+        // Fall back to developerConnection tag
+        Optional<Xml.Tag> developerConnectionTag = scmTag.getChild("developerConnection");
+        if (developerConnectionTag.isPresent()) {
+            String developerConnection = developerConnectionTag.get().getValue().orElse("");
+            Matcher matcher = GITHUB_PATTERN.matcher(developerConnection);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        }
+
+        // Fall back to url tag
+        Optional<Xml.Tag> urlTag = scmTag.getChild("url");
+        if (urlTag.isPresent()) {
+            String url = urlTag.get().getValue().orElse("");
+            Matcher matcher = GITHUB_PATTERN.matcher(url);
+            if (matcher.find()) {
+                return matcher.group(1);
+            }
+        }
+
         return null;
     }
 
@@ -129,18 +166,24 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
             document = (Xml.Document)
                     new ChangeTagValueVisitor<>(connectionTag.get(), "scm:git:https://github.com/${gitHubRepo}.git")
                             .visitNonNull(document, ctx);
+            // Refresh references after document transformation
+            root = document.getRoot();
+            scmTag = root.getChild("scm");
         }
 
         // Update developerConnection
-        Optional<Xml.Tag> devConnectionTag = scmTag.get().getChild("developerConnection");
+        Optional<Xml.Tag> devConnectionTag = scmTag.isPresent() ? scmTag.get().getChild("developerConnection") : Optional.empty();
         if (devConnectionTag.isPresent()) {
             document = (Xml.Document)
                     new ChangeTagValueVisitor<>(devConnectionTag.get(), "scm:git:git@github.com:${gitHubRepo}.git")
                             .visitNonNull(document, ctx);
+            // Refresh references after document transformation
+            root = document.getRoot();
+            scmTag = root.getChild("scm");
         }
 
         // Update url
-        Optional<Xml.Tag> scmUrlTag = scmTag.get().getChild("url");
+        Optional<Xml.Tag> scmUrlTag = scmTag.isPresent() ? scmTag.get().getChild("url") : Optional.empty();
         if (scmUrlTag.isPresent()) {
             document = (Xml.Document) new ChangeTagValueVisitor<>(scmUrlTag.get(), "https://github.com/${gitHubRepo}")
                     .visitNonNull(document, ctx);

@@ -246,6 +246,14 @@ public class Settings {
         return readProperty("wiremock.version", "versions.properties");
     }
 
+    /**
+     * Return the Incrementals git-changelist-maven-extension version
+     * @return The Incrementals extension version
+     */
+    public static String getIncrementalExtensionVersion() {
+        return readProperty("git-changelist-maven-extension.version", "versions.properties");
+    }
+
     public static String getJenkinsMinimumBaseline() {
         String jenkinsVersion = getJenkinsMinimumVersion();
         if (JENKINS_VERSION_LTS_PATTERN.test(jenkinsVersion)) {

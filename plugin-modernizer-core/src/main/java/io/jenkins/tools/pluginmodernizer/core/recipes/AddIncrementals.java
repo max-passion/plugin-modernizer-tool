@@ -6,7 +6,6 @@ import io.jenkins.tools.pluginmodernizer.core.visitors.AddIncrementalsVisitor;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.stream.Collectors;
 import org.intellij.lang.annotations.Language;
 import org.openrewrite.ExecutionContext;
@@ -111,8 +110,7 @@ public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState>
 
         if (!state.isMavenExtensionsExists()) {
             LOG.debug("Generating .mvn/extensions.xml");
-            String extensionsXml =
-                    MAVEN_EXTENSIONS_TEMPLATE.formatted(Settings.getPluginVersion("git-changelist-maven-extension"));
+            String extensionsXml = MAVEN_EXTENSIONS_TEMPLATE.formatted(Settings.getIncrementalExtensionVersion());
             generatedFiles.addAll(XmlParser.builder()
                     .build()
                     .parse(extensionsXml)
@@ -128,32 +126,32 @@ public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState>
      * Configuration state for the recipe
      */
     public static class ConfigState {
-        private final AtomicBoolean mavenConfigExists = new AtomicBoolean(false);
-        private final AtomicBoolean mavenExtensionsExists = new AtomicBoolean(false);
-        private final AtomicBoolean pomExists = new AtomicBoolean(false);
+        private boolean mavenConfigExists = false;
+        private boolean mavenExtensionsExists = false;
+        private boolean pomExists = false;
 
         public boolean isMavenConfigExists() {
-            return mavenConfigExists.get();
+            return mavenConfigExists;
         }
 
         public void setMavenConfigExists(boolean value) {
-            mavenConfigExists.set(value);
+            mavenConfigExists = value;
         }
 
         public boolean isMavenExtensionsExists() {
-            return mavenExtensionsExists.get();
+            return mavenExtensionsExists;
         }
 
         public void setMavenExtensionsExists(boolean value) {
-            mavenExtensionsExists.set(value);
+            mavenExtensionsExists = value;
         }
 
         public boolean isPomExists() {
-            return pomExists.get();
+            return pomExists;
         }
 
         public void setPomExists(boolean value) {
-            pomExists.set(value);
+            pomExists = value;
         }
     }
 }
