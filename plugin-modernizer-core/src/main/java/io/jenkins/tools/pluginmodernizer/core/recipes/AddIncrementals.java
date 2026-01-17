@@ -1,5 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
+import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import io.jenkins.tools.pluginmodernizer.core.visitors.AddIncrementalsVisitor;
 import java.util.ArrayList;
@@ -33,7 +34,7 @@ public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState>
               <extension>
                 <groupId>io.jenkins.tools.incrementals</groupId>
                 <artifactId>git-changelist-maven-extension</artifactId>
-                <version>1.13</version>
+                <version>%s</version>
               </extension>
             </extensions>
             """;
@@ -110,9 +111,11 @@ public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState>
 
         if (!state.isMavenExtensionsExists()) {
             LOG.debug("Generating .mvn/extensions.xml");
+            String extensionsXml =
+                    MAVEN_EXTENSIONS_TEMPLATE.formatted(Settings.getPluginVersion("git-changelist-maven-extension"));
             generatedFiles.addAll(XmlParser.builder()
                     .build()
-                    .parse(MAVEN_EXTENSIONS_TEMPLATE)
+                    .parse(extensionsXml)
                     .map(brandNewFile ->
                             (SourceFile) brandNewFile.withSourcePath(ArchetypeCommonFile.MAVEN_EXTENSIONS.getPath()))
                     .collect(Collectors.toList()));
