@@ -52,15 +52,15 @@ public class AddIncrementalsVisitor extends MavenIsoVisitor<ExecutionContext> {
                 revision = versionMatcher.group(1);
             }
 
-            // Update version to ${revision}.${changelist} format
-            LOG.debug("Transforming version from {} to ${{revision}}.${{changelist}}", currentVersion);
-            document = (Xml.Document) new ChangeTagValueVisitor<>(versionTag.get(), "${revision}.${changelist}")
+            // Update version to ${revision}${changelist} format
+            LOG.debug("Transforming version from {} to ${{revision}}${{changelist}}", currentVersion);
+            document = (Xml.Document) new ChangeTagValueVisitor<>(versionTag.get(), "${revision}${changelist}")
                     .visitNonNull(document, ctx);
 
             // Add properties if they don't exist
             document = (Xml.Document)
                     new AddProperty("revision", revision).getVisitor().visitNonNull(document, ctx);
-            document = (Xml.Document) new AddProperty("changelist", "999999-SNAPSHOT")
+            document = (Xml.Document) new AddProperty("changelist", "-SNAPSHOT")
                     .getVisitor()
                     .visitNonNull(document, ctx);
 

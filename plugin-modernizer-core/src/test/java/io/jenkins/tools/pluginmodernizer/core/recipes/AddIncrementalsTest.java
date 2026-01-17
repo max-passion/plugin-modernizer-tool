@@ -66,7 +66,7 @@ class AddIncrementalsTest implements RewriteTest {
                         <relativePath />
                         </parent>
                         <artifactId>test-plugin</artifactId>
-                        <version>${revision}.${changelist}</version>
+                        <version>${revision}${changelist}</version>
                         <packaging>hpi</packaging>
                         <name>Test Plugin</name>
                         <url>https://github.com/${gitHubRepo}</url>
@@ -79,7 +79,7 @@ class AddIncrementalsTest implements RewriteTest {
                         <properties>
                             <jenkins.version>2.452.4</jenkins.version>
                             <revision>1.0.0</revision>
-                            <changelist>999999-SNAPSHOT</changelist>
+                            <changelist>-SNAPSHOT</changelist>
                             <gitHubRepo>jenkinsci/test-plugin</gitHubRepo>
                             <scmTag>HEAD</scmTag>
                         </properties>
@@ -124,7 +124,7 @@ class AddIncrementalsTest implements RewriteTest {
                         <relativePath />
                         </parent>
                         <artifactId>test-plugin</artifactId>
-                        <version>${revision}.${changelist}</version>
+                        <version>${revision}${changelist}</version>
                         <packaging>hpi</packaging>
                         <name>Test Plugin</name>
                         <url>https://github.com/${gitHubRepo}</url>
@@ -136,7 +136,7 @@ class AddIncrementalsTest implements RewriteTest {
                         </scm>
                         <properties>
                             <revision>1.0.0</revision>
-                            <changelist>999999-SNAPSHOT</changelist>
+                            <changelist>-SNAPSHOT</changelist>
                             <gitHubRepo>jenkinsci/test-plugin</gitHubRepo>
                             <scmTag>HEAD</scmTag>
                         </properties>
@@ -199,7 +199,7 @@ class AddIncrementalsTest implements RewriteTest {
                         </parent>
                         <groupId>io.jenkins.plugins</groupId>
                         <artifactId>test-plugin</artifactId>
-                        <version>${revision}.${changelist}</version>
+                        <version>${revision}${changelist}</version>
                         <packaging>hpi</packaging>
                         <scm>
                         <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
@@ -208,7 +208,7 @@ class AddIncrementalsTest implements RewriteTest {
                         <properties>
                             <jenkins.version>2.452.4</jenkins.version>
                             <revision>1.0</revision>
-                            <changelist>999999-SNAPSHOT</changelist>
+                            <changelist>-SNAPSHOT</changelist>
                             <gitHubRepo>jenkinsci/test-plugin</gitHubRepo>
                             <scmTag>HEAD</scmTag>
                         </properties>
