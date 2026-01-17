@@ -1,5 +1,6 @@
 package io.jenkins.tools.pluginmodernizer.core.recipes;
 
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
 import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import io.jenkins.tools.pluginmodernizer.core.visitors.AddIncrementalsVisitor;
@@ -22,6 +23,7 @@ import org.slf4j.LoggerFactory;
  * Recipe to enable incrementals in a Jenkins plugin.
  * Transforms the POM to use Git-based versioning and creates required .mvn files.
  */
+@SuppressFBWarnings(value = "VA_FORMAT_STRING_USES_NEWLINE", justification = "Newline is used for formatting")
 public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState> {
 
     private static final Logger LOG = LoggerFactory.getLogger(AddIncrementals.class);
@@ -39,10 +41,7 @@ public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState>
             """;
 
     @Language("txt")
-    private static final String MAVEN_CONFIG_TEMPLATE = """
-            -Pconsume-incrementals
-            -Pmight-produce-incrementals
-            """;
+    private static final String MAVEN_CONFIG_TEMPLATE = "-Pconsume-incrementals\n-Pmight-produce-incrementals\n";
 
     @Override
     public String getDisplayName() {
@@ -109,7 +108,7 @@ public class AddIncrementals extends ScanningRecipe<AddIncrementals.ConfigState>
 
         if (!state.isMavenExtensionsExists()) {
             LOG.debug("Generating .mvn/extensions.xml");
-            String extensionsXml = MAVEN_EXTENSIONS_TEMPLATE.formatted(Settings.getIncrementalExtensionVersion());
+            String extensionsXml = String.format(MAVEN_EXTENSIONS_TEMPLATE, Settings.getIncrementalExtensionVersion());
             generatedFiles.addAll(XmlParser.builder()
                     .build()
                     .parse(extensionsXml)
