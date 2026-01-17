@@ -4,6 +4,7 @@ import static org.openrewrite.maven.Assertions.pomXml;
 import static org.openrewrite.test.SourceSpecs.text;
 import static org.openrewrite.xml.Assertions.xml;
 
+import io.jenkins.tools.pluginmodernizer.core.config.Settings;
 import io.jenkins.tools.pluginmodernizer.core.extractor.ArchetypeCommonFile;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.parallel.Execution;
@@ -100,10 +101,10 @@ class AddIncrementalsTest implements RewriteTest {
                       <extension>
                         <groupId>io.jenkins.tools.incrementals</groupId>
                         <artifactId>git-changelist-maven-extension</artifactId>
-                        <version>1.13</version>
+                        <version>%s</version>
                       </extension>
                     </extensions>
-                    """, spec -> spec.path(ArchetypeCommonFile.MAVEN_EXTENSIONS.getPath())));
+                    """.formatted(Settings.getIncrementalExtensionVersion()), spec -> spec.path(ArchetypeCommonFile.MAVEN_EXTENSIONS.getPath())));
     }
 
     @Test
