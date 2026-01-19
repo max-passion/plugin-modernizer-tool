@@ -219,6 +219,12 @@ recipeList:
         artifactId: commons-text-api
         version: latest.release
         onlyIfUsing: org.apache.commons.lang.StringEscapeUtils
+  # migrate WordUtils to Commons Text
+  - org.openrewrite.maven.AddDependency:
+      groupId: io.jenkins.plugins
+      artifactId: commons-text-api
+      version: latest.release
+      onlyIfUsing: org.apache.commons.text.WordUtils
   - org.openrewrite.java.ChangeType:
       oldFullyQualifiedTypeName: org.apache.commons.lang3.StringEscapeUtils
       newFullyQualifiedTypeName: org.apache.commons.text.StringEscapeUtils
@@ -228,6 +234,9 @@ recipeList:
   - org.openrewrite.java.ChangeMethodName:
       methodPattern: "*..StringEscapeUtils escapeJavaScript(java.lang.String)"
       newMethodName: escapeEcmaScript
+  - org.openrewrite.java.ChangeType:
+      oldFullyQualifiedTypeName: org.apache.commons.lang3.WordUtils
+      newFullyQualifiedTypeName: org.apache.commons.text.WordUtils
 ---
 type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateToJenkinsBaseLineProperty
