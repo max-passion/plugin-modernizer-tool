@@ -744,7 +744,7 @@ type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.AddIncrementals
 displayName: Add incrementals
 description: Enables Git-based versioning for automated deployments from pull requests.
-tags: ['chore', 'incrementals']
+tags: ['chore']
 recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.AddIncrementals
 ---

@@ -2,4 +2,4 @@
 @import io.jenkins.tools.pluginmodernizer.core.model.Recipe
 @param Plugin plugin
 @param Recipe recipe
-chore: Add Incrementals
+chore: Enable incrementals

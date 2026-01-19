@@ -28,10 +28,10 @@ class AddIncrementalsTest implements RewriteTest {
                             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                         <modelVersion>4.0.0</modelVersion>
                         <parent>
-                        <groupId>org.jenkins-ci.plugins</groupId>
-                        <artifactId>plugin</artifactId>
-                        <version>4.87</version>
-                        <relativePath />
+                            <groupId>org.jenkins-ci.plugins</groupId>
+                            <artifactId>plugin</artifactId>
+                            <version>4.87</version>
+                            <relativePath />
                         </parent>
                         <artifactId>test-plugin</artifactId>
                         <version>1.0.0-SNAPSHOT</version>
@@ -39,19 +39,19 @@ class AddIncrementalsTest implements RewriteTest {
                         <name>Test Plugin</name>
                         <url>https://github.com/jenkinsci/test-plugin</url>
                         <scm>
-                        <connection>scm:git:https://github.com/jenkinsci/test-plugin.git</connection>
-                        <developerConnection>scm:git:git@github.com:jenkinsci/test-plugin.git</developerConnection>
-                        <tag>HEAD</tag>
-                        <url>https://github.com/jenkinsci/test-plugin</url>
+                            <connection>scm:git:https://github.com/jenkinsci/test-plugin.git</connection>
+                            <developerConnection>scm:git:git@github.com:jenkinsci/test-plugin.git</developerConnection>
+                            <tag>HEAD</tag>
+                            <url>https://github.com/jenkinsci/test-plugin</url>
                         </scm>
                         <properties>
                             <jenkins.version>2.452.4</jenkins.version>
                         </properties>
                         <repositories>
-                        <repository>
-                            <id>repo.jenkins-ci.org</id>
-                            <url>https://repo.jenkins-ci.org/public/</url>
-                        </repository>
+                            <repository>
+                                <id>repo.jenkins-ci.org</id>
+                                <url>https://repo.jenkins-ci.org/public/</url>
+                            </repository>
                         </repositories>
                     </project>
                     """, """
@@ -60,10 +60,10 @@ class AddIncrementalsTest implements RewriteTest {
                             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                         <modelVersion>4.0.0</modelVersion>
                         <parent>
-                        <groupId>org.jenkins-ci.plugins</groupId>
-                        <artifactId>plugin</artifactId>
-                        <version>4.87</version>
-                        <relativePath />
+                            <groupId>org.jenkins-ci.plugins</groupId>
+                            <artifactId>plugin</artifactId>
+                            <version>4.87</version>
+                            <relativePath />
                         </parent>
                         <artifactId>test-plugin</artifactId>
                         <version>${revision}${changelist}</version>
@@ -71,10 +71,10 @@ class AddIncrementalsTest implements RewriteTest {
                         <name>Test Plugin</name>
                         <url>https://github.com/${gitHubRepo}</url>
                         <scm>
-                        <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
-                        <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
-                        <tag>${scmTag}</tag>
-                        <url>https://github.com/${gitHubRepo}</url>
+                            <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+                            <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+                            <tag>${scmTag}</tag>
+                            <url>https://github.com/${gitHubRepo}</url>
                         </scm>
                         <properties>
                             <jenkins.version>2.452.4</jenkins.version>
@@ -84,10 +84,10 @@ class AddIncrementalsTest implements RewriteTest {
                             <scmTag>HEAD</scmTag>
                         </properties>
                         <repositories>
-                        <repository>
-                            <id>repo.jenkins-ci.org</id>
-                            <url>https://repo.jenkins-ci.org/public/</url>
-                        </repository>
+                            <repository>
+                                <id>repo.jenkins-ci.org</id>
+                                <url>https://repo.jenkins-ci.org/public/</url>
+                            </repository>
                         </repositories>
                     </project>
                     """),
@@ -121,10 +121,10 @@ class AddIncrementalsTest implements RewriteTest {
                             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                         <modelVersion>4.0.0</modelVersion>
                         <parent>
-                        <groupId>org.jenkins-ci.plugins</groupId>
-                        <artifactId>plugin</artifactId>
-                        <version>4.87</version>
-                        <relativePath />
+                            <groupId>org.jenkins-ci.plugins</groupId>
+                            <artifactId>plugin</artifactId>
+                            <version>4.87</version>
+                            <relativePath />
                         </parent>
                         <artifactId>test-plugin</artifactId>
                         <version>${revision}${changelist}</version>
@@ -132,10 +132,10 @@ class AddIncrementalsTest implements RewriteTest {
                         <name>Test Plugin</name>
                         <url>https://github.com/${gitHubRepo}</url>
                         <scm>
-                        <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
-                        <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
-                        <tag>${scmTag}</tag>
-                        <url>https://github.com/${gitHubRepo}</url>
+                            <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+                            <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+                            <tag>${scmTag}</tag>
+                            <url>https://github.com/${gitHubRepo}</url>
                         </scm>
                         <properties>
                             <revision>1.0.0</revision>
@@ -144,10 +144,10 @@ class AddIncrementalsTest implements RewriteTest {
                             <scmTag>HEAD</scmTag>
                         </properties>
                         <repositories>
-                        <repository>
-                            <id>repo.jenkins-ci.org</id>
-                            <url>https://repo.jenkins-ci.org/public/</url>
-                        </repository>
+                            <repository>
+                                <id>repo.jenkins-ci.org</id>
+                                <url>https://repo.jenkins-ci.org/public/</url>
+                            </repository>
                         </repositories>
                     </project>
                     """),
@@ -166,27 +166,28 @@ class AddIncrementalsTest implements RewriteTest {
                             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                         <modelVersion>4.0.0</modelVersion>
                         <parent>
-                        <groupId>org.jenkins-ci.plugins</groupId>
-                        <artifactId>plugin</artifactId>
-                        <version>4.87</version>
-                        <relativePath />
+                            <groupId>org.jenkins-ci.plugins</groupId>
+                            <artifactId>plugin</artifactId>
+                            <version>4.87</version>
+                            <relativePath />
                         </parent>
                         <groupId>io.jenkins.plugins</groupId>
                         <artifactId>test-plugin</artifactId>
                         <version>1.0-SNAPSHOT</version>
                         <packaging>hpi</packaging>
                         <scm>
-                        <connection>scm:git:https://github.com/jenkinsci/test-plugin.git</connection>
-                        <tag>HEAD</tag>
+                            <connection>scm:git:https://github.com/jenkinsci/test-plugin.git</connection>
+                            <developerConnection>scm:git:git@github.com:jenkinsci/test-plugin.git</developerConnection>
+                            <tag>HEAD</tag>
                         </scm>
                         <properties>
                             <jenkins.version>2.452.4</jenkins.version>
                         </properties>
                         <repositories>
-                        <repository>
-                            <id>repo.jenkins-ci.org</id>
-                            <url>https://repo.jenkins-ci.org/public/</url>
-                        </repository>
+                            <repository>
+                                <id>repo.jenkins-ci.org</id>
+                                <url>https://repo.jenkins-ci.org/public/</url>
+                            </repository>
                         </repositories>
                     </project>
                     """, """
@@ -195,18 +196,19 @@ class AddIncrementalsTest implements RewriteTest {
                             xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 https://maven.apache.org/xsd/maven-4.0.0.xsd">
                         <modelVersion>4.0.0</modelVersion>
                         <parent>
-                        <groupId>org.jenkins-ci.plugins</groupId>
-                        <artifactId>plugin</artifactId>
-                        <version>4.87</version>
-                        <relativePath />
+                            <groupId>org.jenkins-ci.plugins</groupId>
+                            <artifactId>plugin</artifactId>
+                            <version>4.87</version>
+                            <relativePath />
                         </parent>
                         <groupId>io.jenkins.plugins</groupId>
                         <artifactId>test-plugin</artifactId>
                         <version>${revision}${changelist}</version>
                         <packaging>hpi</packaging>
                         <scm>
-                        <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
-                        <tag>${scmTag}</tag>
+                            <connection>scm:git:https://github.com/${gitHubRepo}.git</connection>
+                            <developerConnection>scm:git:git@github.com:${gitHubRepo}.git</developerConnection>
+                            <tag>${scmTag}</tag>
                         </scm>
                         <properties>
                             <jenkins.version>2.452.4</jenkins.version>
@@ -216,10 +218,10 @@ class AddIncrementalsTest implements RewriteTest {
                             <scmTag>HEAD</scmTag>
                         </properties>
                         <repositories>
-                        <repository>
-                            <id>repo.jenkins-ci.org</id>
-                            <url>https://repo.jenkins-ci.org/public/</url>
-                        </repository>
+                            <repository>
+                                <id>repo.jenkins-ci.org</id>
+                                <url>https://repo.jenkins-ci.org/public/</url>
+                            </repository>
                         </repositories>
                     </project>
                     """),
