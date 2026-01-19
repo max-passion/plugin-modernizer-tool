@@ -3459,6 +3459,22 @@ public class DeclarativeRecipesTest implements RewriteTest {
                 // language=java
                 java("""
                 package org.apache.commons.lang;
+                public class WordUtils {
+                    public static String capitalize(String input) {
+                        return input;
+                    }
+                }
+                """, """
+                package org.apache.commons.text;
+                public class WordUtils {
+                    public static String capitalize(String input) {
+                        return input;
+                    }
+                }
+                """),
+                // language=java
+                java("""
+                package org.apache.commons.lang;
                 public class StringUtils {}
                 """, """
                 package org.apache.commons.lang3;
