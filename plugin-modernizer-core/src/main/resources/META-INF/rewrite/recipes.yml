@@ -750,6 +750,14 @@ recipeList:
   - io.jenkins.tools.pluginmodernizer.core.recipes.EnsureIndexJelly
 ---
 type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.AddIncrementals
+displayName: Add incrementals
+description: Enables Git-based versioning for automated deployments from pull requests.
+tags: ['chore']
+recipeList:
+  - io.jenkins.tools.pluginmodernizer.core.recipes.AddIncrementals
+---
+type: specs.openrewrite.org/v1beta/recipe
 name: io.jenkins.tools.pluginmodernizer.MigrateTomakehurstToWiremock
 displayName: Migrate from `com.github.tomakehurst` to `org.wiremock`
 description: This PR migrates the groupId and artifactId to the new artifact and also updates to the latest version.
