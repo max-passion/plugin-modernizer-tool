@@ -779,3 +779,38 @@ recipeList:
       oldPackageName: javax.annotation
       newPackageName: edu.umd.cs.findbugs.annotations
       recursive: false
+---
+type: specs.openrewrite.org/v1beta/recipe
+name: io.jenkins.tools.pluginmodernizer.AutoMergeWorkflows
+displayName: Setup auto-merge workflows
+description: Setup auto-merge workflows for safe dependency updates and bom.
+tags: ['chore', 'skip-verification']
+recipeList:
+  - org.openrewrite.text.CreateTextFile:
+      relativeFileName: .github/workflows/auto-merge-safe-deps.yml
+      overwriteExisting: false
+      fileContents: |
+        name: Automatically approve and merge safe dependency updates
+        on:
+          - pull_request_target
+        permissions:
+          contents: write
+          pull-requests: write
+        jobs:
+          auto-merge-safe-deps:
+            uses: jenkins-infra/github-reusable-workflows/.github/workflows/auto-merge-safe-deps.yml@v1
+  - org.openrewrite.text.CreateTextFile:
+      relativeFileName: .github/workflows/close-bom-if-passing.yml
+      overwriteExisting: false
+      fileContents: |
+        name: Close BOM update PR if passing
+        on:
+          check_run:
+            types:
+              - completed
+        permissions:
+          contents: read
+          pull-requests: write
+        jobs:
+          close-bom-if-passing:
+            uses: jenkins-infra/github-reusable-workflows/.github/workflows/close-bom-if-passing.yml@v1
