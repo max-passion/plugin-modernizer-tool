@@ -407,6 +407,26 @@ public class TemplateUtilsTest {
     }
 
     @Test
+    public void testFriendlyPrTitleAutoMergeWorkflows() {
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("io.jenkins.tools.pluginmodernizer.AutoMergeWorkflows")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestTitle(plugin, recipe);
+
+        // Assert
+        assertEquals(
+                "chore(workflows): Setup auto-merge workflows for safe dependencies updates and BOM updates.", result);
+    }
+
+    @Test
     public void testFriendlyPrTitleSetupJenkinsfile() {
 
         // Mocks
@@ -538,6 +558,29 @@ public class TemplateUtilsTest {
         assertTrue(
                 result.contains(
                         "https://www.jenkins.io/doc/developer/publishing/releasing-cd/#configure-release-drafter"),
+                "Missing or invalid link");
+    }
+
+    @Test
+    public void testFriendlyPrBodyAutoMergeWorkflows() {
+
+        // Mocks
+        Plugin plugin = mock(Plugin.class);
+        PluginMetadata metadata = mock(PluginMetadata.class);
+        Recipe recipe = mock(Recipe.class);
+
+        doReturn(metadata).when(plugin).getMetadata();
+        doReturn("io.jenkins.tools.pluginmodernizer.AutoMergeWorkflows")
+                .when(recipe)
+                .getName();
+
+        // Test
+        String result = TemplateUtils.renderPullRequestBody(plugin, recipe);
+
+        // Assert
+        assertTrue(result.contains("Why is this important?"), "Missing 'Why is this important?' section");
+        assertTrue(
+                result.contains("https://github.com/jenkinsci/archetypes/tree/master/common-files/.github/workflows"),
                 "Missing or invalid link");
     }
 

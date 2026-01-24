@@ -31,6 +31,16 @@ public enum ArchetypeCommonFile {
     WORKFLOW_SECURITY(".github/workflows/jenkins-security-scan.yml", ".github/workflows/jenkins-security-scan.yaml"),
 
     /**
+     * Auto-merge safe dependencies workflow
+     */
+    WORKFLOW_AUTO_MERGE_SAFE_DEPS(".github/workflows/auto-merge-safe-deps.yml"),
+
+    /**
+     * Close bom PR if passing CI
+     */
+    WORKFLOW_CLOSE_BOM_IF_PASSING(".github/workflows/close-bom-if-passing.yml"),
+
+    /**
      * Release drafter file
      */
     RELEASE_DRAFTER(".github/release-drafter.yml", ".github/release-drafter.yaml"),

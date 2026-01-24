@@ -4108,6 +4108,55 @@ public class DeclarativeRecipesTest implements RewriteTest {
     }
 
     @Test
+    void shouldAddAutoMergeWorkflows() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.AutoMergeWorkflows"),
+                text(""), // Need one minimum file to trigger the recipe
+                text(null, """
+                    name: Close BOM update PR if passing
+                    on:
+                      check_run:
+                        types:
+                          - completed
+                    permissions:
+                      contents: read
+                      pull-requests: write
+                    jobs:
+                      close-bom-if-passing:
+                        uses: jenkins-infra/github-reusable-workflows/.github/workflows/close-bom-if-passing.yml@v1
+                        """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_CLOSE_BOM_IF_PASSING.getPath());
+                }),
+                text(null, """
+                    name: Automatically approve and merge safe dependency updates
+                    on:
+                      - pull_request_target
+                    permissions:
+                      contents: write
+                      pull-requests: write
+                    jobs:
+                      auto-merge-safe-deps:
+                        uses: jenkins-infra/github-reusable-workflows/.github/workflows/auto-merge-safe-deps.yml@v1
+                    """, sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_AUTO_MERGE_SAFE_DEPS.getPath());
+                }));
+    }
+
+    @Test
+    void shouldNotAddAutoMergeWorkflowsIfAlreadyPresent() {
+        rewriteRun(
+                spec -> spec.recipeFromResource(
+                        "/META-INF/rewrite/recipes.yml", "io.jenkins.tools.pluginmodernizer.AutoMergeWorkflows"),
+                text("name: Close BOM update PR if passing", sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_CLOSE_BOM_IF_PASSING.getPath());
+                }),
+                text("name: Automatically approve and merge safe dependency updates", sourceSpecs -> {
+                    sourceSpecs.path(ArchetypeCommonFile.WORKFLOW_AUTO_MERGE_SAFE_DEPS.getPath());
+                }));
+    }
+
+    @Test
     void shouldAddGitIgnore() {
         rewriteRun(
                 spec -> spec.recipeFromResource(
