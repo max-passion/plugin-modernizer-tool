@@ -5,11 +5,6 @@ Using OpenRewrite Recipes for Plugin Modernization or Automation Plugin Build Me
 </h3>
 </div>
 
-[![Build Status](https://ci.jenkins.io/job/Tools/job/plugin-modernizer-tool/job/main/badge/icon)](https://ci.jenkins.io/job/Tools/job/plugin-modernizer-tool/job/main/)
-[![Coverage](https://ci.jenkins.io/job/Tools/job/plugin-modernizer-tool/job/main/badge/icon?status=${instructionCoverage}&subject=coverage&color=${colorInstructionCoverage})](https://ci.jenkins.io/job/Tools/job/plugin-modernizer-tool/job/main)
-[![LOC](https://ci.jenkins.io/job/Tools/job/plugin-modernizer-tool/job/main/badge/icon?job=test&status=${lineOfCode}&subject=line%20of%20code&color=blue)](https://ci.jenkins.io/job/Tools/job/plugin-modernizer-tool/job/main)
-[![GitHub license](https://img.shields.io/github/license/jenkins-infra/plugin-modernizer-tool)](https://github.com/jenkins-infra/plugin-modernizer-tool/blob/main/LICENSE)
-
 > [!Note]
 > This tool is currently in development and looking for contributors and early adopters. Please report any issues or feature requests on the GitHub repository.
 >
@@ -19,7 +14,7 @@ Using OpenRewrite Recipes for Plugin Modernization or Automation Plugin Build Me
 
 Plugin Modernizer is a generic CLI tool designed to automate the modernization of Jenkins plugins. It utilizes OpenRewrite recipes to apply transformations to the plugin, validating the applied transformations and creating pull requests with the results.
 
-The CLI tool is also used to collect metadata from Jenkins plugins modernization, such as the plugin's dependencies (including transitive) or JDKs used for building the plugin. Such metadata is pushed to a public [metadata repository](https://github.com/jenkins-infra/metadata-plugin-modernizer/) and planned to be integrated with existing Jenkins tooling such as 
+The CLI tool is also used to collect metadata from Jenkins plugins modernization, such as the plugin's dependencies (including transitive) or JDKs used for building the plugin. Such metadata is pushed to a public metadata repository and planned to be integrated with existing Jenkins tooling such as 
 
 - [Jenkins Plugin Site](https://plugins.jenkins.io/)
 - [Jenkins statistics](https://stats.jenkins.io/)
@@ -455,7 +450,6 @@ mvn org.openrewrite.maven:rewrite-maven-plugin:dryRun -Drewrite.recipeArtifactCo
 - [GSoC 2025 Project Proposal](https://docs.google.com/document/d/1QaEa4lvjdMi3JRXBOAN2eD2cjJkJ1-bfU-XHg4dlI0s/edit?usp=sharing)
 - [GSoC 2024 Project Proposal](https://docs.google.com/document/d/1e1QkprPN6fLpFXk_QqBUQlJhZrAl9RvXbOXOiJ-gAuY/edit?usp=sharing)
 - [Project Slack Channel](https://cdeliveryfdn.slack.com/archives/C071YTZ807N)
-- [Metadata Repository](https://github.com/jenkins-infra/metadata-plugin-modernizer/)
 - [OpenRewrite Jenkins Recipes](https://docs.openrewrite.org/recipes/jenkins/)
 - [OpenRewrite LST](https://docs.openrewrite.org/concepts-explanations/lossless-semantic-trees)
 - [How to start contributing](https://codexraunak.hashnode.dev/how-to-start-contributing-to-jenkins-infra-plugin-modernizer-tool)
